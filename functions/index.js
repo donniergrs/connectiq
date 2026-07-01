@@ -6,7 +6,6 @@ import fetch from "node-fetch";
 dotenv.config();
 
 const app = express();
-
 app.use(cors());
 app.use(express.json());
 
@@ -27,62 +26,16 @@ app.post("/api/fcc/lookup", async (req, res) => {
 
   console.log("FCC lookup request received:", { street, city, state, zip });
 
-  if (!street) {
-    return res.json({
-      source: "mock",
-      message: "No address provided. Returned ConnectIQ fallback providers.",
-      providers: MOCK_PROVIDERS,
-    });
-  }
-
   try {
-    const username = process.env.FCC_USERNAME || process.env.VITE_FCC_USERNAME;
-    const hashValue = process.env.FCC_HASH_VALUE || process.env.VITE_FCC_HASH_VALUE;
-    const baseUrl =
-      process.env.FCC_API_BASE_URL ||
-      process.env.VITE_FCC_API_BASE_URL ||
-      "https://broadbandmap.fcc.gov/api/public/map";
-
-    if (!username || !hashValue) {
-      return res.json({
-        source: "mock",
-        message: "FCC credentials missing. Returned ConnectIQ fallback providers.",
-        providers: MOCK_PROVIDERS,
-      });
-    }
-
-    const response = await fetch(`${baseUrl}/listAsOfDates`, {
-      method: "GET",
-      headers: {
-        username,
-        hash_value: hashValue,
-      },
-    });
-
-    if (!response.ok) {
-      const details = await response.text();
-
-      console.warn("FCC API unavailable:", response.status, details);
-
-      return res.json({
-        source: "mock",
-        message: "FCC unavailable. Returned ConnectIQ fallback providers.",
-        fccStatus: response.status,
-        providers: MOCK_PROVIDERS,
-      });
-    }
-
     return res.json({
-      source: "fcc-connected",
-      message: "FCC API connection successful. Provider mapping is next.",
+      source: "fallback",
+      message: "Using ConnectIQ fallback providers while FCC live lookup is finalized.",
       providers: MOCK_PROVIDERS,
     });
   } catch (error) {
-    console.warn("FCC lookup failed:", error.message);
-
     return res.json({
-      source: "mock",
-      message: "FCC lookup failed. Returned ConnectIQ fallback providers.",
+      source: "fallback",
+      message: "Fallback providers returned.",
       providers: MOCK_PROVIDERS,
     });
   }

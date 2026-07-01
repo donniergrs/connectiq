@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { ArrowRight, CheckCircle2, Loader2, ShieldCheck, Sparkles, Zap } from "lucide-react";
-import { lookupProviders } from "../services/fccService";
-import { saveLookup } from "../services/firestoreService";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { db } from "../firebase";
+import { lookupProviders } from "../services/fccService";
+import { saveLookup } from "../services/firestoreService";
 import { rankProviders } from "../services/recommendationService";
 
 export default function AddressLookup() {
@@ -20,21 +20,12 @@ export default function AddressLookup() {
     priority: "Fastest speed",
   });
 
-  const rankedResults = rankProviders(results, lead.priority);
-  const recommended = rankedResults[0];
+  const recommended = results[0];
 
   async function handleSearch(e) {
     e.preventDefault();
 
-    const addressPayload = {
-      full: addressInput,
-      street: addressInput,
-      city: "",
-      state: "",
-      zip: "",
-      latitude: null,
-      longitude: null,
-    };
+    if (!addressInput.trim()) return;
 
     setLoading(true);
     setError("");
@@ -43,9 +34,22 @@ export default function AddressLookup() {
     setSearchedAddress(addressInput);
 
     try {
-      const providers = await lookupProviders(addressPayload);
-      setResults(rankProviders(providers, lead.priority));
-      saveLookup({ address: addressPayload, providers, user: null }).catch(() => {});
+      const providers = await lookupProviders({
+        full: addressInput,
+        street: addressInput,
+        city: "",
+        state: "",
+        zip: "",
+      });
+
+      const ranked = rankProviders(providers, lead.priority);
+      setResults(ranked);
+
+      saveLookup({
+        address: { full: addressInput, street: addressInput },
+        providers: ranked,
+        user: null,
+      }).catch(() => {});
     } catch (err) {
       console.error(err);
       setError("We couldn't complete the search. Please try again.");
@@ -66,7 +70,7 @@ export default function AddressLookup() {
       await addDoc(collection(db, "leads"), {
         ...lead,
         address: searchedAddress,
-        providers: rankedResults,
+        providers: results,
         recommendedProvider: recommended?.name || "",
         source: "public_availability_page",
         status: "New Lead",
@@ -128,25 +132,32 @@ export default function AddressLookup() {
 
       {error && <div className="funnel-error">{error}</div>}
 
-      {!loading && rankedResults.length > 0 && (
+      {!loading && results.length > 0 && (
         <section className="results-experience">
           <div className="results-heading">
             <span>Available at your address</span>
-            <h2>We found {rankedResults.length} internet options.</h2>
+            <h2>We found {results.length} internet options.</h2>
             <p>{searchedAddress}</p>
           </div>
 
           <div className="recommendation-card">
             <div className="recommended-badge">ConnectIQ Recommended</div>
+
             <div>
               <h3>{recommended.name}</h3>
-              <div className="score-badge">{recommended.score}/100 Match</div>
+              <div className="score-badge">{recommended.score || 95}/100 Match</div>
               <p>{recommended.technology} internet built for speed, reliability, and everyday use.</p>
             </div>
 
             <div className="speed-grid">
-              <div><strong>{recommended.download}</strong><span>Mbps down</span></div>
-              <div><strong>{recommended.upload}</strong><span>Mbps up</span></div>
+              <div>
+                <strong>{recommended.download}</strong>
+                <span>Mbps down</span>
+              </div>
+              <div>
+                <strong>{recommended.upload}</strong>
+                <span>Mbps up</span>
+              </div>
             </div>
 
             <ul>
@@ -161,8 +172,9 @@ export default function AddressLookup() {
 
           <div className="provider-comparison">
             <h3>Other available options</h3>
+
             <div className="provider-result-grid">
-              {rankedResults.slice(1).map((provider) => (
+              {results.slice(1).map((provider) => (
                 <div className="provider-result-card" key={provider.id}>
                   <h4>{provider.name}</h4>
                   <p>{provider.technology}</p>
@@ -176,7 +188,10 @@ export default function AddressLookup() {
             <div>
               <span>Need help deciding?</span>
               <h3>Talk with a ConnectIQ Advisor.</h3>
-              <p>Send us your information and we’ll help you compare options and choose the best solution.</p>
+              <p>
+                Send us your information and we’ll help you compare options,
+                avoid confusion, and choose the best solution.
+              </p>
             </div>
 
             {leadSaved ? (
@@ -190,6 +205,7 @@ export default function AddressLookup() {
                 <input name="name" value={lead.name} onChange={handleLeadChange} placeholder="Name" required />
                 <input name="email" value={lead.email} onChange={handleLeadChange} placeholder="Email" required />
                 <input name="phone" value={lead.phone} onChange={handleLeadChange} placeholder="Phone" required />
+
                 <select name="priority" value={lead.priority} onChange={handleLeadChange}>
                   <option>Fastest speed</option>
                   <option>Lowest price</option>
@@ -198,6 +214,7 @@ export default function AddressLookup() {
                   <option>Gaming and streaming</option>
                   <option>Business internet</option>
                 </select>
+
                 <button type="submit">Get My Recommendation</button>
               </form>
             )}
