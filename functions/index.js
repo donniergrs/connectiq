@@ -18,13 +18,20 @@ app.get("/health", (req, res) => {
 
 app.post("/api/fcc/lookup", async (req, res) => {
   try {
-    const { street, city, state, zip } = req.body;
+    const { street, city = "", state = "", zip = "" } = req.body;
 
-    if (!street || !city || !state || !zip) {
+    if (!street) {
       return res.status(400).json({
-        error: "Street, city, state, and ZIP are required.",
+        error: "Address is required.",
       });
     }
+
+    console.log("FCC lookup request received:", {
+      street,
+      city,
+      state,
+      zip,
+    });
 
     const response = await fetch(
       `${process.env.FCC_API_BASE_URL}/listAsOfDates`,
