@@ -4,11 +4,10 @@ import { lookupProviders } from "../services/fccService";
 import { saveLookup } from "../services/firestoreService";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { db } from "../firebase";
-import AddressAutocomplete from "../components/AddressAutocomplete";
+import { rankProviders } from "../services/recommendationService";
 
 export default function AddressLookup() {
   const [addressInput, setAddressInput] = useState("");
-  const [selectedAddress, setSelectedAddress] = useState(null);
   const [results, setResults] = useState([]);
   const [searchedAddress, setSearchedAddress] = useState("");
   const [loading, setLoading] = useState(false);
@@ -21,31 +20,31 @@ export default function AddressLookup() {
     priority: "Fastest speed",
   });
 
-  const recommended = results[0];
+  const rankedResults = rankProviders(results, lead.priority);
+  const recommended = rankedResults[0];
 
   async function handleSearch(e) {
     e.preventDefault();
 
-    const addressPayload =
-      selectedAddress || {
-        full: addressInput,
-        street: addressInput,
-        city: "",
-        state: "",
-        zip: "",
-        latitude: null,
-        longitude: null,
-      };
+    const addressPayload = {
+      full: addressInput,
+      street: addressInput,
+      city: "",
+      state: "",
+      zip: "",
+      latitude: null,
+      longitude: null,
+    };
 
     setLoading(true);
     setError("");
     setLeadSaved(false);
     setResults([]);
-    setSearchedAddress(addressPayload.full || addressInput);
+    setSearchedAddress(addressInput);
 
     try {
       const providers = await lookupProviders(addressPayload);
-      setResults(providers);
+      setResults(rankProviders(providers, lead.priority));
       saveLookup({ address: addressPayload, providers, user: null }).catch(() => {});
     } catch (err) {
       console.error(err);
@@ -67,8 +66,7 @@ export default function AddressLookup() {
       await addDoc(collection(db, "leads"), {
         ...lead,
         address: searchedAddress,
-        structuredAddress: selectedAddress,
-        providers: results,
+        providers: rankedResults,
         recommendedProvider: recommended?.name || "",
         source: "public_availability_page",
         status: "New Lead",
@@ -87,6 +85,7 @@ export default function AddressLookup() {
     <main className="availability-page">
       <section className="availability-hero">
         <div className="availability-glow" />
+
         <div className="availability-inner">
           <div className="hero-badge">
             <Sparkles size={16} />
@@ -95,31 +94,22 @@ export default function AddressLookup() {
 
           <h1>Check internet availability at your address.</h1>
           <p>
-            Start typing your address, select the verified match, and ConnectIQ
-            will compare available options and help you choose with confidence.
+            Enter your address and ConnectIQ will compare available options,
+            recommend the best fit, and help you get connected.
           </p>
 
           <form className="premium-search" onSubmit={handleSearch}>
-            <AddressAutocomplete
+            <input
               value={addressInput}
-              onChange={(value) => {
-                setAddressInput(value);
-                setSelectedAddress(null);
-              }}
-              onSelect={setSelectedAddress}
+              onChange={(e) => setAddressInput(e.target.value)}
+              placeholder="Enter your street address"
+              required
             />
 
             <button type="submit" disabled={loading}>
               {loading ? "Searching..." : "Check Availability"} <ArrowRight size={18} />
             </button>
           </form>
-
-          {selectedAddress && (
-            <div className="verified-address">
-              <CheckCircle2 size={18} />
-              Verified Address: {selectedAddress.full}
-            </div>
-          )}
         </div>
       </section>
 
@@ -138,11 +128,11 @@ export default function AddressLookup() {
 
       {error && <div className="funnel-error">{error}</div>}
 
-      {!loading && results.length > 0 && (
+      {!loading && rankedResults.length > 0 && (
         <section className="results-experience">
           <div className="results-heading">
             <span>Available at your address</span>
-            <h2>We found {results.length} internet options.</h2>
+            <h2>We found {rankedResults.length} internet options.</h2>
             <p>{searchedAddress}</p>
           </div>
 
@@ -150,6 +140,7 @@ export default function AddressLookup() {
             <div className="recommended-badge">ConnectIQ Recommended</div>
             <div>
               <h3>{recommended.name}</h3>
+              <div className="score-badge">{recommended.score}/100 Match</div>
               <p>{recommended.technology} internet built for speed, reliability, and everyday use.</p>
             </div>
 
@@ -162,13 +153,16 @@ export default function AddressLookup() {
               <li><Zap /> Strong choice for remote work, streaming, and gaming</li>
               <li><ShieldCheck /> Recommended based on available speed and technology</li>
               <li><CheckCircle2 /> ConnectIQ can help you choose and order service</li>
+              {(recommended.reasons || []).map((reason) => (
+                <li key={reason}><CheckCircle2 /> {reason}</li>
+              ))}
             </ul>
           </div>
 
           <div className="provider-comparison">
             <h3>Other available options</h3>
             <div className="provider-result-grid">
-              {results.slice(1).map((provider) => (
+              {rankedResults.slice(1).map((provider) => (
                 <div className="provider-result-card" key={provider.id}>
                   <h4>{provider.name}</h4>
                   <p>{provider.technology}</p>

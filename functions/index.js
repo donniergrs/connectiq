@@ -46,10 +46,12 @@ app.post("/api/fcc/lookup", async (req, res) => {
     if (!response.ok) {
       const text = await response.text();
 
-      return res.status(response.status).json({
-        error: "FCC API request failed.",
-        status: response.status,
-        details: text,
+      return res.json({
+        source: "mock",
+        message: "FCC unauthorized or unavailable. Returned ConnectIQ fallback providers.",
+        fccStatus: response.status,
+        fccDetails: text,
+        providers: MOCK_PROVIDERS,
       });
     }
 

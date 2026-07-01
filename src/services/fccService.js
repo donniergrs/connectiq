@@ -12,23 +12,19 @@ export async function lookupProviders(address) {
 
     const response = await fetch(`${API_BASE_URL}/api/fcc/lookup`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(address),
     });
 
     if (!response.ok) {
-      throw new Error("Backend lookup failed");
+      console.warn("Backend failed. Using fallback providers.");
+      return MOCK_PROVIDERS;
     }
 
     const data = await response.json();
-
-    console.log("Backend lookup response:", data);
-
     return data.providers?.length ? data.providers : MOCK_PROVIDERS;
   } catch (error) {
-    console.error("ConnectIQ backend lookup failed:", error);
+    console.warn("Backend unavailable. Using fallback providers.", error);
     return MOCK_PROVIDERS;
   }
 }
