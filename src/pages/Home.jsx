@@ -1,67 +1,105 @@
 import { Link } from "react-router-dom";
+import { ArrowRight, Sparkles, ShieldCheck, Wifi, Headphones } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function Home() {
   return (
-    <>
-      <section className="hero">
-        <div className="hero-content">
-          <span className="eyebrow">Internet shopping made simple</span>
-          <h1>Find the best internet available at your address.</h1>
+    <main className="premium-home">
+      <section className="premium-hero">
+        <div className="hero-glow" />
+
+        <motion.div
+          className="hero-inner"
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7 }}
+        >
+          <div className="hero-badge">
+            <Sparkles size={16} />
+            Internet shopping, intelligently simplified.
+          </div>
+
+          <h1>
+            Find the best internet available at your address.
+          </h1>
+
           <p>
-            Compare fiber, cable, wireless, and business internet options in less
-            than 30 seconds. ConnectIQ helps you choose the right provider.
+            ConnectIQ compares fiber, cable, wireless, and business internet
+            options — then helps you choose the right solution with confidence.
           </p>
 
           <div className="hero-actions">
-            <Link to="/availability" className="primary-cta">
-              Check Availability
+            <Link to="/availability" className="primary-button">
+              Check Availability <ArrowRight size={18} />
             </Link>
-            <Link to="/contact" className="secondary-cta">
+
+            <Link to="/contact" className="ghost-button">
               Talk to an Advisor
             </Link>
           </div>
-        </div>
+
+          <div className="trust-row">
+            <span>Fiber</span>
+            <span>Cable</span>
+            <span>Wireless</span>
+            <span>Business</span>
+          </div>
+        </motion.div>
       </section>
 
-      <section className="public-section">
-        <h2>Why ConnectIQ?</h2>
+      <section className="value-section">
+        <div className="section-heading">
+          <span>Why ConnectIQ</span>
+          <h2>A smarter way to choose internet.</h2>
+        </div>
 
-        <div className="public-grid">
-          <div className="public-card">
-            <h3>Compare Providers</h3>
-            <p>See available fiber, cable, wireless, and business options.</p>
+        <div className="value-grid">
+          <div className="value-card">
+            <Wifi />
+            <h3>Compare Every Option</h3>
+            <p>See available providers and technologies at your exact address.</p>
           </div>
 
-          <div className="public-card">
-            <h3>Get a Recommendation</h3>
-            <p>We help match your household or business to the right service.</p>
+          <div className="value-card">
+            <ShieldCheck />
+            <h3>Get a Real Recommendation</h3>
+            <p>We help match your home or business to the right internet solution.</p>
           </div>
 
-          <div className="public-card">
+          <div className="value-card">
+            <Headphones />
             <h3>We Help You Order</h3>
-            <p>ConnectIQ works with you to find and start the right solution.</p>
+            <p>Talk with a ConnectIQ advisor and avoid provider confusion.</p>
           </div>
         </div>
       </section>
 
-      <section className="provider-strip">
-        <h2>We help compare leading providers</h2>
-        <div className="provider-list">
+      <section className="provider-section">
+        <h2>Compare leading internet providers.</h2>
+        <div className="provider-pills">
           <span>Lumos</span>
           <span>AT&T</span>
           <span>Spectrum</span>
           <span>T-Mobile</span>
           <span>Verizon</span>
           <span>Brightspeed</span>
+          <span>Kinetic</span>
+          <span>Google Fiber</span>
         </div>
       </section>
 
-      <section className="final-cta">
+      <section className="launch-cta">
         <h2>Ready to find better internet?</h2>
-        <Link to="/availability" className="primary-cta">
-          Check My Address
+        <p>Check your address and let ConnectIQ help you choose with confidence.</p>
+        <Link to="/availability" className="primary-button">
+          Start Now <ArrowRight size={18} />
         </Link>
       </section>
-    </>
+
+      <footer className="premium-footer">
+        <strong>ConnectIQ</strong>
+        <span>Helping customers find the right internet solution.</span>
+      </footer>
+    </main>
   );
 }
