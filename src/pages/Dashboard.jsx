@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
+import { Link } from "react-router-dom";
 import { db } from "../firebase";
 
 export default function Dashboard() {
@@ -92,8 +93,8 @@ export default function Dashboard() {
 
             <tbody>
               {recentLeads.map((lead) => (
-                <tr key={lead.id}>
-                  <td>{lead.name || "Unknown"}</td>
+                <tr key={lead.id} className="clickable-row">
+                  <td><Link to={`/admin/leads/${lead.id}`}>{lead.name || "Unknown"}</Link></td>
                   <td>{lead.phone || "—"}</td>
                   <td>{lead.email || "—"}</td>
                   <td>{lead.recommendedProvider || "—"}</td>

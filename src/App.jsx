@@ -14,6 +14,7 @@ import Contact from "./pages/Contact";
 
 import Dashboard from "./pages/Dashboard";
 import CarrierDatabase from "./pages/CarrierDatabase";
+import LeadDetail from "./pages/LeadDetail";
 import Login from "./pages/Login";
 
 export default function App() {
@@ -40,6 +41,7 @@ export default function App() {
         >
           <Route index element={<Dashboard />} />
           <Route path="carriers" element={<CarrierDatabase />} />
+          <Route path="leads/:leadId" element={<LeadDetail />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />

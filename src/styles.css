@@ -1281,3 +1281,84 @@ td{
     grid-template-columns: 1fr;
   }
 }
+
+/* Sprint 4B Lead Detail */
+.back-link {
+  display: inline-flex;
+  margin-bottom: 20px;
+  color: #2563eb;
+  font-weight: 900;
+}
+
+.lead-detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.detail-list {
+  display: grid;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.detail-list div {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.detail-list strong {
+  color: #64748b;
+}
+
+.detail-list span {
+  color: #0f172a;
+  font-weight: 800;
+  text-align: right;
+}
+
+.admin-input,
+.admin-textarea {
+  width: 100%;
+  margin: 8px 0 18px;
+  border: 1px solid #cbd5e1;
+  border-radius: 14px;
+  padding: 14px;
+  font-size: 16px;
+}
+
+.admin-textarea {
+  min-height: 170px;
+}
+
+.admin-save-button {
+  background: linear-gradient(135deg, #2563eb, #06b6d4);
+  color: white;
+  border: 0;
+  border-radius: 14px;
+  padding: 14px 18px;
+  font-weight: 950;
+}
+
+.save-success {
+  margin-top: 14px;
+  background: #dcfce7;
+  color: #166534;
+  padding: 12px;
+  border-radius: 12px;
+  font-weight: 900;
+}
+
+.clickable-row a {
+  color: #2563eb;
+  font-weight: 900;
+}
+
+@media (max-width: 900px) {
+  .lead-detail-grid {
+    grid-template-columns: 1fr;
+  }
+}
