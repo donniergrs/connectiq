@@ -1389,3 +1389,114 @@ EOF
   color: #67e8f9;
   font-weight: 950;
 }
+
+/* Sprint 7 CRM */
+.crm-metrics {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.crm-split {
+  display: grid;
+  grid-template-columns: 1.4fr .8fr;
+  gap: 24px;
+}
+
+.pipeline-list {
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.pipeline-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 14px 16px;
+}
+
+.pipeline-row span {
+  color: #334155;
+  font-weight: 800;
+}
+
+.pipeline-row strong {
+  color: #2563eb;
+  font-size: 24px;
+}
+
+.crm-toolbar {
+  display: grid;
+  grid-template-columns: 1fr 260px;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.crm-toolbar input,
+.crm-toolbar select {
+  margin: 0;
+  padding: 15px;
+  border-radius: 14px;
+  border: 1px solid #cbd5e1;
+  font-size: 16px;
+  background: white;
+}
+
+.timeline {
+  display: grid;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.timeline-item {
+  padding: 16px;
+  border-radius: 16px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.timeline-item strong {
+  color: #0f172a;
+}
+
+.timeline-item p {
+  margin: 6px 0;
+  color: #334155;
+}
+
+.timeline-item small {
+  color: #64748b;
+}
+
+.mini-score {
+  margin-top: 12px;
+  display: inline-flex;
+  background: #dbeafe;
+  color: #1d4ed8;
+  padding: 7px 10px;
+  border-radius: 999px;
+  font-weight: 900;
+  font-size: 13px;
+}
+
+@media (max-width: 1200px) {
+  .crm-metrics {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .crm-split {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 750px) {
+  .crm-metrics,
+  .crm-toolbar {
+    grid-template-columns: 1fr;
+  }
+}

@@ -15,6 +15,7 @@ import Contact from "./pages/Contact";
 import Dashboard from "./pages/Dashboard";
 import CarrierDatabase from "./pages/CarrierDatabase";
 import LeadDetail from "./pages/LeadDetail";
+import Leads from "./pages/Leads";
 import Login from "./pages/Login";
 
 export default function App() {
@@ -41,6 +42,7 @@ export default function App() {
         >
           <Route index element={<Dashboard />} />
           <Route path="carriers" element={<CarrierDatabase />} />
+          <Route path="leads" element={<Leads />} />
           <Route path="leads/:leadId" element={<LeadDetail />} />
         </Route>
 

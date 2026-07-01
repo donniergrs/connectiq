@@ -17,7 +17,7 @@ export default function Sidebar() {
           Address Lookup
         </NavLink>
 
-        <NavLink to="/carriers">
+        <NavLink to="/admin/carriers">
           Carrier Database
         </NavLink>
 
