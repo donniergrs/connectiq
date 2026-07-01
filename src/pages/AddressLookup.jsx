@@ -4,9 +4,11 @@ import { lookupProviders } from "../services/fccService";
 import { saveLookup } from "../services/firestoreService";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { db } from "../firebase";
+import AddressAutocomplete from "../components/AddressAutocomplete";
 
 export default function AddressLookup() {
-  const [address, setAddress] = useState("");
+  const [addressInput, setAddressInput] = useState("");
+  const [selectedAddress, setSelectedAddress] = useState(null);
   const [results, setResults] = useState([]);
   const [searchedAddress, setSearchedAddress] = useState("");
   const [loading, setLoading] = useState(false);
@@ -23,22 +25,28 @@ export default function AddressLookup() {
 
   async function handleSearch(e) {
     e.preventDefault();
+
+    const addressPayload =
+      selectedAddress || {
+        full: addressInput,
+        street: addressInput,
+        city: "",
+        state: "",
+        zip: "",
+        latitude: null,
+        longitude: null,
+      };
+
     setLoading(true);
     setError("");
     setLeadSaved(false);
     setResults([]);
-    setSearchedAddress(address);
+    setSearchedAddress(addressPayload.full || addressInput);
 
     try {
-      const providers = await lookupProviders({
-        street: address,
-        city: "",
-        state: "",
-        zip: "",
-      });
-
+      const providers = await lookupProviders(addressPayload);
       setResults(providers);
-      saveLookup({ address: { full: address }, providers, user: null }).catch(() => {});
+      saveLookup({ address: addressPayload, providers, user: null }).catch(() => {});
     } catch (err) {
       console.error(err);
       setError("We couldn't complete the search. Please try again.");
@@ -59,6 +67,7 @@ export default function AddressLookup() {
       await addDoc(collection(db, "leads"), {
         ...lead,
         address: searchedAddress,
+        structuredAddress: selectedAddress,
         providers: results,
         recommendedProvider: recommended?.name || "",
         source: "public_availability_page",
@@ -78,7 +87,6 @@ export default function AddressLookup() {
     <main className="availability-page">
       <section className="availability-hero">
         <div className="availability-glow" />
-
         <div className="availability-inner">
           <div className="hero-badge">
             <Sparkles size={16} />
@@ -87,21 +95,31 @@ export default function AddressLookup() {
 
           <h1>Check internet availability at your address.</h1>
           <p>
-            Enter your address and ConnectIQ will compare available options,
-            recommend the best fit, and help you get connected.
+            Start typing your address, select the verified match, and ConnectIQ
+            will compare available options and help you choose with confidence.
           </p>
 
           <form className="premium-search" onSubmit={handleSearch}>
-            <input
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              placeholder="Enter your street address"
-              required
+            <AddressAutocomplete
+              value={addressInput}
+              onChange={(value) => {
+                setAddressInput(value);
+                setSelectedAddress(null);
+              }}
+              onSelect={setSelectedAddress}
             />
+
             <button type="submit" disabled={loading}>
               {loading ? "Searching..." : "Check Availability"} <ArrowRight size={18} />
             </button>
           </form>
+
+          {selectedAddress && (
+            <div className="verified-address">
+              <CheckCircle2 size={18} />
+              Verified Address: {selectedAddress.full}
+            </div>
+          )}
         </div>
       </section>
 
@@ -136,14 +154,8 @@ export default function AddressLookup() {
             </div>
 
             <div className="speed-grid">
-              <div>
-                <strong>{recommended.download}</strong>
-                <span>Mbps down</span>
-              </div>
-              <div>
-                <strong>{recommended.upload}</strong>
-                <span>Mbps up</span>
-              </div>
+              <div><strong>{recommended.download}</strong><span>Mbps down</span></div>
+              <div><strong>{recommended.upload}</strong><span>Mbps up</span></div>
             </div>
 
             <ul>
@@ -170,10 +182,7 @@ export default function AddressLookup() {
             <div>
               <span>Need help deciding?</span>
               <h3>Talk with a ConnectIQ Advisor.</h3>
-              <p>
-                Send us your information and we’ll help you compare options,
-                avoid confusion, and choose the best solution.
-              </p>
+              <p>Send us your information and we’ll help you compare options and choose the best solution.</p>
             </div>
 
             {leadSaved ? (
