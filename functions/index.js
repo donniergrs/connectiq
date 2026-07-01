@@ -12,70 +12,78 @@ app.use(express.json());
 
 const PORT = process.env.PORT || 5001;
 
+const MOCK_PROVIDERS = [
+  { id: "lumos", name: "Lumos Fiber", technology: "Fiber", download: 5000, upload: 5000 },
+  { id: "att", name: "AT&T Fiber", technology: "Fiber", download: 5000, upload: 5000 },
+  { id: "spectrum", name: "Spectrum", technology: "Cable", download: 1000, upload: 40 },
+];
+
 app.get("/health", (req, res) => {
   res.json({ status: "ok", service: "connectiq-functions" });
 });
 
 app.post("/api/fcc/lookup", async (req, res) => {
-  try {
-    const { street, city = "", state = "", zip = "" } = req.body;
+  const { street, city = "", state = "", zip = "" } = req.body || {};
 
-    if (!street) {
-      return res.status(400).json({
-        error: "Address is required.",
-      });
-    }
+  console.log("FCC lookup request received:", { street, city, state, zip });
 
-    console.log("FCC lookup request received:", {
-      street,
-      city,
-      state,
-      zip,
+  if (!street) {
+    return res.json({
+      source: "mock",
+      message: "No address provided. Returned ConnectIQ fallback providers.",
+      providers: MOCK_PROVIDERS,
     });
+  }
 
-    const response = await fetch(
-      `${process.env.FCC_API_BASE_URL}/listAsOfDates`,
-      {
-        headers: {
-          username: process.env.FCC_USERNAME,
-          hash_value: process.env.FCC_HASH_VALUE,
-        },
-      }
-    );
+  try {
+    const username = process.env.FCC_USERNAME || process.env.VITE_FCC_USERNAME;
+    const hashValue = process.env.FCC_HASH_VALUE || process.env.VITE_FCC_HASH_VALUE;
+    const baseUrl =
+      process.env.FCC_API_BASE_URL ||
+      process.env.VITE_FCC_API_BASE_URL ||
+      "https://broadbandmap.fcc.gov/api/public/map";
 
-    if (!response.ok) {
-      const text = await response.text();
-
+    if (!username || !hashValue) {
       return res.json({
         source: "mock",
-        message: "FCC unauthorized or unavailable. Returned ConnectIQ fallback providers.",
-        fccStatus: response.status,
-        fccDetails: text,
+        message: "FCC credentials missing. Returned ConnectIQ fallback providers.",
         providers: MOCK_PROVIDERS,
       });
     }
 
-    const data = await response.json();
+    const response = await fetch(`${baseUrl}/listAsOfDates`, {
+      method: "GET",
+      headers: {
+        username,
+        hash_value: hashValue,
+      },
+    });
 
-    res.json({
-      address: { street, city, state, zip },
-      source: "fcc",
-      raw: data,
-      providers: [
-        {
-          id: "fcc-test",
-          name: "FCC API Connected",
-          technology: "Live API",
-          download: 0,
-          upload: 0,
-        },
-      ],
+    if (!response.ok) {
+      const details = await response.text();
+
+      console.warn("FCC API unavailable:", response.status, details);
+
+      return res.json({
+        source: "mock",
+        message: "FCC unavailable. Returned ConnectIQ fallback providers.",
+        fccStatus: response.status,
+        providers: MOCK_PROVIDERS,
+      });
+    }
+
+    return res.json({
+      source: "fcc-connected",
+      message: "FCC API connection successful. Provider mapping is next.",
+      providers: MOCK_PROVIDERS,
     });
   } catch (error) {
-    console.error("FCC lookup error:", error);
+    console.warn("FCC lookup failed:", error.message);
 
-    res.status(500).json({
-      error: "Internal server error.",
+    return res.json({
+      source: "mock",
+      message: "FCC lookup failed. Returned ConnectIQ fallback providers.",
+      providers: MOCK_PROVIDERS,
     });
   }
 });
