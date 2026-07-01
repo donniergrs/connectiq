@@ -231,4 +231,52 @@ td{
     min-height:100vh;
     font-size:24px;
     font-weight:700;
+}.page-subtitle {
+  margin-top: 8px;
+  color: #64748b;
+}
+
+.results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+  margin-top: 25px;
+}
+
+.results-grid .card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.results-grid .card strong {
+  color: #2563eb;
+  font-size: 20px;
+}
+
+.results-grid .card span {
+  font-size: 16px;
+  color: #64748b;
+}
+
+.loading-box {
+  margin-top: 25px;
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  font-weight: 700;
+}
+
+.lookup-summary {
+  margin-top: 30px;
+}.lookup-layout {
+  display: grid;
+  grid-template-columns: minmax(360px, 520px) 1fr;
+  gap: 30px;
+  align-items: start;
+  margin-top: 30px;
+}
+
+.lookup-results {
+  min-height: 300px;
 }
