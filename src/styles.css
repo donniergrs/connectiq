@@ -1362,7 +1362,7 @@ td{
     grid-template-columns: 1fr;
   }
 }
-cat >> src/styles.css <<'EOF'
+
 
 /* Sprint 5C Address Autocomplete */
 .verified-address {
@@ -1378,7 +1378,7 @@ cat >> src/styles.css <<'EOF'
   border-radius: 999px;
   font-weight: 900;
 }
-EOF
+
 .score-badge {
   display: inline-flex;
   margin-top: 14px;
