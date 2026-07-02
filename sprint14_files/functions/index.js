@@ -127,7 +127,7 @@ function rankProviders(providers = []) {
 async function geocodeAddress(address) {
   const query = encodeURIComponent(address);
   const url = `https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=${query}&benchmark=Public_AR_Current&format=json`;
-  const response = await fetchWithTimeout(url, {}, 20000);
+  const response = await fetchWithTimeout(url, {}, 10000);
   if (!response.ok) throw new Error(`Census geocoder failed with ${response.status}`);
   const data = await response.json();
   const match = data?.result?.addressMatches?.[0];
@@ -142,7 +142,7 @@ async function geocodeAddress(address) {
   };
 }
 
-async function getFccAsOfDates(timeoutMs = 20000) {
+async function getFccAsOfDates(timeoutMs = 12000) {
   const { baseUrl } = getFccConfig();
   const response = await fetchWithTimeout(`${baseUrl}/listAsOfDates`, { method: "GET", headers: buildHeaders("underscore") }, timeoutMs);
   const body = await readBody(response);
@@ -418,7 +418,7 @@ function chooseBestFccAddressMatch(matches = [], requestedAddress = "") {
 
 async function searchFccFabricAddress(address, fabricId = DEFAULT_FABRIC_ID) {
   const url = `${FCC_FABRIC_BASE}/address/${fabricId}/${encodeURIComponent(address)}`;
-  const response = await fetchWithTimeout(url, { method: "GET", headers: buildHeaders("underscore") }, 20000);
+  const response = await fetchWithTimeout(url, { method: "GET", headers: buildHeaders("underscore") }, 12000);
   const body = await readBody(response);
 
   if (!response.ok) {
@@ -442,7 +442,7 @@ async function searchFccFabricAddress(address, fabricId = DEFAULT_FABRIC_ID) {
 
 async function getFccFabricDetail(locationId, fabricId = DEFAULT_FABRIC_ID, fabricVintage = DEFAULT_FABRIC_VINTAGE) {
   const url = `${FCC_FABRIC_BASE}/detail/${fabricId}/${locationId}?fabric_vintage=${encodeURIComponent(fabricVintage)}`;
-  const response = await fetchWithTimeout(url, { method: "GET", headers: buildHeaders("underscore") }, 20000);
+  const response = await fetchWithTimeout(url, { method: "GET", headers: buildHeaders("underscore") }, 12000);
   const body = await readBody(response);
 
   if (!response.ok) {
