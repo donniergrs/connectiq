@@ -11,6 +11,7 @@ export default function Sidebar() {
       <nav>
         <NavLink to="/admin" end>Command Center</NavLink>
         <NavLink to="/admin/leads">Leads</NavLink>
+        <NavLink to="/admin/fcc-lookup">FCC Lookup</NavLink>
         <NavLink to="/admin/carriers">Carrier Intelligence</NavLink>
         <NavLink to="/availability">Public Lookup</NavLink>
       </nav>
