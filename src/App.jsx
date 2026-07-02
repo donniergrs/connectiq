@@ -15,6 +15,7 @@ import Contact from "./pages/Contact";
 import Dashboard from "./pages/Dashboard";
 import CarrierDatabase from "./pages/CarrierDatabase";
 import FccLookup from "./pages/FccLookup";
+import FccExplorer from "./pages/FccExplorer";
 import LeadDetail from "./pages/LeadDetail";
 import Leads from "./pages/Leads";
 import Login from "./pages/Login";
@@ -44,6 +45,7 @@ export default function App() {
           <Route index element={<Dashboard />} />
           <Route path="carriers" element={<CarrierDatabase />} />
           <Route path="fcc-lookup" element={<FccLookup />} />
+          <Route path="fcc-explorer" element={<FccExplorer />} />
           <Route path="leads" element={<Leads />} />
           <Route path="leads/:leadId" element={<LeadDetail />} />
         </Route>

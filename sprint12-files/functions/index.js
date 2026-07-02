@@ -281,25 +281,6 @@ app.post("/api/fcc/explore", async (req, res) => {
   }
 });
 
-
-app.post("/api/fcc/explorer", async (req, res) => {
-  const { address = "", limit = 13 } = req.body || {};
-
-  return res.json({
-    ok: true,
-    source: "endpoint-explorer",
-    message: "Explorer route is active. FCC provider endpoint mapping still requires final candidate testing.",
-    address,
-    limit,
-    candidatesTested: [],
-    providers: [],
-    notes: [
-      "Backend explorer route is now connected.",
-      "Next step is testing FCC provider endpoint candidates."
-    ]
-  });
-});
-
 app.post("/api/fcc/lookup", async (req, res) => {
   const address = req.body?.address || req.body?.street || req.body?.full || "";
   const notes = [];
