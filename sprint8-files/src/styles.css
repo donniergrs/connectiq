@@ -1772,35 +1772,3 @@ EOF
     font-size: 36px;
   }
 }
-
-/* Sprint 8 layout fix */
-.app-shell {
-  min-height: 100vh;
-  display: grid;
-  grid-template-columns: 320px 1fr;
-  background: #f3f6fb;
-}
-
-.app-shell > aside,
-.sidebar {
-  min-height: 100vh;
-}
-
-.main-panel {
-  min-width: 0;
-  background: #f3f6fb;
-}
-
-.content {
-  padding: 36px;
-}
-
-@media (max-width: 900px) {
-  .app-shell {
-    grid-template-columns: 1fr;
-  }
-
-  .content {
-    padding: 22px;
-  }
-}

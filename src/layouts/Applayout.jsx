@@ -4,13 +4,11 @@ import Navbar from "../components/Navbar";
 
 export default function AppLayout() {
   return (
-    <div className="layout">
+    <div className="app-shell">
       <Sidebar />
-
-      <div className="content">
+      <div className="main-panel">
         <Navbar />
-
-        <main className="page">
+        <main className="content">
           <Outlet />
         </main>
       </div>
