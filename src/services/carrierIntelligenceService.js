@@ -1,30 +1,56 @@
-import { carrierProfiles, findCarrierProfile } from "../data/carrierIntelligence";
+import { findCarrierProfile } from "../data/carrierIntelligence";
+
+const DEFAULT_REVENUE_WEIGHT = 0.7;
+const DEFAULT_CUSTOMER_WEIGHT = 0.3;
 
 function technologyScore(technology = "") {
   const tech = technology.toLowerCase();
 
-  if (tech.includes("fiber")) return 45;
-  if (tech.includes("cable")) return 30;
-  if (tech.includes("fixed wireless")) return 18;
-  if (tech.includes("dsl")) return 8;
-  if (tech.includes("satellite")) return 2;
+  if (tech.includes("fiber")) return 100;
+  if (tech.includes("cable")) return 72;
+  if (tech.includes("fixed wireless")) return 55;
+  if (tech.includes("dsl")) return 35;
+  if (tech.includes("satellite")) return 20;
 
-  return 10;
+  return 40;
 }
 
-export function enrichProvider(provider = {}) {
-  const profile = findCarrierProfile(provider.name || provider.brandName || provider.providerName);
+function calculateCustomerScore(provider = {}) {
   const download = Number(provider.download || provider.maxdown || 0);
   const upload = Number(provider.upload || provider.maxup || 0);
   const technology = provider.technology || provider.technologyType || "Broadband";
 
-  let advisorScore = 30;
-  advisorScore += technologyScore(technology);
-  if (download >= 1000) advisorScore += 10;
-  if (upload >= 1000) advisorScore += 10;
-  if (provider.lowLatency) advisorScore += 6;
-  if (profile?.dsiSupported) advisorScore += 8;
-  advisorScore += profile?.scoreBoost || 0;
+  let score = 0;
+  score += technologyScore(technology) * 0.45;
+  score += Math.min(download / 50, 25);
+  score += Math.min(upload / 50, 20);
+  if (provider.lowLatency) score += 10;
+
+  return Math.max(0, Math.min(100, Math.round(score)));
+}
+
+function calculateRevenueScore(profile = {}) {
+  const residential = Number(profile?.commissionResidential || 0);
+  const business = Number(profile?.commissionBusiness || 0);
+
+  let score = 0;
+  score += Math.min(residential / 2, 45);
+  score += Math.min(business / 5, 35);
+  if (profile?.dsiSupported) score += 15;
+  if (profile?.scoreBoost) score += profile.scoreBoost;
+
+  return Math.max(0, Math.min(100, Math.round(score)));
+}
+
+export function enrichProvider(provider = {}) {
+  const profile = findCarrierProfile(provider.name || provider.brandName || provider.providerName);
+  const customerScore = calculateCustomerScore(provider);
+  const revenueScore = calculateRevenueScore(profile);
+
+  const advisorScore = Math.round(
+    revenueScore * DEFAULT_REVENUE_WEIGHT +
+    customerScore * DEFAULT_CUSTOMER_WEIGHT
+  );
 
   return {
     ...provider,
@@ -35,13 +61,19 @@ export function enrichProvider(provider = {}) {
     commissionBusiness: profile?.commissionBusiness || 0,
     installEta: profile?.installEta || "Unknown",
     promotion: profile?.promotion || "No promotion loaded",
-    advisorScore: Math.max(0, Math.min(100, Math.round(advisorScore))),
+    revenueScore,
+    customerScore,
+    advisorScore,
+    recommendationWeights: {
+      revenue: 70,
+      customer: 30,
+    },
   };
 }
 
 export function rankCarrierOptions(providers = []) {
   return providers.map(enrichProvider).sort((a, b) => {
-    return b.advisorScore - a.advisorScore || Number(b.download || 0) - Number(a.download || 0);
+    return b.advisorScore - a.advisorScore || b.revenueScore - a.revenueScore;
   });
 }
 

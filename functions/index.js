@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import fetch from "node-fetch";
+import { lookupStaticFccAvailability, getStaticFccStatus } from "./services/staticFccAvailability.js";
 
 dotenv.config();
 
@@ -554,26 +555,45 @@ async function lookupLiveFccProviders(address) {
 }
 
 
+
+app.get("/api/fcc/static-status", (req, res) => {
+  res.json(getStaticFccStatus());
+});
+
 app.post("/api/fcc/lookup", async (req, res) => {
   const address = req.body?.address || req.body?.street || req.body?.full || "";
 
   try {
-    const result = await lookupLiveFccProviders(address);
-    return res.json(result);
-  } catch (error) {
-    console.error("Live FCC lookup failed:", error);
+    const staticResult = lookupStaticFccAvailability(address);
+
+    if (staticResult.ok && staticResult.providers?.length) {
+      return res.json(staticResult);
+    }
 
     return res.json({
-      ok: false,
-      source: "fcc-live-error",
-      message: error.message || "Live FCC lookup failed.",
+      ok: true,
+      source: "connectiq-no-static-match",
+      message: "No local FCC static record matched this address yet. Add this location to functions/data/fccStaticAvailability.json from the FCC export.",
       address,
       providerCount: 0,
       providers: [],
       notes: [
-        "Live FCC provider lookup failed. Check address, FCC fabric ID, and backend logs.",
-        error.message || "Unknown error",
+        staticResult.message || "No static FCC match found.",
+        "The FCC website detail endpoint requires browser session cookies, so ConnectIQ now uses a stable local FCC static dataset.",
+        "Add this address/location to the static FCC dataset to return real provider recommendations."
       ],
+      staticStatus: staticResult.status || getStaticFccStatus(),
+    });
+  } catch (error) {
+    console.error("Static FCC lookup failed:", error);
+    return res.status(500).json({
+      ok: false,
+      source: "fcc-static-error",
+      message: error.message || "Static FCC lookup failed.",
+      address,
+      providerCount: 0,
+      providers: [],
+      notes: [error.message || "Unknown static FCC lookup error"],
     });
   }
 });
