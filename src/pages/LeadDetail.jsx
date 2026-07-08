@@ -59,6 +59,19 @@ export default function LeadDetail() {
     await updateDoc(doc(db, "leads", leadId), {
       recommendedProvider: bestProvider.displayName || bestProvider.name,
       recommendationAccepted: true,
+      recommendedAt: new Date().toISOString(),
+      recommendationHistory: arrayUnion({
+        provider: bestProvider.displayName || bestProvider.name,
+        product: bestProvider.revenueProduct?.productName || "",
+        advisorScore: bestProvider.advisorScore || 0,
+        revenueScore: bestProvider.revenueScore || 0,
+        customerScore: bestProvider.customerScore || 0,
+        annualRevenueOpportunity: bestProvider.annualRevenueOpportunity || 0,
+        commission: bestProvider.revenueProduct?.commission || bestProvider.commissionResidential || 0,
+        spiff: bestProvider.revenueProduct?.spiff || 0,
+        accepted: true,
+        createdAt: new Date().toISOString(),
+      }),
       recommendationSnapshot: bestProvider,
       updatedAt: serverTimestamp(),
       activity: arrayUnion({
@@ -207,6 +220,24 @@ export default function LeadDetail() {
               </div>
             ))}
           </div>
+        </div>
+
+        <div className="sprint9-panel">
+          <span className="eyebrow">Recommendation History</span>
+          <h2>Accepted Recommendations</h2>
+          {lead.recommendationHistory?.length ? (
+            <div className="timeline sprint9-timeline">
+              {[...lead.recommendationHistory].reverse().map((item, index) => (
+                <div className="timeline-item" key={`${item.createdAt}-${index}`}>
+                  <strong>{item.provider}</strong>
+                  <p>{item.product || "Recommended carrier"} • Score {item.advisorScore}/100 • Revenue ${item.annualRevenueOpportunity}</p>
+                  <small>{new Date(item.createdAt).toLocaleString()}</small>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="empty-state">No accepted recommendations yet.</div>
+          )}
         </div>
 
         <div className="sprint9-panel">
