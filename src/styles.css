@@ -376,7 +376,17 @@ td{
 .provider-strip,
 .final-cta,
 .public-page {
-  padding: 70px 7%;
+    padding: 70px 7%;
+    color: #ffffff;
+}
+
+.public-page h1,
+.public-page h2,
+.public-page h3,
+.public-page p,
+.public-page li,
+.public-page a {
+    color: #ffffff;
 }
 
 .public-section h2,
