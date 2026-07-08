@@ -2666,3 +2666,133 @@ td{
   color: #0f172a;
   font-weight: 900;
 }
+
+/* Sprint 17 Carrier Intelligence Dashboard */
+.sprint17-recommendation {
+  margin: 28px 0;
+  padding: 32px;
+  border-radius: 30px;
+  background: linear-gradient(135deg, #020617, #0f172a 48%, #111827);
+  color: #fff;
+  box-shadow: 0 30px 90px rgba(2, 6, 23, .28);
+  border: 1px solid rgba(148, 163, 184, .25);
+}
+
+.sprint17-recommendation .eyebrow {
+  color: #67e8f9;
+}
+
+.sprint17-rec-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  align-items: flex-start;
+  margin-top: 12px;
+}
+
+.sprint17-rec-header h2 {
+  color: #fff;
+  font-size: 38px;
+  letter-spacing: -.05em;
+  margin: 0;
+}
+
+.sprint17-rec-header p {
+  color: #cbd5e1;
+  margin-top: 8px;
+}
+
+.sprint17-score {
+  min-width: 120px;
+  text-align: center;
+  padding: 18px;
+  border-radius: 24px;
+  background: rgba(34, 197, 94, .16);
+  color: #bbf7d0;
+  font-size: 30px;
+  font-weight: 950;
+}
+
+.sprint17-score-grid,
+.sprint17-info-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-top: 24px;
+}
+
+.sprint17-score-grid div,
+.sprint17-info-grid div {
+  padding: 16px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, .08);
+  border: 1px solid rgba(255, 255, 255, .12);
+}
+
+.sprint17-score-grid strong {
+  display: block;
+  color: #fff;
+  font-size: 26px;
+}
+
+.sprint17-score-grid span,
+.sprint17-info-grid strong {
+  color: #94a3b8;
+  font-size: 12px;
+  text-transform: uppercase;
+  font-weight: 950;
+  letter-spacing: .06em;
+}
+
+.sprint17-info-grid span {
+  display: block;
+  margin-top: 6px;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 850;
+}
+
+.sprint17-why {
+  margin-top: 26px;
+  padding: 22px;
+  border-radius: 22px;
+  background: rgba(15, 23, 42, .8);
+}
+
+.sprint17-why h3 {
+  color: #fff;
+  margin-top: 0;
+}
+
+.sprint17-why ul {
+  margin: 12px 0 0;
+  padding-left: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+
+.sprint17-why li {
+  color: #dbeafe;
+  font-weight: 750;
+}
+
+.sprint17-recommend-button {
+  margin-top: 22px;
+  border: none;
+  border-radius: 999px;
+  padding: 14px 20px;
+  background: #2563eb;
+  color: white;
+  font-weight: 950;
+  cursor: pointer;
+}
+
+@media (max-width: 900px) {
+  .sprint17-rec-header,
+  .sprint17-score-grid,
+  .sprint17-info-grid {
+    grid-template-columns: 1fr;
+    flex-direction: column;
+  }
+}

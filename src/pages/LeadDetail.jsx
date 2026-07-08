@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { arrayUnion, doc, onSnapshot, serverTimestamp, updateDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import { formatCurrency, STATUS_FLOW } from "../services/providerIntelligence";
+import { summarizeCarrierOptions } from "../services/carrierIntelligenceService";
 
 export default function LeadDetail() {
   const { leadId } = useParams();
@@ -26,9 +27,12 @@ export default function LeadDetail() {
     });
   }, [leadId]);
 
-  const bestProvider = useMemo(() => {
-    return Array.isArray(lead?.providers) ? lead.providers[0] : null;
+  const carrierSummary = useMemo(() => {
+    return summarizeCarrierOptions(lead?.providers || []);
   }, [lead]);
+
+  const bestProvider = carrierSummary.best;
+  const activity = [...(lead?.activity || [])].reverse();
 
   async function saveLead() {
     await updateDoc(doc(db, "leads", leadId), {
@@ -49,9 +53,33 @@ export default function LeadDetail() {
     setTimeout(() => setSaved(false), 1800);
   }
 
-  if (!lead) return <section className="sprint9-page"><div className="sprint9-panel">Loading customer record...</div></section>;
+  async function acceptRecommendation() {
+    if (!bestProvider) return;
 
-  const activity = [...(lead.activity || [])].reverse();
+    await updateDoc(doc(db, "leads", leadId), {
+      recommendedProvider: bestProvider.displayName || bestProvider.name,
+      recommendationAccepted: true,
+      recommendationSnapshot: bestProvider,
+      updatedAt: serverTimestamp(),
+      activity: arrayUnion({
+        type: "Recommendation Accepted",
+        status,
+        note: `Advisor accepted ConnectIQ recommendation: ${bestProvider.displayName || bestProvider.name}`,
+        createdAt: new Date().toISOString(),
+      }),
+    });
+
+    setSaved(true);
+    setTimeout(() => setSaved(false), 1800);
+  }
+
+  if (!lead) {
+    return (
+      <section className="sprint9-page">
+        <div className="sprint9-panel">Loading customer record...</div>
+      </section>
+    );
+  }
 
   return (
     <section className="sprint9-page">
@@ -69,23 +97,59 @@ export default function LeadDetail() {
         </div>
       </div>
 
-      <div className="sprint9-grid-two workspace-grid">
-        <div className="sprint9-panel recommendation-focus">
-          <span className="eyebrow">ConnectIQ Recommendation</span>
-          <h2>{bestProvider?.name || lead.recommendedProvider || "Pending Recommendation"}</h2>
-          {bestProvider && <div className="big-score">{bestProvider.score || 95}/100</div>}
-          <p>{bestProvider?.connectIqRecommendation || "Best available match based on customer priority and provider intelligence."}</p>
-          <div className="recommendation-meta">
-            <span>{bestProvider?.technology || "Technology pending"}</span>
-            <span>{bestProvider?.download || "—"} Mbps down</span>
-            <span>{bestProvider?.upload || "—"} Mbps up</span>
-            <span>{formatCurrency(bestProvider?.commission || 175)} est. commission</span>
-          </div>
-          <ul className="reason-list">
-            {(bestProvider?.reasons || []).map((reason) => <li key={reason}>✓ {reason}</li>)}
-          </ul>
-        </div>
+      <div className="sprint17-recommendation">
+        <span className="eyebrow">ConnectIQ Revenue Recommendation</span>
 
+        {bestProvider ? (
+          <>
+            <div className="sprint17-rec-header">
+              <div>
+                <h2>🥇 {bestProvider.displayName || bestProvider.name}</h2>
+                <p>{bestProvider.revenueProduct?.productName || "Best available product"}</p>
+              </div>
+              <div className="sprint17-score">{bestProvider.advisorScore}/100</div>
+            </div>
+
+            <div className="sprint17-score-grid">
+              <Score label="Overall" value={bestProvider.advisorScore} />
+              <Score label="Revenue" value={bestProvider.revenueScore} />
+              <Score label="Customer" value={bestProvider.customerScore} />
+              <Score label="Weighting" value="70/30" />
+            </div>
+
+            <div className="sprint17-info-grid">
+              <Info label="Commission" value={formatCurrency(bestProvider.revenueProduct?.commission || bestProvider.commissionResidential || 0)} />
+              <Info label="SPIFF" value={formatCurrency(bestProvider.revenueProduct?.spiff || 0)} />
+              <Info label="Residual" value={`${formatCurrency(bestProvider.revenueProduct?.residualMonthly || 0)}/mo`} />
+              <Info label="Annual Revenue" value={formatCurrency(bestProvider.annualRevenueOpportunity || 0)} />
+              <Info label="Technology" value={bestProvider.technology || "—"} />
+              <Info label="Speed" value={`${bestProvider.download || "—"} / ${bestProvider.upload || "—"} Mbps`} />
+              <Info label="Install ETA" value={bestProvider.installEta || "Unknown"} />
+              <Info label="Promotion" value={bestProvider.revenueProduct?.promotion || bestProvider.promotion || "Verify current promo"} />
+            </div>
+
+            <div className="sprint17-why">
+              <h3>Why ConnectIQ recommends this carrier</h3>
+              <ul>
+                {bestProvider.revenueScore >= 80 && <li>✓ Strongest revenue opportunity</li>}
+                {bestProvider.annualRevenueOpportunity > 0 && <li>✓ {formatCurrency(bestProvider.annualRevenueOpportunity)} estimated first-year revenue</li>}
+                {bestProvider.dsiSupported && <li>✓ DSI supported carrier</li>}
+                {String(bestProvider.technology).toLowerCase().includes("fiber") && <li>✓ Fiber available at this address</li>}
+                {bestProvider.customerScore >= 80 && <li>✓ Strong customer fit based on speed and technology</li>}
+              </ul>
+            </div>
+
+            <button className="sprint17-recommend-button" onClick={acceptRecommendation}>
+              Recommend Carrier
+            </button>
+            {saved && <div className="save-success">Saved successfully.</div>}
+          </>
+        ) : (
+          <p>No provider recommendation available yet.</p>
+        )}
+      </div>
+
+      <div className="sprint9-grid-two workspace-grid">
         <div className="sprint9-panel">
           <span className="eyebrow">Customer</span>
           <div className="detail-list sprint9-detail-list">
@@ -97,9 +161,7 @@ export default function LeadDetail() {
             <div><strong>Follow Up</strong><span>{lead.followUpDate || "Not set"}</span></div>
           </div>
         </div>
-      </div>
 
-      <div className="sprint9-grid-two workspace-grid">
         <div className="sprint9-panel">
           <span className="eyebrow">Advisor Workflow</span>
           <h2>Update Lead</h2>
@@ -116,10 +178,35 @@ export default function LeadDetail() {
           <textarea className="admin-textarea" value={advisorNotes} onChange={(e) => setAdvisorNotes(e.target.value)} placeholder="Customer objections, current provider, desired speed, next steps..." />
 
           <label>Activity Note</label>
-          <input className="admin-input" value={activityNote} onChange={(e) => setActivityNote(e.target.value)} placeholder="Example: Called customer and discussed Lumos Fiber" />
+          <input className="admin-input" value={activityNote} onChange={(e) => setActivityNote(e.target.value)} placeholder="Example: Called customer and discussed provider options" />
 
           <button className="admin-save-button" onClick={saveLead}>Save Workspace</button>
           {saved && <div className="save-success">Saved successfully.</div>}
+        </div>
+      </div>
+
+      <div className="sprint9-grid-two workspace-grid">
+        <div className="sprint9-panel">
+          <span className="eyebrow">Other Carrier Options</span>
+          <h2>Ranked Providers</h2>
+          <div className="provider-intelligence-grid">
+            {carrierSummary.providers.slice(1).map((provider, index) => (
+              <div className="provider-intel-card" key={provider.id || provider.name}>
+                <div className="provider-intel-top">
+                  <h3>#{index + 2} {provider.displayName || provider.name}</h3>
+                  <span>{provider.advisorScore}/100</span>
+                </div>
+                <p>{provider.technology}</p>
+                <div className="provider-intel-stats">
+                  <div><strong>{provider.revenueScore}</strong><span>Revenue</span></div>
+                  <div><strong>{provider.customerScore}</strong><span>Customer</span></div>
+                  <div><strong>{formatCurrency(provider.annualRevenueOpportunity || 0)}</strong><span>Annual Rev</span></div>
+                  <div><strong>{provider.download || "—"}</strong><span>Mbps Down</span></div>
+                </div>
+                <small>{provider.revenueProduct?.promotion || provider.promotion || "Advisor should verify current promo."}</small>
+              </div>
+            ))}
+          </div>
         </div>
 
         <div className="sprint9-panel">
@@ -138,29 +225,24 @@ export default function LeadDetail() {
           )}
         </div>
       </div>
-
-      <div className="sprint9-panel">
-        <span className="eyebrow">Carrier Intelligence</span>
-        <h2>Available Providers</h2>
-        <div className="provider-intelligence-grid">
-          {(lead.providers || []).map((provider) => (
-            <div className="provider-intel-card" key={provider.id || provider.name}>
-              <div className="provider-intel-top">
-                <h3>{provider.name}</h3>
-                <span>{provider.score || 80}/100</span>
-              </div>
-              <p>{provider.technology}</p>
-              <div className="provider-intel-stats">
-                <div><strong>{provider.download}</strong><span>Mbps Down</span></div>
-                <div><strong>{provider.upload}</strong><span>Mbps Up</span></div>
-                <div><strong>{provider.latencyMs || "—"}</strong><span>ms Latency</span></div>
-                <div><strong>{formatCurrency(provider.commission || 100)}</strong><span>Commission</span></div>
-              </div>
-              <small>{provider.promo || "Advisor should verify current promo."}</small>
-            </div>
-          ))}
-        </div>
-      </div>
     </section>
+  );
+}
+
+function Score({ label, value }) {
+  return (
+    <div>
+      <strong>{value}</strong>
+      <span>{label}</span>
+    </div>
+  );
+}
+
+function Info({ label, value }) {
+  return (
+    <div>
+      <strong>{label}</strong>
+      <span>{value}</span>
+    </div>
   );
 }
