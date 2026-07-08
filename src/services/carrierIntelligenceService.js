@@ -1,4 +1,5 @@
 import { findCarrierProfile } from "../data/carrierIntelligence";
+import { getBestRevenueProduct } from "../data/revenueIntelligence";
 
 const DEFAULT_REVENUE_WEIGHT = 0.7;
 const DEFAULT_CUSTOMER_WEIGHT = 0.3;
@@ -45,7 +46,15 @@ function calculateRevenueScore(profile = {}) {
 export function enrichProvider(provider = {}) {
   const profile = findCarrierProfile(provider.name || provider.brandName || provider.providerName);
   const customerScore = calculateCustomerScore(provider);
-  const revenueScore = calculateRevenueScore(profile);
+  const bestRevenueProduct = getBestRevenueProduct({
+    ...provider,
+    carrierProfileId: profile?.id,
+    displayName: profile?.brand,
+  });
+
+  const revenueScore = bestRevenueProduct
+    ? Math.min(100, Math.round(bestRevenueProduct.annualRevenueOpportunity / 5))
+    : calculateRevenueScore(profile);
 
   const advisorScore = Math.round(
     revenueScore * DEFAULT_REVENUE_WEIGHT +
@@ -61,6 +70,8 @@ export function enrichProvider(provider = {}) {
     commissionBusiness: profile?.commissionBusiness || 0,
     installEta: profile?.installEta || "Unknown",
     promotion: profile?.promotion || "No promotion loaded",
+    revenueProduct: bestRevenueProduct,
+    annualRevenueOpportunity: bestRevenueProduct?.annualRevenueOpportunity || 0,
     revenueScore,
     customerScore,
     advisorScore,
