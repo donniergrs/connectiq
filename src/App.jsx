@@ -20,10 +20,12 @@ import LeadDetail from "./pages/LeadDetail";
 import Leads from "./pages/Leads";
 import Login from "./pages/Login";
 
+import InternetAdvisor from "./pages/InternetAdvisor";
 export default function App() {
   return (
     <AuthProvider>
       <Routes>
+        <Route path="/internet" element={<InternetAdvisor />} />
         <Route element={<PublicLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="/availability" element={<AddressLookup />} />

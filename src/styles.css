@@ -2666,133 +2666,592 @@ td{
   color: #0f172a;
   font-weight: 900;
 }
-
-/* Sprint 17 Carrier Intelligence Dashboard */
-.sprint17-recommendation {
-  margin: 28px 0;
-  padding: 32px;
-  border-radius: 30px;
-  background: linear-gradient(135deg, #020617, #0f172a 48%, #111827);
-  color: #fff;
-  box-shadow: 0 30px 90px rgba(2, 6, 23, .28);
-  border: 1px solid rgba(148, 163, 184, .25);
+/* Demo fix: public page dark background text */
+.public-page,
+.public-page h1,
+.public-page h2,
+.public-page h3,
+.public-page p,
+.public-page span,
+.public-page div,
+.public-page li {
+  color: #ffffff !important;
 }
 
-.sprint17-recommendation .eyebrow {
-  color: #67e8f9;
+.public-page .muted,
+.public-page .subtext,
+.public-page .lead {
+  color: #cbd5e1 !important;
 }
 
-.sprint17-rec-header {
+.public-page .card,
+.public-page .feature-card,
+.public-page .business-card {
+  color: #0f172a !important;
+}
+
+.public-page .card p,
+.public-page .feature-card p,
+.public-page .business-card p {
+  color: #475569 !important;
+}/* Sprint 19 Advisor Task Center */
+.sprint19-hero {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   gap: 24px;
-  align-items: flex-start;
-  margin-top: 12px;
+  padding: 42px;
+  border-radius: 30px;
+  background: linear-gradient(135deg, #101a44, #06111f 55%, #103c47);
+  color: white;
+  box-shadow: 0 24px 80px rgba(15, 23, 42, .18);
+  margin-bottom: 24px;
 }
 
-.sprint17-rec-header h2 {
-  color: #fff;
-  font-size: 38px;
+.sprint19-hero h1 {
+  color: white;
+  font-size: 42px;
   letter-spacing: -.05em;
+  margin: 8px 0;
+}
+
+.sprint19-hero p {
+  color: #dbeafe;
   margin: 0;
 }
 
-.sprint17-rec-header p {
-  color: #cbd5e1;
-  margin-top: 8px;
+.sprint19-metrics {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
 }
 
-.sprint17-score {
-  min-width: 120px;
-  text-align: center;
-  padding: 18px;
-  border-radius: 24px;
-  background: rgba(34, 197, 94, .16);
-  color: #bbf7d0;
+.sprint19-metric {
+  position: relative;
+  overflow: hidden;
+  padding: 22px;
+  border-radius: 22px;
+  background: #fff;
+  box-shadow: 0 18px 60px rgba(15, 23, 42, .08);
+  border: 1px solid #dbe5f3;
+}
+
+.sprint19-metric span {
+  display: block;
+  color: #64748b;
+  font-weight: 900;
+  font-size: 13px;
+}
+
+.sprint19-metric strong {
+  display: block;
+  margin-top: 12px;
+  color: #2563eb;
   font-size: 30px;
   font-weight: 950;
 }
 
-.sprint17-score-grid,
-.sprint17-info-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
-  margin-top: 24px;
+.sprint19-metric.is-money strong {
+  color: #16a34a;
 }
 
-.sprint17-score-grid div,
-.sprint17-info-grid div {
+.sprint19-metric.is-danger strong {
+  color: #dc2626;
+}
+
+.sprint19-metric.is-today strong {
+  color: #f59e0b;
+}
+
+.sprint19-grid {
+  display: grid;
+  grid-template-columns: 1.2fr .8fr;
+  gap: 22px;
+  margin-bottom: 24px;
+}
+
+.sprint19-panel {
+  padding: 28px;
+  border-radius: 24px;
+  background: white;
+  border: 1px solid #dbe5f3;
+  box-shadow: 0 20px 70px rgba(15, 23, 42, .08);
+}
+
+.sprint19-focus {
+  background: linear-gradient(180deg, #ffffff, #f8fbff);
+}
+
+.sprint19-opportunity-list,
+.sprint19-task-list {
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.sprint19-opportunity {
+  display: grid;
+  grid-template-columns: 48px 1fr auto auto;
+  align-items: center;
+  gap: 16px;
   padding: 16px;
   border-radius: 18px;
-  background: rgba(255, 255, 255, .08);
-  border: 1px solid rgba(255, 255, 255, .12);
+  background: #f8fafc;
+  border: 1px solid #dbe5f3;
 }
 
-.sprint17-score-grid strong {
-  display: block;
-  color: #fff;
-  font-size: 26px;
-}
-
-.sprint17-score-grid span,
-.sprint17-info-grid strong {
-  color: #94a3b8;
-  font-size: 12px;
-  text-transform: uppercase;
-  font-weight: 950;
-  letter-spacing: .06em;
-}
-
-.sprint17-info-grid span {
-  display: block;
-  margin-top: 6px;
-  color: #fff;
-  font-size: 16px;
-  font-weight: 850;
-}
-
-.sprint17-why {
-  margin-top: 26px;
-  padding: 22px;
-  border-radius: 22px;
-  background: rgba(15, 23, 42, .8);
-}
-
-.sprint17-why h3 {
-  color: #fff;
-  margin-top: 0;
-}
-
-.sprint17-why ul {
-  margin: 12px 0 0;
-  padding-left: 0;
-  list-style: none;
+.sprint19-rank {
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
   display: grid;
-  gap: 8px;
+  place-items: center;
+  background: #dbeafe;
+  color: #1d4ed8;
+  font-weight: 950;
 }
 
-.sprint17-why li {
-  color: #dbeafe;
-  font-weight: 750;
+.sprint19-opportunity strong,
+.sprint19-task strong {
+  display: block;
+  color: #0f172a;
 }
 
-.sprint17-recommend-button {
-  margin-top: 22px;
-  border: none;
+.sprint19-opportunity span,
+.sprint19-task span {
+  display: block;
+  color: #334155;
+  margin-top: 3px;
+}
+
+.sprint19-opportunity small,
+.sprint19-task small {
+  display: block;
+  color: #64748b;
+  margin-top: 3px;
+}
+
+.sprint19-money {
+  font-size: 20px;
+  color: #16a34a;
+  font-weight: 950;
+}
+
+.sprint19-mini-button {
+  display: inline-flex;
+  padding: 10px 14px;
   border-radius: 999px;
-  padding: 14px 20px;
   background: #2563eb;
   color: white;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.sprint19-task {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px;
+  border-radius: 18px;
+  background: #f8fafc;
+  border: 1px solid #dbe5f3;
+  text-decoration: none;
+}
+
+.sprint19-task.is-overdue {
+  background: #fff1f2;
+  border-color: #fecdd3;
+}
+
+.sprint19-task.is-overdue strong {
+  color: #dc2626;
+}
+
+@media (max-width: 1100px) {
+  .sprint19-metrics,
+  .sprint19-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sprint19-opportunity {
+    grid-template-columns: 1fr;
+  }
+
+  .sprint19-hero {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* Mission 001 v1 — Autonomous Sales Funnel */
+.mission001-page {
+  min-height: 100vh;
+  padding: 72px 6% 90px;
+  background:
+    radial-gradient(circle at 15% 5%, rgba(37, 99, 235, .22), transparent 30%),
+    radial-gradient(circle at 85% 20%, rgba(6, 182, 212, .15), transparent 25%),
+    #050b18;
+  color: #fff;
+}
+
+.mission001-hero {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: .9fr 1.1fr;
+  gap: 54px;
+  align-items: start;
+}
+
+.mission001-copy {
+  padding-top: 52px;
+}
+
+.mission001-kicker {
+  color: #67e8f9;
+  text-transform: uppercase;
+  font-size: 13px;
+  font-weight: 950;
+  letter-spacing: .09em;
+}
+
+.mission001-copy h1 {
+  margin: 15px 0 20px;
+  color: #fff;
+  font-size: clamp(48px, 6vw, 78px);
+  line-height: .98;
+  letter-spacing: -.06em;
+}
+
+.mission001-copy p {
+  color: #cbd5e1;
+  font-size: 19px;
+  line-height: 1.7;
+  max-width: 640px;
+}
+
+.mission001-trust {
+  display: grid;
+  gap: 12px;
+  margin-top: 30px;
+  color: #dbeafe;
+  font-weight: 800;
+}
+
+.mission001-advisor {
+  overflow: hidden;
+  border-radius: 30px;
+  background: #fff;
+  color: #0f172a;
+  border: 1px solid rgba(255,255,255,.16);
+  box-shadow: 0 35px 110px rgba(0, 0, 0, .35);
+}
+
+.mission001-advisor-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 21px 24px;
+  background: linear-gradient(135deg, #0f172a, #1e3a8a);
+  color: #fff;
+}
+
+.mission001-advisor-header strong,
+.mission001-advisor-header span {
+  display: block;
+}
+
+.mission001-advisor-header span {
+  margin-top: 3px;
+  color: #bbf7d0;
+  font-size: 12px;
+}
+
+.mission001-live-dot {
+  width: 13px;
+  height: 13px;
+  border-radius: 999px;
+  background: #22c55e;
+  box-shadow: 0 0 0 7px rgba(34, 197, 94, .16);
+}
+
+.mission001-chat {
+  max-height: 290px;
+  overflow-y: auto;
+  display: grid;
+  gap: 12px;
+  padding: 24px;
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.mission001-message {
+  max-width: 84%;
+  padding: 13px 16px;
+  border-radius: 17px;
+  line-height: 1.55;
+  font-weight: 650;
+}
+
+.mission001-message.is-advisor {
+  justify-self: start;
+  background: #e0ecff;
+  color: #1e3a8a;
+  border-bottom-left-radius: 5px;
+}
+
+.mission001-message.is-customer {
+  justify-self: end;
+  background: #0f172a;
+  color: white;
+  border-bottom-right-radius: 5px;
+}
+
+.mission001-form,
+.mission001-question,
+.mission001-order {
+  padding: 24px;
+}
+
+.mission001-form label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 900;
+}
+
+.mission001-inline,
+.mission001-question {
+  display: flex;
+  gap: 10px;
+}
+
+.mission001-form input,
+.mission001-question input,
+.mission001-order input {
+  width: 100%;
+  min-width: 0;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  color: #0f172a;
+  font: inherit;
+}
+
+.mission001-form button,
+.mission001-question button,
+.mission001-order button {
+  border: 0;
+  border-radius: 14px;
+  padding: 14px 18px;
+  background: #2563eb;
+  color: #fff;
   font-weight: 950;
   cursor: pointer;
 }
 
-@media (max-width: 900px) {
-  .sprint17-rec-header,
-  .sprint17-score-grid,
-  .sprint17-info-grid {
+.mission001-form button:disabled,
+.mission001-order button:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+}
+
+.mission001-recommendation {
+  margin: 24px 24px 0;
+  padding: 23px;
+  border-radius: 22px;
+  background: linear-gradient(145deg, #06132a, #102a5e);
+  color: #fff;
+}
+
+.mission001-recommendation > span {
+  color: #67e8f9;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 950;
+  letter-spacing: .08em;
+}
+
+.mission001-rec-title {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  margin-top: 10px;
+}
+
+.mission001-rec-title h2 {
+  color: #fff;
+  margin: 0;
+  font-size: 30px;
+}
+
+.mission001-rec-title p {
+  margin: 6px 0 0;
+  color: #cbd5e1;
+}
+
+.mission001-rec-title > strong {
+  align-self: flex-start;
+  padding: 11px 13px;
+  border-radius: 14px;
+  color: #bbf7d0;
+  background: rgba(34, 197, 94, .18);
+  white-space: nowrap;
+}
+
+.mission001-specs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.mission001-specs div {
+  padding: 13px;
+  border-radius: 15px;
+  background: rgba(255,255,255,.08);
+}
+
+.mission001-specs strong,
+.mission001-specs span {
+  display: block;
+}
+
+.mission001-specs strong {
+  font-size: 18px;
+}
+
+.mission001-specs span {
+  margin-top: 4px;
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 850;
+}
+
+.mission001-offer {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255,255,255,.13);
+}
+
+.mission001-offer strong,
+.mission001-offer span {
+  display: block;
+}
+
+.mission001-offer span {
+  margin-top: 5px;
+  color: #cbd5e1;
+}
+
+.mission001-question {
+  padding-bottom: 0;
+}
+
+.mission001-order {
+  margin: 24px;
+  border-radius: 22px;
+  background: #f8fafc;
+  border: 1px solid #dbe5f3;
+}
+
+.mission001-order h3 {
+  margin: 7px 0;
+  font-size: 25px;
+}
+
+.mission001-order p {
+  color: #64748b;
+  line-height: 1.55;
+}
+
+.mission001-customer-grid {
+  display: grid;
+  gap: 10px;
+  margin: 18px 0 12px;
+}
+
+.mission001-order > button {
+  width: 100%;
+}
+
+.mission001-success {
+  margin: 24px;
+  padding: 28px;
+  border-radius: 22px;
+  background: #ecfdf5;
+  border: 1px solid #bbf7d0;
+  color: #14532d;
+}
+
+.mission001-success h2 {
+  color: #14532d;
+}
+
+.mission001-success span {
+  color: #15803d;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 950;
+  letter-spacing: .08em;
+}
+
+.mission001-how {
+  max-width: 1280px;
+  margin: 52px auto 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.mission001-how div {
+  padding: 26px;
+  border-radius: 22px;
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.1);
+}
+
+.mission001-how > div > span {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border-radius: 13px;
+  background: #2563eb;
+  font-weight: 950;
+}
+
+.mission001-how h3 {
+  color: #fff;
+  margin: 15px 0 8px;
+}
+
+.mission001-how p {
+  color: #94a3b8;
+  line-height: 1.6;
+}
+
+@media (max-width: 960px) {
+  .mission001-page {
+    padding: 34px 4% 60px;
+  }
+
+  .mission001-hero,
+  .mission001-how {
     grid-template-columns: 1fr;
+  }
+
+  .mission001-copy {
+    padding-top: 10px;
+  }
+
+  .mission001-specs {
+    grid-template-columns: 1fr;
+  }
+
+  .mission001-inline,
+  .mission001-question {
     flex-direction: column;
   }
 }

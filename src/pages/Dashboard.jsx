@@ -4,6 +4,39 @@ import { Link } from "react-router-dom";
 import { db } from "../firebase";
 import { formatCurrency, STATUS_FLOW } from "../services/providerIntelligence";
 
+function leadRevenueOpportunity(lead) {
+  const best = Array.isArray(lead.providers) ? lead.providers[0] : null;
+  return Number(
+    lead.recommendationSnapshot?.annualRevenueOpportunity ||
+    best?.annualRevenueOpportunity ||
+    best?.revenueProduct?.annualRevenueOpportunity ||
+    best?.commission ||
+    175
+  );
+}
+
+function getLeadRecommendationName(lead) {
+  const best = Array.isArray(lead.providers) ? lead.providers[0] : null;
+  return (
+    lead.recommendationSnapshot?.displayName ||
+    lead.recommendationSnapshot?.name ||
+    lead.recommendedProvider ||
+    best?.displayName ||
+    best?.name ||
+    "Pending Recommendation"
+  );
+}
+
+function isDateToday(dateString) {
+  if (!dateString) return false;
+  return dateString === new Date().toISOString().slice(0, 10);
+}
+
+function isDateOverdue(dateString) {
+  if (!dateString) return false;
+  return dateString < new Date().toISOString().slice(0, 10);
+}
+
 export default function Dashboard() {
   const [leads, setLeads] = useState([]);
 
@@ -19,19 +52,20 @@ export default function Dashboard() {
     const todayLeads = leads.filter((lead) => lead.createdAt?.toDate?.()?.toDateString() === today);
     const newLeads = leads.filter((lead) => !lead.status || lead.status === "New Lead");
     const followUps = leads.filter((lead) => lead.followUpDate);
+    const dueToday = leads.filter((lead) => isDateToday(lead.followUpDate));
+    const overdue = leads.filter((lead) => isDateOverdue(lead.followUpDate));
     const sold = leads.filter((lead) => ["Sale Closed", "Sold", "Installed"].includes(lead.status));
-    const pipelineValue = leads.reduce((sum, lead) => {
-      const best = Array.isArray(lead.providers) ? lead.providers[0] : null;
-      return sum + Number(best?.commission || 175);
-    }, 0);
+    const revenueOpportunity = leads.reduce((sum, lead) => sum + leadRevenueOpportunity(lead), 0);
 
     return {
       total: leads.length,
       today: todayLeads.length,
       newLeads: newLeads.length,
       followUps: followUps.length,
+      dueToday: dueToday.length,
+      overdue: overdue.length,
       conversion: leads.length ? Math.round((sold.length / leads.length) * 100) : 0,
-      pipelineValue,
+      revenueOpportunity,
       sold: sold.length,
     };
   }, [leads]);
@@ -39,30 +73,113 @@ export default function Dashboard() {
   const providerCounts = useMemo(() => {
     const counts = {};
     leads.forEach((lead) => {
-      const provider = lead.recommendedProvider || "Unknown";
+      const provider = getLeadRecommendationName(lead);
       counts[provider] = (counts[provider] || 0) + 1;
     });
     return Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 5);
   }, [leads]);
 
+  const highestRevenueLeads = useMemo(() => {
+    return [...leads]
+      .map((lead) => ({
+        ...lead,
+        revenueOpportunity: leadRevenueOpportunity(lead),
+        recommendationName: getLeadRecommendationName(lead),
+      }))
+      .sort((a, b) => b.revenueOpportunity - a.revenueOpportunity)
+      .slice(0, 5);
+  }, [leads]);
+
+  const taskQueue = useMemo(() => {
+    return [...leads]
+      .filter((lead) => lead.followUpDate)
+      .map((lead) => ({
+        ...lead,
+        revenueOpportunity: leadRevenueOpportunity(lead),
+        recommendationName: getLeadRecommendationName(lead),
+        taskStatus: isDateOverdue(lead.followUpDate) ? "Overdue" : isDateToday(lead.followUpDate) ? "Due Today" : "Upcoming",
+      }))
+      .sort((a, b) => {
+        if (a.taskStatus === "Overdue" && b.taskStatus !== "Overdue") return -1;
+        if (a.taskStatus !== "Overdue" && b.taskStatus === "Overdue") return 1;
+        return String(a.followUpDate).localeCompare(String(b.followUpDate));
+      })
+      .slice(0, 8);
+  }, [leads]);
+
   return (
     <section className="sprint9-page">
-      <div className="sprint9-hero-card">
+      <div className="sprint19-hero">
         <div>
-          <span className="eyebrow">Executive CRM</span>
+          <span className="eyebrow">Advisor Task Center</span>
           <h1>ConnectIQ Advisor Command Center</h1>
-          <p>Track lead flow, customer priorities, provider recommendations, and pipeline value.</p>
+          <p>Prioritize today’s follow-ups, overdue leads, and the highest revenue opportunities.</p>
         </div>
         <Link to="/admin/leads" className="sprint9-primary">Work Leads</Link>
       </div>
 
-      <div className="sprint9-metrics">
-        <Metric title="Total Leads" value={stats.total} />
-        <Metric title="Today's Leads" value={stats.today} />
+      <div className="sprint19-metrics">
+        <Metric title="Revenue Opportunity" value={formatCurrency(stats.revenueOpportunity)} accent="money" />
+        <Metric title="Due Today" value={stats.dueToday} accent="today" />
+        <Metric title="Overdue" value={stats.overdue} accent="danger" />
         <Metric title="New Leads" value={stats.newLeads} />
-        <Metric title="Follow Ups" value={stats.followUps} />
         <Metric title="Conversion" value={`${stats.conversion}%`} />
-        <Metric title="Pipeline Value" value={formatCurrency(stats.pipelineValue)} />
+      </div>
+
+      <div className="sprint19-grid">
+        <div className="sprint19-panel sprint19-focus">
+          <div className="sprint9-panel-header">
+            <div>
+              <span className="eyebrow">Highest Revenue</span>
+              <h2>Revenue Priority Queue</h2>
+            </div>
+          </div>
+
+          {highestRevenueLeads.length === 0 ? (
+            <div className="empty-state">No revenue opportunities yet.</div>
+          ) : (
+            <div className="sprint19-opportunity-list">
+              {highestRevenueLeads.map((lead, index) => (
+                <div className="sprint19-opportunity" key={lead.id}>
+                  <div className="sprint19-rank">#{index + 1}</div>
+                  <div>
+                    <strong>{lead.name || "Unknown Customer"}</strong>
+                    <span>{lead.recommendationName}</span>
+                    <small>{lead.address || lead.email || "No address captured"}</small>
+                  </div>
+                  <div className="sprint19-money">{formatCurrency(lead.revenueOpportunity)}</div>
+                  <Link to={`/admin/leads/${lead.id}`} className="sprint19-mini-button">Open Lead</Link>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="sprint19-panel">
+          <div className="sprint9-panel-header">
+            <div>
+              <span className="eyebrow">Task Queue</span>
+              <h2>Follow-Ups</h2>
+            </div>
+          </div>
+
+          {taskQueue.length === 0 ? (
+            <div className="empty-state">No follow-up tasks scheduled.</div>
+          ) : (
+            <div className="sprint19-task-list">
+              {taskQueue.map((lead) => (
+                <Link to={`/admin/leads/${lead.id}`} className={`sprint19-task ${lead.taskStatus === "Overdue" ? "is-overdue" : ""}`} key={lead.id}>
+                  <div>
+                    <strong>{lead.taskStatus}</strong>
+                    <span>{lead.name || "Unknown Customer"}</span>
+                    <small>{lead.followUpDate} • {lead.recommendationName}</small>
+                  </div>
+                  <div>{formatCurrency(lead.revenueOpportunity)}</div>
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="sprint9-grid-two">
@@ -123,7 +240,7 @@ export default function Dashboard() {
                   <span>{lead.address || lead.email || "No address"}</span>
                 </div>
                 <div>
-                  <strong>{lead.recommendedProvider || "Pending"}</strong>
+                  <strong>{getLeadRecommendationName(lead)}</strong>
                   <span>{lead.priority || "No priority"}</span>
                 </div>
                 <span className="sprint9-status">{lead.status || "New Lead"}</span>
@@ -136,9 +253,9 @@ export default function Dashboard() {
   );
 }
 
-function Metric({ title, value }) {
+function Metric({ title, value, accent = "" }) {
   return (
-    <div className="sprint9-metric-card">
+    <div className={`sprint19-metric ${accent ? `is-${accent}` : ""}`}>
       <span>{title}</span>
       <strong>{value}</strong>
     </div>
