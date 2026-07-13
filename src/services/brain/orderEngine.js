@@ -3,7 +3,7 @@ import { db } from "../../firebase";
 
 function clean(value) { return String(value || "").trim(); }
 
-export async function createReadyToSubmitOrder({ customer, address, providers, recommendation, quote, conversation, needs, campaign = {} }) {
+export async function createReadyToSubmitOrder({ customer, address, providers, recommendation, quote, conversation, needs, salesSummary = null, campaign = {} }) {
   if (!clean(customer?.name) || !clean(customer?.email) || !clean(customer?.phone)) {
     throw new Error("Name, email, and phone are required.");
   }
@@ -19,6 +19,11 @@ export async function createReadyToSubmitOrder({ customer, address, providers, r
     campaign: campaign.campaign || "", medium: campaign.medium || "", autonomousJourney: true,
     recommendedProvider: recommendation?.displayName || recommendation?.name || "",
     recommendationSnapshot: recommendation || null, quote: quote || null, needs: needs || {},
+    salesSummary: salesSummary || null,
+    leadQuality: salesSummary?.advisorNotes?.leadQuality || "",
+    readinessScore: salesSummary?.advisorNotes?.readinessScore || 0,
+    readinessStatus: salesSummary?.advisorNotes?.readinessStatus || "",
+    nextAction: salesSummary?.advisorNotes?.nextAction || "",
     updatedAt: serverTimestamp(),
   };
 

@@ -6,6 +6,7 @@ import CustomerProfile from "../components/advisor/CustomerProfile";
 import ProviderCardV2 from "../components/advisor/ProviderCardV2";
 import ScoreBreakdown from "../components/advisor/ScoreBreakdown";
 import ProfessionalQuoteCard from "../components/advisor/ProfessionalQuoteCard";
+import SalesSummaryCard from "../components/advisor/SalesSummaryCard";
 import { lookupAddressWithBrain, updateNeedsWithBrain } from "../services/brain/brain";
 import { answerQuestionMessage } from "../services/brain/conversationEngine";
 import { CONVERSATION_STATES } from "../services/brain/conversationState";
@@ -13,6 +14,7 @@ import { createReadyToSubmitOrder } from "../services/brain/orderEngine";
 import { buildQuote } from "../services/brain/quoteEngine";
 import { recommendationConfidence } from "../services/brain/explainability";
 import { trackConversionEvent } from "../services/brain/analyticsTracker";
+import { buildSalesSummary } from "../services/brain/salesSummary";
 import { useCustomerContext } from "../context/CustomerContext";
 
 function currency(value) {
@@ -198,6 +200,15 @@ export default function InternetAdvisor() {
     setBusy(true);
     try {
       const params = new URLSearchParams(window.location.search);
+      const salesSummary = buildSalesSummary({
+        customer,
+        address: session.address,
+        providers,
+        recommendation,
+        quote,
+        conversation: messages,
+        needs,
+      });
       const created = await createReadyToSubmitOrder({
         customer,
         address: session.address,
@@ -206,6 +217,7 @@ export default function InternetAdvisor() {
         quote,
         conversation: messages,
         needs,
+        salesSummary,
         campaign: { source: params.get("utm_source") || "AI Advisor v0.4.0", medium: params.get("utm_medium") || "", campaign: params.get("utm_campaign") || "" },
       });
       const next = { ...session, step: CONVERSATION_STATES.READY, orderId: created.id, leadId: created.leadId };
@@ -322,7 +334,9 @@ export default function InternetAdvisor() {
           )}
 
           {order && (
-            <section className="v040-panel v040-success"><CheckCircle2 /><span>Order package created</span><h2>We’ve got it, {customer.name}.</h2><p>ConnectIQ will verify the final provider offer and installation availability before submission.</p><div><small>Reference number</small><strong>{order.id.slice(0, 8).toUpperCase()}</strong></div><button type="button" onClick={restart}>Start another search</button></section>
+            <section className="v040-panel v040-sales-summary-panel">
+              <SalesSummaryCard summary={order.salesSummary} order={order} onRestart={restart} />
+            </section>
           )}
             </div>
             <CustomerProfile address={session.address || address} needs={needs} providers={providers} recommendation={recommendation} />
