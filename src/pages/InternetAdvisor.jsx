@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ArrowRight, CheckCircle2, ChevronLeft, ShieldCheck, Sparkles, Zap } from "lucide-react";
 import AdvisorProgress from "../components/advisor/AdvisorProgress";
 import AdvisorConversation from "../components/advisor/AdvisorConversation";
@@ -32,6 +32,18 @@ const NEEDS = [
   ["reliability", "Maximum reliability"],
 ];
 
+const STORAGE_KEY = "connectiq:advisor:v0.4.0";
+
+function loadSavedAdvisorState() {
+  try {
+    const saved = JSON.parse(window.localStorage.getItem(STORAGE_KEY) || "null");
+    if (!saved || typeof saved !== "object") return null;
+    return saved;
+  } catch {
+    return null;
+  }
+}
+
 function stepIndex(step) {
   if ([CONVERSATION_STATES.GREETING, CONVERSATION_STATES.ADDRESS, CONVERSATION_STATES.LOOKUP].includes(step)) return 0;
   if (step === CONVERSATION_STATES.DISCOVERY) return 1;
@@ -41,22 +53,43 @@ function stepIndex(step) {
 }
 
 export default function InternetAdvisor() {
-  const [session, setSession] = useState(createBrainSession);
-  const [address, setAddress] = useState("");
+  const savedState = useMemo(loadSavedAdvisorState, []);
+  const [session, setSession] = useState(() => savedState?.session || createBrainSession());
+  const [address, setAddress] = useState(() => savedState?.address || "");
   const [question, setQuestion] = useState("");
-  const [messages, setMessages] = useState([{ role: "advisor", text: advisorMessageForStep(CONVERSATION_STATES.GREETING) }]);
-  const [customer, setCustomer] = useState({ name: "", email: "", phone: "", consent: false });
-  const [contactStep, setContactStep] = useState(0);
+  const [messages, setMessages] = useState(() => savedState?.messages || [{ role: "advisor", text: advisorMessageForStep(CONVERSATION_STATES.GREETING) }]);
+  const [customer, setCustomer] = useState(() => savedState?.customer || { name: "", email: "", phone: "", consent: false });
+  const [contactStep, setContactStep] = useState(() => savedState?.contactStep || 0);
   const [busy, setBusy] = useState(false);
-  const [order, setOrder] = useState(null);
+  const [busyMode, setBusyMode] = useState("lookup");
+  const [busyStep, setBusyStep] = useState(0);
+  const [order, setOrder] = useState(() => savedState?.order || null);
 
   const { providers, recommendation, quote, needs, step } = session;
   const confidence = useMemo(() => recommendationConfidence(providers), [providers]);
   const selectedId = recommendation?.id || recommendation?.providerId || recommendation?.displayName;
 
+  useEffect(() => {
+    const stateToSave = { session, address, messages, customer, contactStep, order };
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(stateToSave));
+  }, [session, address, messages, customer, contactStep, order]);
+
+  useEffect(() => {
+    if (!busy) {
+      setBusyStep(0);
+      return undefined;
+    }
+    const timer = window.setInterval(() => {
+      setBusyStep((current) => Math.min(current + 1, 3));
+    }, 650);
+    return () => window.clearInterval(timer);
+  }, [busy, busyMode]);
+
   async function findOptions(event) {
     event.preventDefault();
     if (!address.trim() || busy) return;
+    setBusyMode("lookup");
+    setBusyStep(0);
     setBusy(true);
     const lookupSession = { ...session, step: CONVERSATION_STATES.LOOKUP, address: address.trim() };
     setSession(lookupSession);
@@ -114,6 +147,8 @@ export default function InternetAdvisor() {
   async function submitOrder(event) {
     event.preventDefault();
     if (!customer.name || !customer.email || !customer.phone || !customer.consent || busy) return;
+    setBusyMode("order");
+    setBusyStep(0);
     setBusy(true);
     try {
       const params = new URLSearchParams(window.location.search);
@@ -147,6 +182,7 @@ export default function InternetAdvisor() {
     setCustomer({ name: "", email: "", phone: "", consent: false });
     setContactStep(0);
     setOrder(null);
+    window.localStorage.removeItem(STORAGE_KEY);
   }
 
   return (
@@ -163,13 +199,51 @@ export default function InternetAdvisor() {
         <div className="v040-workspace">
           <AdvisorProgress activeIndex={stepIndex(step)} />
           <div className="v040-advisor-layout">
-            <AdvisorConversation messages={messages} busy={busy} />
+            <AdvisorConversation messages={messages} busy={busy} busyMode={busyMode} busyStep={busyStep} />
             <div className="v040-stage">
 
           {[CONVERSATION_STATES.GREETING, CONVERSATION_STATES.ADDRESS, CONVERSATION_STATES.LOOKUP, CONVERSATION_STATES.ERROR].includes(step) && !order && (
             <section className="v040-panel v040-address-panel">
               <span className="v040-step-label">Step 1 of 5</span><h2>Where do you need service?</h2><p>Enter the full service address so I can check provider availability.</p>
-              <form onSubmit={findOptions}><input value={address} onChange={(e) => setAddress(e.target.value)} placeholder="101 Main St, Greenville, SC 29601" autoComplete="street-address" required /><button disabled={busy}>{busy ? "Checking providers..." : <>Check my address <ArrowRight size={18} /></>}</button></form>
+              <form
+  onSubmit={findOptions}
+  style={{
+    display: "grid",
+    gridTemplateColumns: "1fr",
+    gap: "12px",
+    width: "100%",
+  }}
+>
+  <input
+    value={address}
+    onChange={(e) => setAddress(e.target.value)}
+    placeholder="101 Main St, Greenville, SC 29601"
+    autoComplete="street-address"
+    required
+    style={{
+      width: "100%",
+      minWidth: 0,
+      maxWidth: "100%",
+      boxSizing: "border-box",
+    }}
+  />
+  <button
+    disabled={busy}
+    style={{
+      width: "100%",
+      minWidth: 0,
+      maxWidth: "100%",
+      boxSizing: "border-box",
+      whiteSpace: "normal",
+    }}
+  >
+    {busy ? "Checking providers..." : (
+      <>
+        Check my address <ArrowRight size={18} />
+      </>
+    )}
+  </button>
+</form>
               {session.error && <p className="v040-error">{session.error}</p>}
               <small>Your address is used only to verify internet availability.</small>
             </section>
@@ -229,3 +303,4 @@ export default function InternetAdvisor() {
     </main>
   );
 }
+
