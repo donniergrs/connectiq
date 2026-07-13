@@ -179,7 +179,7 @@ export default function InternetAdvisor() {
     setMessages((current) => [...current, { role: "customer", text: customerMessage }]);
     setChatResponding(true);
     await new Promise((resolve) => window.setTimeout(resolve, 650));
-    const answer = answerQuestionMessage(customerMessage, { recommendation, quote, providers, needs, address: session.address });
+    const answer = answerQuestionMessage(customerMessage, { recommendation, quote, providers, needs, address: session.address, conversation: messages });
     setMessages((current) => [...current, answer]);
     setChatResponding(false);
   }

@@ -2,6 +2,7 @@ import { CONVERSATION_STATES } from "./conversationState";
 import { answerCommonQuestion } from "./knowledgeBase";
 import { buildQuote } from "./quoteEngine";
 import { rankProviders } from "./recommendationEngine";
+import { answerQuoteQuestion } from "./quote/quoteAdvisor.js";
 
 export function greetingMessage() {
   return { role: "advisor", text: "Hi! I’m your ConnectIQ Internet Advisor. Enter your service address and I’ll compare the options available there." };
@@ -18,7 +19,8 @@ export function providerRecommendationMessage(recommendation, providerCount) {
 }
 
 export function answerQuestionMessage(question, context = {}) {
-  return { role: "advisor", text: answerCommonQuestion(question, context) };
+  const quoteAnswer = answerQuoteQuestion(question, context);
+  return { role: "advisor", text: quoteAnswer || answerCommonQuestion(question, context) };
 }
 
 export function applyProviderResults(state, providers, needs = state.needs) {
