@@ -5,13 +5,14 @@ import AdvisorConversation from "../components/advisor/AdvisorConversation";
 import CustomerProfile from "../components/advisor/CustomerProfile";
 import ProviderCardV2 from "../components/advisor/ProviderCardV2";
 import ScoreBreakdown from "../components/advisor/ScoreBreakdown";
-import { createBrainSession, lookupAddressWithBrain, updateNeedsWithBrain } from "../services/brain/brain";
+import { lookupAddressWithBrain, updateNeedsWithBrain } from "../services/brain/brain";
 import { answerQuestionMessage } from "../services/brain/conversationEngine";
 import { CONVERSATION_STATES } from "../services/brain/conversationState";
 import { createReadyToSubmitOrder } from "../services/brain/orderEngine";
 import { buildQuote } from "../services/brain/quoteEngine";
 import { recommendationConfidence } from "../services/brain/explainability";
 import { trackConversionEvent } from "../services/brain/analyticsTracker";
+import { useCustomerContext } from "../context/CustomerContext";
 
 function currency(value) {
   return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 2 }).format(Number(value || 0));
@@ -31,18 +32,6 @@ const NEEDS = [
   ["reliability", "Maximum reliability"],
 ];
 
-const STORAGE_KEY = "connectiq:advisor:v0.4.0";
-
-function loadSavedAdvisorState() {
-  try {
-    const saved = JSON.parse(window.localStorage.getItem(STORAGE_KEY) || "null");
-    if (!saved || typeof saved !== "object") return null;
-    return saved;
-  } catch {
-    return null;
-  }
-}
-
 function stepIndex(step) {
   if ([CONVERSATION_STATES.GREETING, CONVERSATION_STATES.ADDRESS, CONVERSATION_STATES.LOOKUP].includes(step)) return 0;
   if (step === CONVERSATION_STATES.DISCOVERY) return 1;
@@ -52,29 +41,34 @@ function stepIndex(step) {
 }
 
 export default function InternetAdvisor() {
-  const savedState = useMemo(loadSavedAdvisorState, []);
-  const [session, setSession] = useState(() => savedState?.session || createBrainSession());
-  const [address, setAddress] = useState(() => savedState?.address || "");
+  const {
+    session,
+    setSession,
+    address,
+    setAddress,
+    messages,
+    setMessages,
+    customer,
+    setCustomer,
+    contactStep,
+    setContactStep,
+    discoveryStep,
+    setDiscoveryStep,
+    order,
+    setOrder,
+    chatOpen,
+    setChatOpen,
+    resetCustomerContext,
+  } = useCustomerContext();
   const [question, setQuestion] = useState("");
-  const [messages, setMessages] = useState(() => savedState?.messages || [{ role: "advisor", text: "Hi! I’m your ConnectIQ Advisor. Use the guided steps to find service, and message me anytime with questions about providers, pricing, installation, Wi-Fi, or switching." }]);
-  const [customer, setCustomer] = useState(() => savedState?.customer || { name: "", email: "", phone: "", consent: false });
-  const [contactStep, setContactStep] = useState(() => savedState?.contactStep || 0);
-  const [discoveryStep, setDiscoveryStep] = useState(() => savedState?.discoveryStep || 0);
   const [busy, setBusy] = useState(false);
   const [busyMode, setBusyMode] = useState("lookup");
   const [busyStep, setBusyStep] = useState(0);
-  const [order, setOrder] = useState(() => savedState?.order || null);
-  const [chatOpen, setChatOpen] = useState(() => savedState?.chatOpen ?? false);
   const [chatResponding, setChatResponding] = useState(false);
 
   const { providers, recommendation, quote, needs, step } = session;
   const confidence = useMemo(() => recommendationConfidence(providers), [providers]);
   const selectedId = recommendation?.id || recommendation?.providerId || recommendation?.displayName;
-
-  useEffect(() => {
-    const stateToSave = { session, address, messages, customer, contactStep, discoveryStep, order, chatOpen };
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(stateToSave));
-  }, [session, address, messages, customer, contactStep, discoveryStep, order, chatOpen]);
 
   useEffect(() => {
     if (!busy) {
@@ -225,16 +219,8 @@ export default function InternetAdvisor() {
   }
 
   function restart() {
-    setSession(createBrainSession());
-    setAddress("");
     setQuestion("");
-    setMessages([{ role: "advisor", text: "Hi! I’m your ConnectIQ Advisor. Use the guided steps to find service, and message me anytime with questions about providers, pricing, installation, Wi-Fi, or switching." }]);
-    setCustomer({ name: "", email: "", phone: "", consent: false });
-    setContactStep(0);
-    setDiscoveryStep(0);
-    setOrder(null);
-    setChatOpen(true);
-    window.localStorage.removeItem(STORAGE_KEY);
+    resetCustomerContext({ openChat: true });
   }
 
   return (

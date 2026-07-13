@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 
 import { AuthProvider } from "./context/AuthContext";
+import { CustomerContextProvider } from "./context/CustomerContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 import PublicLayout from "./layouts/PublicLayout";
@@ -24,6 +25,7 @@ import InternetAdvisor from "./pages/InternetAdvisor";
 export default function App() {
   return (
     <AuthProvider>
+      <CustomerContextProvider>
       <Routes>
         <Route path="/internet" element={<InternetAdvisor />} />
         <Route element={<PublicLayout />}>
@@ -54,6 +56,7 @@ export default function App() {
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      </CustomerContextProvider>
     </AuthProvider>
   );
 }

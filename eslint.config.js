@@ -52,7 +52,7 @@ export default defineConfig([
   },
 
   {
-    files: ['src/context/AuthContext.jsx'],
+    files: ['src/context/AuthContext.jsx', 'src/context/CustomerContext.jsx'],
     rules: {
       'react-refresh/only-export-components': 'off',
     },
