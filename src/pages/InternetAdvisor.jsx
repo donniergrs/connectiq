@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { ArrowRight, CheckCircle2, ChevronLeft, ShieldCheck, Sparkles, Zap } from "lucide-react";
+import { ArrowRight, CheckCircle2, ChevronLeft, MessageCircle, ShieldCheck, Sparkles, X, Zap } from "lucide-react";
 import AdvisorProgress from "../components/advisor/AdvisorProgress";
 import AdvisorConversation from "../components/advisor/AdvisorConversation";
 import CustomerProfile from "../components/advisor/CustomerProfile";
@@ -10,7 +10,6 @@ import { answerQuestionMessage } from "../services/brain/conversationEngine";
 import { CONVERSATION_STATES } from "../services/brain/conversationState";
 import { createReadyToSubmitOrder } from "../services/brain/orderEngine";
 import { buildQuote } from "../services/brain/quoteEngine";
-import { advisorMessageForStep } from "../services/brain/advisor/advisorEngine";
 import { recommendationConfidence } from "../services/brain/explainability";
 import { trackConversionEvent } from "../services/brain/analyticsTracker";
 
@@ -57,22 +56,25 @@ export default function InternetAdvisor() {
   const [session, setSession] = useState(() => savedState?.session || createBrainSession());
   const [address, setAddress] = useState(() => savedState?.address || "");
   const [question, setQuestion] = useState("");
-  const [messages, setMessages] = useState(() => savedState?.messages || [{ role: "advisor", text: advisorMessageForStep(CONVERSATION_STATES.GREETING) }]);
+  const [messages, setMessages] = useState(() => savedState?.messages || [{ role: "advisor", text: "Hi! I’m your ConnectIQ Advisor. Use the guided steps to find service, and message me anytime with questions about providers, pricing, installation, Wi-Fi, or switching." }]);
   const [customer, setCustomer] = useState(() => savedState?.customer || { name: "", email: "", phone: "", consent: false });
   const [contactStep, setContactStep] = useState(() => savedState?.contactStep || 0);
+  const [discoveryStep, setDiscoveryStep] = useState(() => savedState?.discoveryStep || 0);
   const [busy, setBusy] = useState(false);
   const [busyMode, setBusyMode] = useState("lookup");
   const [busyStep, setBusyStep] = useState(0);
   const [order, setOrder] = useState(() => savedState?.order || null);
+  const [chatOpen, setChatOpen] = useState(() => savedState?.chatOpen ?? false);
+  const [chatResponding, setChatResponding] = useState(false);
 
   const { providers, recommendation, quote, needs, step } = session;
   const confidence = useMemo(() => recommendationConfidence(providers), [providers]);
   const selectedId = recommendation?.id || recommendation?.providerId || recommendation?.displayName;
 
   useEffect(() => {
-    const stateToSave = { session, address, messages, customer, contactStep, order };
+    const stateToSave = { session, address, messages, customer, contactStep, discoveryStep, order, chatOpen };
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(stateToSave));
-  }, [session, address, messages, customer, contactStep, order]);
+  }, [session, address, messages, customer, contactStep, discoveryStep, order, chatOpen]);
 
   useEffect(() => {
     if (!busy) {
@@ -93,12 +95,60 @@ export default function InternetAdvisor() {
     setBusy(true);
     const lookupSession = { ...session, step: CONVERSATION_STATES.LOOKUP, address: address.trim() };
     setSession(lookupSession);
-    setMessages((current) => [...current, { role: "customer", text: address.trim() }, { role: "advisor", text: advisorMessageForStep(CONVERSATION_STATES.LOOKUP) }]);
     const result = await lookupAddressWithBrain(lookupSession, address.trim());
     setSession(result);
-    setMessages((current) => [...current, { role: "advisor", text: result.error || advisorMessageForStep(result.step, result) }]);
+    if (result.error) {
+      setMessages((current) => [...current, { role: "advisor", text: result.error }]);
+    }
     setBusy(false);
     if (!result.error) trackConversionEvent("providers_found", result, { providerCount: result.providers.length });
+  }
+
+
+  const discoveryQuestions = [
+    {
+      key: "people",
+      title: "How many people use the internet in your home?",
+      helper: "This helps me estimate simultaneous usage.",
+      options: [[1, "1 person"], [2, "2 people"], [3, "3 people"], [4, "4 people"], [5, "5+ people"]],
+    },
+    {
+      key: "devices",
+      title: "About how many devices connect regularly?",
+      helper: "Include phones, TVs, computers, tablets, cameras, and smart-home devices.",
+      options: [[5, "1–5 devices"], [10, "6–10 devices"], [20, "11–20 devices"], [35, "More than 20"]],
+    },
+    {
+      key: "priority",
+      title: "What matters most to you?",
+      helper: "I’ll use this as the leading factor in your recommendation.",
+      options: PRIORITIES.map(([value, label]) => [value, label]),
+    },
+    {
+      key: "usage",
+      title: "How will your household use the connection?",
+      helper: "Choose everything that applies, then continue.",
+    },
+    {
+      key: "budget",
+      title: "What monthly budget should I target?",
+      helper: "Final pricing is confirmed with the provider before an order is submitted.",
+      options: [[60, "Under $70"], [85, "$70–$99"], [120, "$100–$129"], [160, "$130+"]],
+    },
+  ];
+
+  const currentDiscoveryQuestion = discoveryQuestions[Math.min(discoveryStep, discoveryQuestions.length - 1)];
+
+  function answerDiscovery(key, value) {
+    const updatedNeeds = { ...needs, [key]: value };
+    const nextSession = { ...updateNeedsWithBrain(session, updatedNeeds), step: CONVERSATION_STATES.DISCOVERY };
+    setSession(nextSession);
+    setDiscoveryStep((current) => Math.min(current + 1, discoveryQuestions.length));
+  }
+
+  function continueUsageDiscovery() {
+    const selected = NEEDS.filter(([key]) => needs[key]).map(([, label]) => label);
+    answerDiscovery("usageComplete", true, selected.length ? selected.join(", ") : "General browsing and everyday use");
   }
 
   function updateNeed(key, value) {
@@ -107,8 +157,8 @@ export default function InternetAdvisor() {
 
   function showRecommendation() {
     const next = { ...session, step: CONVERSATION_STATES.RECOMMENDATION };
+    setChatOpen(false);
     setSession(next);
-    setMessages((current) => [...current, { role: "advisor", text: advisorMessageForStep(CONVERSATION_STATES.RECOMMENDATION, next) }]);
     trackConversionEvent("recommendation_viewed", next, { confidence });
   }
 
@@ -117,30 +167,31 @@ export default function InternetAdvisor() {
     const nextQuote = buildQuote({ recommendation: selected, address: session.address, needs });
     const next = { ...session, recommendation: selected, quote: nextQuote, selectedProviderId: provider.id || provider.providerId || provider.displayName, step: CONVERSATION_STATES.RECOMMENDATION };
     setSession(next);
-    setMessages((current) => [...current, { role: "customer", text: `I’m interested in ${provider.displayName}.` }, { role: "advisor", text: `${provider.displayName} is selected. I updated your quote and recommendation details.` }]);
     trackConversionEvent("provider_selected", next);
   }
 
   function openQuote() {
     const next = { ...session, step: CONVERSATION_STATES.QUOTE };
     setSession(next);
-    setMessages((current) => [...current, { role: "advisor", text: advisorMessageForStep(CONVERSATION_STATES.QUOTE, next) }]);
     trackConversionEvent("quote_viewed", next);
   }
 
-  function askAdvisor(event) {
+  async function askAdvisor(event) {
     event.preventDefault();
-    if (!question.trim()) return;
+    if (!question.trim() || chatResponding) return;
     const customerMessage = question.trim();
-    const answer = answerQuestionMessage(customerMessage, { recommendation, quote, providers, needs });
-    setMessages((current) => [...current, { role: "customer", text: customerMessage }, answer]);
     setQuestion("");
+    setMessages((current) => [...current, { role: "customer", text: customerMessage }]);
+    setChatResponding(true);
+    await new Promise((resolve) => window.setTimeout(resolve, 650));
+    const answer = answerQuestionMessage(customerMessage, { recommendation, quote, providers, needs, address: session.address });
+    setMessages((current) => [...current, answer]);
+    setChatResponding(false);
   }
 
   function beginOrder() {
     const next = { ...session, step: CONVERSATION_STATES.CUSTOMER_INFO };
     setSession(next);
-    setMessages((current) => [...current, { role: "advisor", text: advisorMessageForStep(CONVERSATION_STATES.CUSTOMER_INFO, next) }]);
     trackConversionEvent("order_started", next);
   }
 
@@ -165,7 +216,6 @@ export default function InternetAdvisor() {
       const next = { ...session, step: CONVERSATION_STATES.READY, orderId: created.id, leadId: created.leadId };
       setSession(next);
       setOrder(created);
-      setMessages((current) => [...current, { role: "advisor", text: advisorMessageForStep(CONVERSATION_STATES.READY, next) }]);
       trackConversionEvent("ready_to_submit_order_created", next, { orderId: created.id });
     } catch (error) {
       setMessages((current) => [...current, { role: "advisor", text: error?.message || "I couldn’t create the order package. Please try again." }]);
@@ -178,10 +228,12 @@ export default function InternetAdvisor() {
     setSession(createBrainSession());
     setAddress("");
     setQuestion("");
-    setMessages([{ role: "advisor", text: advisorMessageForStep(CONVERSATION_STATES.GREETING) }]);
+    setMessages([{ role: "advisor", text: "Hi! I’m your ConnectIQ Advisor. Use the guided steps to find service, and message me anytime with questions about providers, pricing, installation, Wi-Fi, or switching." }]);
     setCustomer({ name: "", email: "", phone: "", consent: false });
     setContactStep(0);
+    setDiscoveryStep(0);
     setOrder(null);
+    setChatOpen(true);
     window.localStorage.removeItem(STORAGE_KEY);
   }
 
@@ -199,63 +251,44 @@ export default function InternetAdvisor() {
         <div className="v040-workspace">
           <AdvisorProgress activeIndex={stepIndex(step)} />
           <div className="v040-advisor-layout">
-            <AdvisorConversation messages={messages} busy={busy} busyMode={busyMode} busyStep={busyStep} />
             <div className="v040-stage">
 
           {[CONVERSATION_STATES.GREETING, CONVERSATION_STATES.ADDRESS, CONVERSATION_STATES.LOOKUP, CONVERSATION_STATES.ERROR].includes(step) && !order && (
             <section className="v040-panel v040-address-panel">
               <span className="v040-step-label">Step 1 of 5</span><h2>Where do you need service?</h2><p>Enter the full service address so I can check provider availability.</p>
-              <form
-  onSubmit={findOptions}
-  style={{
-    display: "grid",
-    gridTemplateColumns: "1fr",
-    gap: "12px",
-    width: "100%",
-  }}
->
-  <input
-    value={address}
-    onChange={(e) => setAddress(e.target.value)}
-    placeholder="101 Main St, Greenville, SC 29601"
-    autoComplete="street-address"
-    required
-    style={{
-      width: "100%",
-      minWidth: 0,
-      maxWidth: "100%",
-      boxSizing: "border-box",
-    }}
-  />
-  <button
-    disabled={busy}
-    style={{
-      width: "100%",
-      minWidth: 0,
-      maxWidth: "100%",
-      boxSizing: "border-box",
-      whiteSpace: "normal",
-    }}
-  >
-    {busy ? "Checking providers..." : (
-      <>
-        Check my address <ArrowRight size={18} />
-      </>
-    )}
-  </button>
-</form>
+              <form onSubmit={findOptions} style={{ display: "grid", gridTemplateColumns: "1fr", gap: "12px", width: "100%" }}><input value={address} onChange={(e) => setAddress(e.target.value)} placeholder="101 Main St, Greenville, SC 29601" autoComplete="street-address" required style={{ width: "100%", minWidth: 0, maxWidth: "100%", boxSizing: "border-box" }} /><button disabled={busy} style={{ width: "100%", minWidth: 0, maxWidth: "100%", boxSizing: "border-box", whiteSpace: "normal" }}>{busy ? "Checking providers..." : <>Check my address <ArrowRight size={18} /></>}</button></form>
               {session.error && <p className="v040-error">{session.error}</p>}
               <small>Your address is used only to verify internet availability.</small>
             </section>
           )}
 
           {step === CONVERSATION_STATES.DISCOVERY && (
-            <section className="v040-panel">
-              <span className="v040-step-label">Step 2 of 5</span><h2>Help me understand your household.</h2><p>I found <b>{providers.length} providers</b>. These answers improve your recommendation.</p>
-              <div className="v040-number-fields"><label>People in the home<input type="number" min="1" max="20" value={needs.people} onChange={(e) => updateNeed("people", Number(e.target.value))} /></label><label>Connected devices<input type="number" min="1" max="100" value={needs.devices} onChange={(e) => updateNeed("devices", Number(e.target.value))} /></label><label>Target monthly budget<input type="number" min="30" max="500" value={needs.budget} onChange={(e) => updateNeed("budget", Number(e.target.value))} /></label></div>
-              <div className="v040-question-block"><strong>What matters most?</strong><div className="v040-choice-row">{PRIORITIES.map(([key, label]) => <button type="button" className={needs.priority === key ? "is-selected" : ""} onClick={() => updateNeed("priority", key)} key={key}>{label}</button>)}</div></div>
-              <div className="v040-question-block"><strong>How will you use the connection?</strong><div className="v040-choice-row">{NEEDS.map(([key, label]) => <button type="button" className={needs[key] ? "is-selected" : ""} onClick={() => updateNeed(key, !needs[key])} key={key}>{needs[key] ? "✓ " : "+ "}{label}</button>)}</div></div>
-              <button className="v040-primary" type="button" onClick={showRecommendation}>Show my recommendation <ArrowRight size={18} /></button>
+            <section className="v040-panel v040-guided-discovery">
+              <span className="v040-step-label">Step 2 of 5</span>
+              {discoveryStep < discoveryQuestions.length ? (
+                <>
+                  <div className="v040-discovery-progress"><span style={{ width: `${((discoveryStep + 1) / discoveryQuestions.length) * 100}%` }} /></div>
+                  <small className="v040-discovery-count">Question {discoveryStep + 1} of {discoveryQuestions.length}</small>
+                  <h2>{currentDiscoveryQuestion.title}</h2>
+                  <p>{currentDiscoveryQuestion.helper}</p>
+                  {currentDiscoveryQuestion.key === "usage" ? (
+                    <>
+                      <div className="v040-discovery-options is-multi">{NEEDS.map(([key, label]) => <button type="button" className={needs[key] ? "is-selected" : ""} onClick={() => updateNeed(key, !needs[key])} key={key}>{needs[key] ? "✓ " : "+ "}{label}</button>)}</div>
+                      <button className="v040-primary" type="button" onClick={continueUsageDiscovery}>Continue <ArrowRight size={18} /></button>
+                    </>
+                  ) : (
+                    <div className="v040-discovery-options">{currentDiscoveryQuestion.options.map(([value, label]) => <button type="button" key={`${currentDiscoveryQuestion.key}-${value}`} onClick={() => answerDiscovery(currentDiscoveryQuestion.key, value, label)}>{label}<ArrowRight size={16} /></button>)}</div>
+                  )}
+                </>
+              ) : (
+                <div className="v040-discovery-ready">
+                  <CheckCircle2 />
+                  <span>Household profile complete</span>
+                  <h2>I’m ready to show your strongest match.</h2>
+                  <p>I compared {providers.length} options using your household size, connected devices, usage, priorities, and target budget.</p>
+                  <button className="v040-primary" type="button" onClick={showRecommendation}>Show my recommendation <ArrowRight size={18} /></button>
+                </div>
+              )}
             </section>
           )}
 
@@ -263,9 +296,11 @@ export default function InternetAdvisor() {
             <section className="v040-panel">
               <span className="v040-step-label">Step 3 of 5</span><div className="v040-recommend-head"><div><span className="v040-best-badge">Best match</span><h2>{recommendation.displayName}</h2><p>{recommendation.recommendationReason}</p></div><div className="v040-score"><strong>{recommendation.advisorScore}</strong><span>/100 match</span><small>{confidence}% confidence</small></div></div>
               <div className="v040-rec-grid"><div><h3>Why it fits your household</h3><ScoreBreakdown breakdown={recommendation.scoreBreakdown} /></div><div className="v040-rec-summary"><h3>Recommended service</h3><div><span>Technology</span><b>{recommendation.technology}</b></div><div><span>Download</span><b>{recommendation.download || "—"} Mbps</b></div><div><span>Upload</span><b>{recommendation.upload || "—"} Mbps</b></div><div><span>Estimated monthly</span><b>{currency(quote?.monthlyPrice)}</b></div></div></div>
-              <div className="v040-provider-grid">{providers.slice(0, 3).map((provider, index) => <ProviderCardV2 key={provider.id || provider.displayName} provider={provider} needs={needs} rank={index} selected={(provider.id || provider.providerId || provider.displayName) === selectedId} onSelect={chooseProvider} />)}</div>
-              <form className="v040-ask" onSubmit={askAdvisor}><input value={question} onChange={(e) => setQuestion(e.target.value)} placeholder="Ask about price, Wi-Fi, gaming, installation, or switching..." /><button>Ask advisor</button></form>
-              <button className="v040-primary" type="button" onClick={openQuote}>Continue with {recommendation.displayName} <ArrowRight size={18} /></button>
+              <div className="v040-provider-scroll" aria-label="Available provider recommendations"><div className="v040-provider-grid">{providers.map((provider, index) => <ProviderCardV2 key={provider.id || provider.displayName} provider={provider} needs={needs} rank={index} selected={(provider.id || provider.providerId || provider.displayName) === selectedId} onSelect={chooseProvider} />)}</div></div>
+              <div className="v040-recommend-actions">
+                <button className="v040-secondary" type="button" onClick={() => setChatOpen(true)}><MessageCircle size={18} /> Ask the Advisor a question</button>
+                <button className="v040-primary" type="button" onClick={openQuote}>Continue with {recommendation.displayName} <ArrowRight size={18} /></button>
+              </div>
             </section>
           )}
 
@@ -297,10 +332,23 @@ export default function InternetAdvisor() {
             </div>
             <CustomerProfile address={session.address || address} needs={needs} providers={providers} recommendation={recommendation} />
           </div>
+
+          <button className="v040-chat-launcher" type="button" onClick={() => setChatOpen(true)} aria-label="Open ConnectIQ Advisor chat">
+            <MessageCircle size={19} />
+            <span>Chat with Advisor</span>
+          </button>
+
+          {chatOpen && (
+            <div className="v040-chat-backdrop" onClick={() => setChatOpen(false)}>
+              <aside className="v040-chat-drawer" role="dialog" aria-modal="true" aria-label="ConnectIQ Advisor chat" onClick={(event) => event.stopPropagation()}>
+                <button className="v040-chat-close" type="button" onClick={() => setChatOpen(false)} aria-label="Close Advisor chat"><X size={18} /></button>
+                <AdvisorConversation messages={messages} busy={busy} busyMode={busyMode} busyStep={busyStep} question={question} onQuestionChange={setQuestion} onSubmitQuestion={askAdvisor} responding={chatResponding} />
+              </aside>
+            </div>
+          )}
         </div>
       </section>
       <footer className="v040-footer"><span>ConnectIQ does not collect payment on this page.</span><span>Final pricing and availability require provider confirmation.</span></footer>
     </main>
   );
 }
-

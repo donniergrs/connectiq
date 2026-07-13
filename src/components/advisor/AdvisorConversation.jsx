@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { Bot, CheckCircle2, Circle, LoaderCircle, UserRound } from "lucide-react";
+import { Bot, CheckCircle2, Circle, LoaderCircle, Send, UserRound } from "lucide-react";
 
 const LOOKUP_STEPS = [
   "Validating the service address",
@@ -15,14 +15,14 @@ const ORDER_STEPS = [
   "Preparing the ConnectIQ follow-up queue",
 ];
 
-export default function AdvisorConversation({ messages, busy = false, busyMode = "lookup", busyStep = 0 }) {
+export default function AdvisorConversation({ messages, busy = false, busyMode = "lookup", busyStep = 0, question = "", onQuestionChange, onSubmitQuestion, responding = false }) {
   const listRef = useRef(null);
   const progressSteps = busyMode === "order" ? ORDER_STEPS : LOOKUP_STEPS;
 
   useEffect(() => {
     const list = listRef.current;
     if (list) list.scrollTo({ top: list.scrollHeight, behavior: "smooth" });
-  }, [messages, busy, busyStep]);
+  }, [messages, busy, busyStep, responding]);
 
   return (
     <aside className="v040-conversation" aria-label="Advisor conversation">
@@ -46,6 +46,16 @@ export default function AdvisorConversation({ messages, busy = false, busyMode =
             </div>
           </div>
         ))}
+
+        {responding && (
+          <div className="v040-message is-advisor">
+            <div className="v040-message-icon"><Bot /></div>
+            <div>
+              <span>Advisor</span>
+              <p className="v040-typing" aria-label="Advisor is typing"><i /><i /><i /></p>
+            </div>
+          </div>
+        )}
 
         {busy && (
           <div className="v040-message is-advisor">
@@ -72,6 +82,19 @@ export default function AdvisorConversation({ messages, busy = false, busyMode =
           </div>
         )}
       </div>
+
+      <form className="v040-chat-composer" onSubmit={onSubmitQuestion}>
+        <input
+          value={question}
+          onChange={(event) => onQuestionChange?.(event.target.value)}
+          placeholder="Ask about pricing, installation, Wi-Fi, switching, or anything else..."
+          aria-label="Message ConnectIQ Advisor"
+          disabled={responding}
+        />
+        <button type="submit" disabled={!question.trim() || responding} aria-label="Send message">
+          <Send size={17} />
+        </button>
+      </form>
     </aside>
   );
 }
