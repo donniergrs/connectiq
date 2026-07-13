@@ -1,49 +1,21 @@
 const FAQ = [
-  {
-    patterns: ["gaming", "gamer", "latency", "ping"],
-    answer:
-      "Fiber is usually the strongest choice for gaming because it offers low latency and strong upload performance. I will prioritize fiber when it is available.",
-  },
-  {
-    patterns: ["work from home", "working from home", "zoom", "teams", "video call"],
-    answer:
-      "For working from home, reliable upload speed and low latency matter. Fiber is usually the best fit, followed by strong cable or fixed-wireless options.",
-  },
-  {
-    patterns: ["contract", "agreement"],
-    answer:
-      "Contract requirements vary by provider and offer. Your quote will show the current contract terms before you move forward.",
-  },
-  {
-    patterns: ["installation", "install", "technician"],
-    answer:
-      "Installation timing depends on the provider and your address. ConnectIQ will capture your preferred date, and the final appointment is confirmed during order submission.",
-  },
-  {
-    patterns: ["router", "wifi", "wi-fi", "equipment"],
-    answer:
-      "Most providers include or offer compatible Wi-Fi equipment. Equipment charges and whole-home Wi-Fi options are confirmed with the selected plan.",
-  },
-  {
-    patterns: ["phone number", "keep my number", "port"],
-    answer:
-      "Phone-number transfers are often available when voice service is included. The number must remain active until the transfer is complete.",
-  },
-  {
-    patterns: ["price", "cost", "monthly"],
-    answer:
-      "Pricing varies by address, provider, speed, and promotion. I will show the estimated monthly price in your recommendation and quote.",
-  },
+  { patterns: ["contract", "agreement", "cancel"], answer: "Contract terms vary by provider and promotion. ConnectIQ displays the best available estimate, and the final term is confirmed before submission." },
+  { patterns: ["installation", "install", "technician"], answer: "Installation timing depends on the provider and address. Your preferred timing is captured now, then confirmed when the order is finalized." },
+  { patterns: ["router", "wifi", "wi-fi", "equipment"], answer: "Most providers include or offer compatible Wi-Fi equipment. Equipment pricing and whole-home Wi-Fi options are confirmed with the selected plan." },
+  { patterns: ["switch", "current provider", "disconnect"], answer: "Keep your current service active until the new installation is complete and tested. That prevents an avoidable loss of service while switching." },
+  { patterns: ["gaming", "latency", "lag"], answer: "For gaming, prioritize low latency, stable connections, and adequate upload speed. Fiber is normally the strongest option when available." },
+  { patterns: ["work", "zoom", "teams", "home office"], answer: "Work-from-home households benefit from reliable upload speed and enough capacity for video calls while other devices are active." },
+  { patterns: ["price", "cost", "monthly", "fee"], answer: "The displayed price is an estimate based on current product intelligence. Final pricing, taxes, equipment, and eligibility are verified before submission." },
 ];
 
-export function answerCommonQuestion(message = "") {
+export function answerCommonQuestion(message = "", context = {}) {
   const normalized = String(message).toLowerCase();
-  const match = FAQ.find((item) =>
-    item.patterns.some((pattern) => normalized.includes(pattern))
-  );
+  const match = FAQ.find((item) => item.patterns.some((pattern) => normalized.includes(pattern)));
+  if (match) return match.answer;
 
-  return (
-    match?.answer ||
-    "I can help with availability, speeds, pricing, installation, contracts, equipment, and switching providers. Ask your question, or continue to a personalized quote."
-  );
+  const recommendation = context.recommendation;
+  if (recommendation) {
+    return `${recommendation.displayName} is currently the top ConnectIQ match because of its speed, technology, and household fit. You can ask about price, installation, Wi-Fi, contracts, gaming, working from home, or switching providers.`;
+  }
+  return "I can help with availability, speed, pricing, installation, equipment, contracts, and switching providers.";
 }

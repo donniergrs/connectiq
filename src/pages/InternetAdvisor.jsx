@@ -1,284 +1,224 @@
 import { useMemo, useState } from "react";
-import { answerQuestionMessage, greetingMessage, providerRecommendationMessage } from "../services/brain/conversationEngine";
-import { createBrainSession, lookupAddressWithBrain } from "../services/brain/brain";
-import { createReadyToSubmitOrder } from "../services/brain/orderEngine";
+import { ArrowRight, Bot, CheckCircle2, ChevronLeft, ShieldCheck, Sparkles, Zap } from "lucide-react";
+import AdvisorProgress from "../components/advisor/AdvisorProgress";
+import ProviderCardV2 from "../components/advisor/ProviderCardV2";
+import ScoreBreakdown from "../components/advisor/ScoreBreakdown";
+import { createBrainSession, lookupAddressWithBrain, updateNeedsWithBrain } from "../services/brain/brain";
+import { answerQuestionMessage } from "../services/brain/conversationEngine";
 import { CONVERSATION_STATES } from "../services/brain/conversationState";
+import { createReadyToSubmitOrder } from "../services/brain/orderEngine";
+import { buildQuote } from "../services/brain/quoteEngine";
+import { advisorMessageForStep } from "../services/brain/advisor/advisorEngine";
+import { recommendationConfidence } from "../services/brain/explainability";
+import { trackConversionEvent } from "../services/brain/analyticsTracker";
 
 function currency(value) {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    maximumFractionDigits: 2,
-  }).format(Number(value || 0));
+  return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 2 }).format(Number(value || 0));
+}
+
+const PRIORITIES = [
+  ["reliability", "Most reliable"],
+  ["price", "Lowest monthly cost"],
+  ["speed", "Fastest available"],
+];
+
+const NEEDS = [
+  ["workFromHome", "Remote work"],
+  ["streaming", "Streaming TV"],
+  ["gaming", "Online gaming"],
+  ["creator", "Uploading content"],
+  ["reliability", "Maximum reliability"],
+];
+
+function stepIndex(step) {
+  if ([CONVERSATION_STATES.GREETING, CONVERSATION_STATES.ADDRESS, CONVERSATION_STATES.LOOKUP].includes(step)) return 0;
+  if (step === CONVERSATION_STATES.DISCOVERY) return 1;
+  if ([CONVERSATION_STATES.RECOMMENDATION, CONVERSATION_STATES.COMPARE].includes(step)) return 2;
+  if ([CONVERSATION_STATES.QUOTE, CONVERSATION_STATES.CUSTOMER_INFO].includes(step)) return 3;
+  return 4;
 }
 
 export default function InternetAdvisor() {
-  const [state, setState] = useState(createBrainSession);
-  const [messages, setMessages] = useState([greetingMessage()]);
+  const [session, setSession] = useState(createBrainSession);
   const [address, setAddress] = useState("");
   const [question, setQuestion] = useState("");
+  const [messages, setMessages] = useState([{ role: "advisor", text: advisorMessageForStep(CONVERSATION_STATES.GREETING) }]);
+  const [customer, setCustomer] = useState({ name: "", email: "", phone: "", consent: false });
+  const [contactStep, setContactStep] = useState(0);
   const [busy, setBusy] = useState(false);
-  const [customer, setCustomer] = useState({ name: "", email: "", phone: "" });
-  const [submittedOrder, setSubmittedOrder] = useState(null);
+  const [order, setOrder] = useState(null);
 
-  const recommendation = state.recommendation;
-  const quote = state.quote;
+  const { providers, recommendation, quote, needs, step } = session;
+  const confidence = useMemo(() => recommendationConfidence(providers), [providers]);
+  const selectedId = recommendation?.id || recommendation?.providerId || recommendation?.displayName;
 
-  const canSubmit = useMemo(() => {
-    return (
-      customer.name.trim() &&
-      customer.email.trim() &&
-      customer.phone.trim() &&
-      recommendation &&
-      quote
-    );
-  }, [customer, recommendation, quote]);
-
-  async function checkAddress(event) {
+  async function findOptions(event) {
     event.preventDefault();
-    if (!address.trim()) return;
-
+    if (!address.trim() || busy) return;
     setBusy(true);
-    setMessages((items) => [
-      ...items,
-      { role: "customer", text: address.trim() },
-      { role: "advisor", text: "Checking provider availability and current recommendations..." },
-    ]);
-
-    const result = await lookupAddressWithBrain(state, address);
-    setState(result);
+    const lookupSession = { ...session, step: CONVERSATION_STATES.LOOKUP, address: address.trim() };
+    setSession(lookupSession);
+    setMessages((current) => [...current, { role: "customer", text: address.trim() }, { role: "advisor", text: advisorMessageForStep(CONVERSATION_STATES.LOOKUP) }]);
+    const result = await lookupAddressWithBrain(lookupSession, address.trim());
+    setSession(result);
+    setMessages((current) => [...current, { role: "advisor", text: result.error || advisorMessageForStep(result.step, result) }]);
     setBusy(false);
-
-    if (result.error) {
-      setMessages((items) => [
-        ...items,
-        { role: "advisor", text: result.error },
-      ]);
-      return;
-    }
-
-    setMessages((items) => [
-      ...items,
-      providerRecommendationMessage(result.recommendation, result.providers.length),
-    ]);
+    if (!result.error) trackConversionEvent("providers_found", result, { providerCount: result.providers.length });
   }
 
-  function askQuestion(event) {
+  function updateNeed(key, value) {
+    setSession((current) => ({ ...updateNeedsWithBrain(current, { ...current.needs, [key]: value }), step: CONVERSATION_STATES.DISCOVERY }));
+  }
+
+  function showRecommendation() {
+    const next = { ...session, step: CONVERSATION_STATES.RECOMMENDATION };
+    setSession(next);
+    setMessages((current) => [...current, { role: "advisor", text: advisorMessageForStep(CONVERSATION_STATES.RECOMMENDATION, next) }]);
+    trackConversionEvent("recommendation_viewed", next, { confidence });
+  }
+
+  function chooseProvider(provider) {
+    const selected = { ...provider };
+    const nextQuote = buildQuote({ recommendation: selected, address: session.address, needs });
+    const next = { ...session, recommendation: selected, quote: nextQuote, selectedProviderId: provider.id || provider.providerId || provider.displayName, step: CONVERSATION_STATES.RECOMMENDATION };
+    setSession(next);
+    setMessages((current) => [...current, { role: "customer", text: `I’m interested in ${provider.displayName}.` }, { role: "advisor", text: `${provider.displayName} is selected. I updated your quote and recommendation details.` }]);
+    trackConversionEvent("provider_selected", next);
+  }
+
+  function openQuote() {
+    const next = { ...session, step: CONVERSATION_STATES.QUOTE };
+    setSession(next);
+    setMessages((current) => [...current, { role: "advisor", text: advisorMessageForStep(CONVERSATION_STATES.QUOTE, next) }]);
+    trackConversionEvent("quote_viewed", next);
+  }
+
+  function askAdvisor(event) {
     event.preventDefault();
     if (!question.trim()) return;
-
-    const response = answerQuestionMessage(question);
-    setMessages((items) => [
-      ...items,
-      { role: "customer", text: question.trim() },
-      response,
-    ]);
+    const customerMessage = question.trim();
+    const answer = answerQuestionMessage(customerMessage, { recommendation, quote, providers, needs });
+    setMessages((current) => [...current, { role: "customer", text: customerMessage }, answer]);
     setQuestion("");
   }
 
-  async function finishOrder(event) {
-    event.preventDefault();
-    if (!canSubmit || busy) return;
+  function beginOrder() {
+    const next = { ...session, step: CONVERSATION_STATES.CUSTOMER_INFO };
+    setSession(next);
+    setMessages((current) => [...current, { role: "advisor", text: advisorMessageForStep(CONVERSATION_STATES.CUSTOMER_INFO, next) }]);
+    trackConversionEvent("order_started", next);
+  }
 
+  async function submitOrder(event) {
+    event.preventDefault();
+    if (!customer.name || !customer.email || !customer.phone || !customer.consent || busy) return;
     setBusy(true);
     try {
       const params = new URLSearchParams(window.location.search);
-      const order = await createReadyToSubmitOrder({
+      const created = await createReadyToSubmitOrder({
         customer,
-        address: state.address,
-        providers: state.providers,
+        address: session.address,
+        providers,
         recommendation,
         quote,
         conversation: messages,
-        campaign: {
-          source: params.get("utm_source") || "AI Internet Advisor",
-          medium: params.get("utm_medium") || "",
-          campaign: params.get("utm_campaign") || "",
-        },
+        needs,
+        campaign: { source: params.get("utm_source") || "AI Advisor v0.4.0", medium: params.get("utm_medium") || "", campaign: params.get("utm_campaign") || "" },
       });
-
-      setSubmittedOrder(order);
-      setState((current) => ({
-        ...current,
-        step: CONVERSATION_STATES.READY,
-        orderId: order.id,
-      }));
-      setMessages((items) => [
-        ...items,
-        {
-          role: "advisor",
-          text:
-            "You’re ready! Your information has been saved for final order submission. ConnectIQ will confirm the provider details and next installation steps.",
-        },
-      ]);
+      const next = { ...session, step: CONVERSATION_STATES.READY, orderId: created.id, leadId: created.leadId };
+      setSession(next);
+      setOrder(created);
+      setMessages((current) => [...current, { role: "advisor", text: advisorMessageForStep(CONVERSATION_STATES.READY, next) }]);
+      trackConversionEvent("ready_to_submit_order_created", next, { orderId: created.id });
     } catch (error) {
-      setMessages((items) => [
-        ...items,
-        {
-          role: "advisor",
-          text: error?.message || "We could not save your order. Please try again.",
-        },
-      ]);
+      setMessages((current) => [...current, { role: "advisor", text: error?.message || "I couldn’t create the order package. Please try again." }]);
     } finally {
       setBusy(false);
     }
   }
 
-  return (
-    <main className="mission001-page">
-      <section className="mission001-hero">
-        <div className="mission001-copy">
-          <span className="mission001-kicker">Your Personal Internet Advisor</span>
-          <h1>Find the best internet at your address in minutes.</h1>
-          <p>
-            Compare available providers, get a personalized recommendation, ask questions,
-            and prepare your order without waiting for a callback.
-          </p>
+  function restart() {
+    setSession(createBrainSession());
+    setAddress("");
+    setQuestion("");
+    setMessages([{ role: "advisor", text: advisorMessageForStep(CONVERSATION_STATES.GREETING) }]);
+    setCustomer({ name: "", email: "", phone: "", consent: false });
+    setContactStep(0);
+    setOrder(null);
+  }
 
-          <div className="mission001-trust">
-            <span>✓ Address-based recommendations</span>
-            <span>✓ Fast provider comparison</span>
-            <span>✓ No-obligation quote</span>
-          </div>
+  return (
+    <main className="v040-page">
+      <header className="v040-nav"><a href="/" className="v040-logo">Connect<span>IQ</span></a><div><ShieldCheck size={16} /> Independent broadband guidance</div></header>
+      <section className="v040-shell">
+        <div className="v040-intro">
+          <span className="v040-kicker"><Sparkles size={15} /> ConnectIQ AI Advisor</span>
+          <h1>Find internet that actually fits your household.</h1>
+          <p>We check your address, compare available technologies, and explain the best choice without sending you to carrier websites.</p>
+          <div className="v040-value"><span><CheckCircle2 /> Address-level availability</span><span><CheckCircle2 /> Personalized recommendation</span><span><CheckCircle2 /> One guided order</span></div>
         </div>
 
-        <div className="mission001-advisor">
-          <div className="mission001-advisor-header">
-            <div>
-              <strong>ConnectIQ Internet Advisor</strong>
-              <span>Online now</span>
-            </div>
-            <span className="mission001-live-dot" />
-          </div>
+        <div className="v040-workspace">
+          <AdvisorProgress activeIndex={stepIndex(step)} />
+          <section className="v040-advisor-bar"><div className="v040-avatar"><Bot /></div><div><span>ConnectIQ Advisor</span><p>{messages.at(-1)?.text}</p></div><i /></section>
 
-          <div className="mission001-chat">
-            {messages.map((message, index) => (
-              <div
-                className={`mission001-message is-${message.role}`}
-                key={`${message.role}-${index}`}
-              >
-                {message.text}
-              </div>
-            ))}
-          </div>
-
-          {!recommendation && !submittedOrder && (
-            <form className="mission001-form" onSubmit={checkAddress}>
-              <label>Service address</label>
-              <div className="mission001-inline">
-                <input
-                  value={address}
-                  onChange={(event) => setAddress(event.target.value)}
-                  placeholder="101 Main St, Greenville, SC 29601"
-                  autoComplete="street-address"
-                />
-                <button type="submit" disabled={busy}>
-                  {busy ? "Checking..." : "Find Options"}
-                </button>
-              </div>
-            </form>
-          )}
-
-          {recommendation && !submittedOrder && (
-            <>
-              <section className="mission001-recommendation">
-                <span>Top recommendation</span>
-                <div className="mission001-rec-title">
-                  <div>
-                    <h2>{recommendation.displayName}</h2>
-                    <p>{quote?.productName}</p>
-                  </div>
-                  <strong>{recommendation.advisorScore}/100</strong>
-                </div>
-
-                <div className="mission001-specs">
-                  <div><strong>{recommendation.download || "—"}</strong><span>Mbps down</span></div>
-                  <div><strong>{recommendation.upload || "—"}</strong><span>Mbps up</span></div>
-                  <div><strong>{currency(quote?.monthlyPrice)}</strong><span>Estimated monthly</span></div>
-                </div>
-
-                <div className="mission001-offer">
-                  <strong>{quote?.promotion}</strong>
-                  <span>{quote?.contract}</span>
-                </div>
-              </section>
-
-              <form className="mission001-question" onSubmit={askQuestion}>
-                <input
-                  value={question}
-                  onChange={(event) => setQuestion(event.target.value)}
-                  placeholder="Ask about gaming, installation, Wi-Fi, or switching..."
-                />
-                <button type="submit">Ask</button>
-              </form>
-
-              <form className="mission001-order" onSubmit={finishOrder}>
-                <div>
-                  <span className="mission001-kicker">Continue your order</span>
-                  <h3>Reserve this recommendation</h3>
-                  <p>No payment is collected here. We use this information to prepare the order for final submission.</p>
-                </div>
-
-                <div className="mission001-customer-grid">
-                  <input
-                    value={customer.name}
-                    onChange={(event) => setCustomer({ ...customer, name: event.target.value })}
-                    placeholder="Full name"
-                    autoComplete="name"
-                  />
-                  <input
-                    type="email"
-                    value={customer.email}
-                    onChange={(event) => setCustomer({ ...customer, email: event.target.value })}
-                    placeholder="Email address"
-                    autoComplete="email"
-                  />
-                  <input
-                    value={customer.phone}
-                    onChange={(event) => setCustomer({ ...customer, phone: event.target.value })}
-                    placeholder="Phone number"
-                    autoComplete="tel"
-                  />
-                </div>
-
-                <button type="submit" disabled={!canSubmit || busy}>
-                  {busy ? "Saving..." : "Create Ready-to-Submit Order"}
-                </button>
-              </form>
-            </>
-          )}
-
-          {submittedOrder && (
-            <section className="mission001-success">
-              <span>Order ready</span>
-              <h2>Thank you, {customer.name}.</h2>
-              <p>
-                Your ConnectIQ order record has been created. We’ll confirm final pricing,
-                eligibility, and installation availability before submission.
-              </p>
-              <strong>Reference: {submittedOrder.id.slice(0, 8).toUpperCase()}</strong>
+          {[CONVERSATION_STATES.GREETING, CONVERSATION_STATES.ADDRESS, CONVERSATION_STATES.LOOKUP, CONVERSATION_STATES.ERROR].includes(step) && !order && (
+            <section className="v040-panel v040-address-panel">
+              <span className="v040-step-label">Step 1 of 5</span><h2>Where do you need service?</h2><p>Enter the full service address so I can check provider availability.</p>
+              <form onSubmit={findOptions}><input value={address} onChange={(e) => setAddress(e.target.value)} placeholder="101 Main St, Greenville, SC 29601" autoComplete="street-address" required /><button disabled={busy}>{busy ? "Checking providers..." : <>Check my address <ArrowRight size={18} /></>}</button></form>
+              {session.error && <p className="v040-error">{session.error}</p>}
+              <small>Your address is used only to verify internet availability.</small>
             </section>
           )}
-        </div>
-      </section>
 
-      <section className="mission001-how">
-        <div>
-          <span>1</span>
-          <h3>Enter your address</h3>
-          <p>ConnectIQ checks the provider data available for your location.</p>
-        </div>
-        <div>
-          <span>2</span>
-          <h3>Get a recommendation</h3>
-          <p>Options are ranked using customer fit and ConnectIQ revenue intelligence.</p>
-        </div>
-        <div>
-          <span>3</span>
-          <h3>Prepare your order</h3>
-          <p>Ask questions, review the offer, and create a ready-to-submit order.</p>
+          {step === CONVERSATION_STATES.DISCOVERY && (
+            <section className="v040-panel">
+              <span className="v040-step-label">Step 2 of 5</span><h2>Help me understand your household.</h2><p>I found <b>{providers.length} providers</b>. These answers improve your recommendation.</p>
+              <div className="v040-number-fields"><label>People in the home<input type="number" min="1" max="20" value={needs.people} onChange={(e) => updateNeed("people", Number(e.target.value))} /></label><label>Connected devices<input type="number" min="1" max="100" value={needs.devices} onChange={(e) => updateNeed("devices", Number(e.target.value))} /></label><label>Target monthly budget<input type="number" min="30" max="500" value={needs.budget} onChange={(e) => updateNeed("budget", Number(e.target.value))} /></label></div>
+              <div className="v040-question-block"><strong>What matters most?</strong><div className="v040-choice-row">{PRIORITIES.map(([key, label]) => <button type="button" className={needs.priority === key ? "is-selected" : ""} onClick={() => updateNeed("priority", key)} key={key}>{label}</button>)}</div></div>
+              <div className="v040-question-block"><strong>How will you use the connection?</strong><div className="v040-choice-row">{NEEDS.map(([key, label]) => <button type="button" className={needs[key] ? "is-selected" : ""} onClick={() => updateNeed(key, !needs[key])} key={key}>{needs[key] ? "✓ " : "+ "}{label}</button>)}</div></div>
+              <button className="v040-primary" type="button" onClick={showRecommendation}>Show my recommendation <ArrowRight size={18} /></button>
+            </section>
+          )}
+
+          {step === CONVERSATION_STATES.RECOMMENDATION && recommendation && (
+            <section className="v040-panel">
+              <span className="v040-step-label">Step 3 of 5</span><div className="v040-recommend-head"><div><span className="v040-best-badge">Best match</span><h2>{recommendation.displayName}</h2><p>{recommendation.recommendationReason}</p></div><div className="v040-score"><strong>{recommendation.advisorScore}</strong><span>/100 match</span><small>{confidence}% confidence</small></div></div>
+              <div className="v040-rec-grid"><div><h3>Why it fits your household</h3><ScoreBreakdown breakdown={recommendation.scoreBreakdown} /></div><div className="v040-rec-summary"><h3>Recommended service</h3><div><span>Technology</span><b>{recommendation.technology}</b></div><div><span>Download</span><b>{recommendation.download || "—"} Mbps</b></div><div><span>Upload</span><b>{recommendation.upload || "—"} Mbps</b></div><div><span>Estimated monthly</span><b>{currency(quote?.monthlyPrice)}</b></div></div></div>
+              <div className="v040-provider-grid">{providers.slice(0, 3).map((provider, index) => <ProviderCardV2 key={provider.id || provider.displayName} provider={provider} needs={needs} rank={index} selected={(provider.id || provider.providerId || provider.displayName) === selectedId} onSelect={chooseProvider} />)}</div>
+              <form className="v040-ask" onSubmit={askAdvisor}><input value={question} onChange={(e) => setQuestion(e.target.value)} placeholder="Ask about price, Wi-Fi, gaming, installation, or switching..." /><button>Ask advisor</button></form>
+              <button className="v040-primary" type="button" onClick={openQuote}>Continue with {recommendation.displayName} <ArrowRight size={18} /></button>
+            </section>
+          )}
+
+          {step === CONVERSATION_STATES.QUOTE && quote && (
+            <section className="v040-panel">
+              <button className="v040-back" onClick={() => setSession({ ...session, step: CONVERSATION_STATES.RECOMMENDATION })}><ChevronLeft size={16} /> Back to comparison</button>
+              <span className="v040-step-label">Step 4 of 5</span><h2>Your personalized internet estimate</h2><p>Based on your address and household needs.</p>
+              <div className="v040-quote"><div><span>Recommended provider</span><h3>{quote.provider}</h3><p>{quote.productName}</p></div><div className="v040-price"><strong>{currency(quote.monthlyPrice)}</strong><span>estimated monthly</span></div><div className="v040-quote-details"><span><b>{quote.download} Mbps</b> download</span><span><b>{quote.upload} Mbps</b> upload</span><span><b>{quote.technology}</b> technology</span><span><b>{quote.contract}</b></span></div><div className="v040-promo"><Zap size={18} /><span><b>Current offer:</b> {quote.promotion}</span></div></div>
+              <p className="v040-disclaimer">{quote.disclaimer}</p>
+              <button className="v040-primary" type="button" onClick={beginOrder}>Start my order <ArrowRight size={18} /></button>
+            </section>
+          )}
+
+          {step === CONVERSATION_STATES.CUSTOMER_INFO && (
+            <section className="v040-panel v040-contact-panel">
+              <span className="v040-step-label">Step 5 of 5</span><h2>Almost done.</h2><p>I’ll create a Ready-to-Submit order package. No payment is collected here.</p>
+              <form onSubmit={submitOrder}>
+                {contactStep === 0 && <label>What is your full name?<input autoFocus value={customer.name} onChange={(e) => setCustomer({ ...customer, name: e.target.value })} placeholder="Full name" required /><button type="button" disabled={!customer.name.trim()} onClick={() => setContactStep(1)}>Continue <ArrowRight size={18} /></button></label>}
+                {contactStep === 1 && <label>What is the best email address?<input autoFocus type="email" value={customer.email} onChange={(e) => setCustomer({ ...customer, email: e.target.value })} placeholder="Email address" required /><button type="button" disabled={!customer.email.trim()} onClick={() => setContactStep(2)}>Continue <ArrowRight size={18} /></button></label>}
+                {contactStep === 2 && <label>What is the best phone number?<input autoFocus value={customer.phone} onChange={(e) => setCustomer({ ...customer, phone: e.target.value })} placeholder="Phone number" required /><button type="button" disabled={!customer.phone.trim()} onClick={() => setContactStep(3)}>Review consent <ArrowRight size={18} /></button></label>}
+                {contactStep === 3 && <div className="v040-final-contact"><div><span>Name</span><b>{customer.name}</b></div><div><span>Email</span><b>{customer.email}</b></div><div><span>Phone</span><b>{customer.phone}</b></div><label className="v040-consent"><input type="checkbox" checked={customer.consent} onChange={(e) => setCustomer({ ...customer, consent: e.target.checked })} /><span>I agree that ConnectIQ may contact me about this internet request by phone, text, or email.</span></label><button className="v040-primary" disabled={!customer.consent || busy}>{busy ? "Creating order..." : "Create Ready-to-Submit Order"}</button></div>}
+              </form>
+            </section>
+          )}
+
+          {order && (
+            <section className="v040-panel v040-success"><CheckCircle2 /><span>Order package created</span><h2>We’ve got it, {customer.name}.</h2><p>ConnectIQ will verify the final provider offer and installation availability before submission.</p><div><small>Reference number</small><strong>{order.id.slice(0, 8).toUpperCase()}</strong></div><button type="button" onClick={restart}>Start another search</button></section>
+          )}
         </div>
       </section>
+      <footer className="v040-footer"><span>ConnectIQ does not collect payment on this page.</span><span>Final pricing and availability require provider confirmation.</span></footer>
     </main>
   );
 }
