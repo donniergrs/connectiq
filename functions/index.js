@@ -12,11 +12,6 @@ app.use(express.json({ limit: "2mb" }));
 
 const PORT = process.env.PORT || 5001;
 
-const MOCK_PROVIDERS = [
-  { id: "lumos", name: "Lumos Fiber", technology: "Fiber", download: 5000, upload: 5000, source: "fallback" },
-  { id: "att", name: "AT&T Fiber", technology: "Fiber", download: 5000, upload: 5000, source: "fallback" },
-  { id: "spectrum", name: "Spectrum", technology: "Cable", download: 1000, upload: 40, source: "fallback" },
-];
 
 function getFccConfig() {
   return {
@@ -38,8 +33,12 @@ async function fetchWithTimeout(url, options = {}, timeoutMs = 9000) {
 
 async function readBody(response) {
   const text = await response.text();
-  let json = null;
-  try { json = JSON.parse(text); } catch {}
+  let json;
+  try {
+    json = JSON.parse(text);
+  } catch {
+    json = null;
+  }
   return { text, json };
 }
 
@@ -384,175 +383,8 @@ app.post("/api/fcc/method-explorer", async (req, res) => {
 });
 
 
-const DEFAULT_FABRIC_ID = process.env.FCC_FABRIC_ID || "8c672e4b-9442-44ee-8da7-3f352fc8d946";
-const DEFAULT_FABRIC_VINTAGE = process.env.FCC_FABRIC_VINTAGE || "2025-12-31";
-const FCC_FABRIC_BASE = "https://broadbandmap.fcc.gov/nbm/map/api/fabric";
 
-function stateFromText(value = "") {
-  const match = String(value).toUpperCase().match(/\b(AL|AK|AZ|AR|CA|CO|CT|DE|FL|GA|HI|IA|ID|IL|IN|KS|KY|LA|MA|MD|ME|MI|MN|MO|MS|MT|NC|ND|NE|NH|NJ|NM|NV|NY|OH|OK|OR|PA|RI|SC|SD|TN|TX|UT|VA|VT|WA|WI|WV|WY|DC)\b/);
-  return match?.[1] || "";
-}
 
-function zipFromText(value = "") {
-  const match = String(value).match(/\b\d{5}(?:-\d{4})?\b/);
-  return match?.[0]?.slice(0, 5) || "";
-}
-
-function chooseBestFccAddressMatch(matches = [], requestedAddress = "") {
-  if (!matches.length) return null;
-
-  const wantedZip = zipFromText(requestedAddress);
-  const wantedState = stateFromText(requestedAddress);
-
-  let ranked = matches.map((match, index) => {
-    let score = 0;
-    if (match.bsl_flag) score += 10;
-    if (wantedZip && String(match.zip_code || "") === wantedZip) score += 30;
-    if (wantedState && String(match.state || "").toUpperCase() === wantedState) score += 20;
-    if (match.location_id) score += 5;
-    return { match, score, index };
-  });
-
-  ranked.sort((a, b) => b.score - a.score || a.index - b.index);
-  return ranked[0].match;
-}
-
-async function searchFccFabricAddress(address, fabricId = DEFAULT_FABRIC_ID) {
-  const url = `${FCC_FABRIC_BASE}/address/${fabricId}/${encodeURIComponent(address)}`;
-  const response = await fetchWithTimeout(url, { method: "GET", headers: buildHeaders("underscore") }, 20000);
-  const body = await readBody(response);
-
-  if (!response.ok) {
-    throw new Error(`FCC address search failed with ${response.status}: ${safePreview(body.json || body.text, 300)}`);
-  }
-
-  const matches = body.json?.data || [];
-  const selected = chooseBestFccAddressMatch(matches, address);
-
-  if (!selected?.location_id) {
-    throw new Error("FCC address search did not return a serviceable location_id.");
-  }
-
-  return {
-    selected,
-    matches,
-    raw: body.json,
-    url,
-  };
-}
-
-async function getFccFabricDetail(locationId, fabricId = DEFAULT_FABRIC_ID, fabricVintage = DEFAULT_FABRIC_VINTAGE) {
-  const url = `${FCC_FABRIC_BASE}/detail/${fabricId}/${locationId}?fabric_vintage=${encodeURIComponent(fabricVintage)}`;
-  const response = await fetchWithTimeout(url, { method: "GET", headers: buildHeaders("underscore") }, 20000);
-  const body = await readBody(response);
-
-  if (!response.ok) {
-    throw new Error(`FCC fabric detail failed with ${response.status}: ${safePreview(body.json || body.text, 300)}`);
-  }
-
-  const record = body.json?.data?.[0] || null;
-  if (!record) {
-    throw new Error("FCC fabric detail returned no provider data for this location.");
-  }
-
-  return {
-    record,
-    raw: body.json,
-    url,
-  };
-}
-
-function normalizeFccFabricProvider(raw, index = 0) {
-  const brand = raw.brand_name || raw.provider_name || `Provider ${index + 1}`;
-  const technology = normalizeTechnology(raw.technology_code_type || raw.technology_code);
-  const download = Number(raw.maxdown || 0);
-  const upload = Number(raw.maxup || 0);
-
-  return {
-    id: String(raw.provider_id || raw.frn || `${slugify(brand)}-${index}`),
-    providerId: raw.provider_id || "",
-    frn: raw.frn || "",
-    name: brand,
-    brandName: brand,
-    providerName: raw.provider_name || brand,
-    holdingCompany: raw.holding_company_name || "",
-    technology,
-    technologyCode: raw.technology_code || "",
-    technologyType: raw.technology_code_type || technology,
-    download,
-    upload,
-    lowLatency: Number(raw.lowlatency || 0) === 1,
-    residential: raw.bizrescode === "R" || raw.bizrescode === "X",
-    business: raw.bizrescode === "B" || raw.bizrescode === "X",
-    bizrescode: raw.bizrescode || "",
-    source: "fcc-live",
-    raw,
-  };
-}
-
-function buildFccCompetitionSummary(providers = []) {
-  const summary = {
-    total: providers.length,
-    fiber: providers.filter((p) => p.technology === "Fiber").length,
-    cable: providers.filter((p) => p.technology === "Cable").length,
-    fixedWireless: providers.filter((p) => p.technology === "Fixed Wireless").length,
-    satellite: providers.filter((p) => p.technology === "Satellite").length,
-    dsl: providers.filter((p) => p.technology === "DSL").length,
-  };
-
-  let level = "Low";
-  if (summary.fiber >= 2 || summary.total >= 6) level = "High";
-  else if (summary.fiber >= 1 || summary.total >= 3) level = "Moderate";
-
-  return { ...summary, level };
-}
-
-async function lookupLiveFccProviders(address) {
-  if (!address) throw new Error("Address is required.");
-
-  const addressSearch = await searchFccFabricAddress(address);
-  const selectedLocation = addressSearch.selected;
-  const detail = await getFccFabricDetail(selectedLocation.location_id);
-
-  const record = detail.record;
-  const providers = rankProviders((record.detail || []).map(normalizeFccFabricProvider));
-
-  return {
-    ok: true,
-    source: "fcc-live",
-    message: "Live FCC provider data returned from FCC fabric address/detail APIs.",
-    address,
-    fabricId: DEFAULT_FABRIC_ID,
-    fabricVintage: DEFAULT_FABRIC_VINTAGE,
-    location: {
-      locationId: selectedLocation.location_id,
-      bslFlag: selectedLocation.bsl_flag,
-      addressPrimary: selectedLocation.address_primary || record.address_primary || "",
-      city: selectedLocation.city || record.city || "",
-      state: selectedLocation.state || record.state || "",
-      zip: selectedLocation.zip_code || record.zip_code || "",
-      fullAddress: selectedLocation.addr_full || `${record.address_primary || ""} ${record.city || ""}, ${record.state || ""} ${record.zip_code || ""}`.trim(),
-      coordinates: record.coordinates || null,
-      bounds: record.bounds || null,
-      unitCount: record.unitCount || null,
-      buildingTypeCode: record.buildingTypeCode || null,
-    },
-    geocode: {
-      matchedAddress: selectedLocation.addr_full || `${selectedLocation.address_primary || ""} ${selectedLocation.city || ""}, ${selectedLocation.state || ""} ${selectedLocation.zip_code || ""}`.trim(),
-      latitude: record.coordinates?.[1] || null,
-      longitude: record.coordinates?.[0] || null,
-    },
-    providerCount: providers.length,
-    providers,
-    recommendation: providers[0] || null,
-    competition: buildFccCompetitionSummary(providers),
-    addressMatches: addressSearch.matches,
-    notes: [
-      `FCC address match selected location_id ${selectedLocation.location_id}.`,
-      `Returned ${providers.length} provider rows from FCC fabric detail.`,
-    ],
-  };
-}
 
 
 
@@ -599,3 +431,6 @@ app.post("/api/fcc/lookup", async (req, res) => {
 });
 
 app.listen(PORT, () => console.log(`ConnectIQ backend running on port ${PORT}`));
+
+
+
