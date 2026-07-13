@@ -8,7 +8,7 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "node --test test/recommendationEngine.test.js"
+    "test": "node --test test/recommendationEngine.test.js test/knowledgeEngine.test.js"
   },
   "dependencies": {
     "clsx": "^2.1.1",
