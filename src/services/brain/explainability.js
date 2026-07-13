@@ -3,37 +3,26 @@ function number(value) {
   return Number.isFinite(parsed) ? parsed : 0;
 }
 
-export function buildScoreBreakdown(provider = {}, needs = {}) {
-  const tech = String(provider.technology || "Broadband").toLowerCase();
-  const download = number(provider.download || provider.maxdown);
-  const upload = number(provider.upload || provider.maxup);
-  const fiber = tech.includes("fiber");
-  const cable = tech.includes("cable");
+function technology(provider = {}) {
+  return String(provider.technology || provider.technologyType || provider.technology_code_type || "Broadband");
+}
 
-  const reliability = Math.min(30, fiber ? 30 : cable ? 23 : provider.lowLatency ? 20 : 14);
-  const speed = Math.min(25, download >= 2000 ? 25 : download >= 1000 ? 22 : download >= 500 ? 18 : download >= 100 ? 13 : 7);
-  const uploadFit = Math.min(20, upload >= 500 ? 20 : upload >= 100 ? 17 : upload >= 20 ? 12 : 6);
-  const householdFit = Math.min(15,
-    7 +
-    (needs.streaming && download >= 300 ? 3 : 0) +
-    (needs.gaming && (provider.lowLatency || fiber) ? 3 : 0) +
-    (needs.workFromHome && upload >= 20 ? 2 : 0)
-  );
-  const value = Math.min(10, provider.revenueProduct?.monthlyPrice || provider.monthlyPrice ? 8 : 6);
-
+export function buildScoreBreakdown(provider = {}) {
+  if (provider.scoreBreakdown) return provider.scoreBreakdown;
   return {
-    reliability,
-    speed,
-    uploadFit,
-    householdFit,
-    value,
-    total: reliability + speed + uploadFit + householdFit + value,
+    reliability: 0,
+    speed: 0,
+    uploadFit: 0,
+    householdFit: 0,
+    priorityFit: 0,
+    value: 0,
+    total: 0,
   };
 }
 
 export function buildProviderInsights(provider = {}, needs = {}) {
-  const technology = String(provider.technology || "Broadband");
-  const tech = technology.toLowerCase();
+  const techLabel = technology(provider);
+  const tech = techLabel.toLowerCase();
   const download = number(provider.download || provider.maxdown);
   const upload = number(provider.upload || provider.maxup);
   const pros = [];
@@ -41,23 +30,46 @@ export function buildProviderInsights(provider = {}, needs = {}) {
 
   if (tech.includes("fiber")) pros.push("Excellent reliability and symmetrical-speed potential");
   if (download >= 1000) pros.push("Strong capacity for multi-device households");
+  else if (download >= 300) pros.push("Good capacity for simultaneous streaming and browsing");
   if (upload >= 100) pros.push("Excellent upload performance for remote work and creators");
-  if (needs.gaming && (provider.lowLatency || tech.includes("fiber"))) pros.push("Strong fit for low-latency gaming");
+  if (needs.gaming && (provider.lowLatency || provider.lowlatency || tech.includes("fiber"))) pros.push("Strong fit for lower-latency gaming");
+
   if (tech.includes("cable")) cons.push("Upload speeds are typically lower than fiber");
-  if (tech.includes("wireless")) cons.push("Performance may vary with signal and congestion");
-  if (tech.includes("satellite")) cons.push("Higher latency can affect gaming and video calls");
+  if (tech.includes("wireless") || tech.includes("5g")) cons.push("Performance may vary with signal strength and local congestion");
+  if (tech.includes("satellite")) cons.push("Higher latency can affect gaming and real-time video calls");
+  if (download && download < 100) cons.push("May be limiting for larger or high-usage households");
   if (!provider.monthlyPrice && !provider.revenueProduct?.monthlyPrice) cons.push("Final plan pricing requires provider confirmation");
 
   return {
     pros: pros.slice(0, 3),
     cons: cons.slice(0, 2),
-    bestFor: tech.includes("fiber") ? "Reliability, remote work, and demanding homes" : download >= 1000 ? "Streaming and larger households" : "Everyday browsing and value-focused households",
+    bestFor: tech.includes("fiber")
+      ? "Reliability, remote work, gaming, and demanding homes"
+      : download >= 1000
+        ? "Streaming and larger multi-device households"
+        : tech.includes("wireless") || tech.includes("5g")
+          ? "Flexible installation and everyday household use"
+          : "Everyday browsing and value-focused households",
   };
+}
+
+function providerDataQuality(provider = {}) {
+  const fields = [
+    technology(provider) !== "Broadband",
+    number(provider.download || provider.maxdown) > 0,
+    number(provider.upload || provider.maxup) > 0,
+    Boolean(provider.displayName || provider.name || provider.brandName || provider.providerName),
+  ];
+  return fields.filter(Boolean).length / fields.length;
 }
 
 export function recommendationConfidence(ranked = []) {
   if (!ranked.length) return 0;
-  if (ranked.length === 1) return 96;
-  const gap = number(ranked[0].advisorScore) - number(ranked[1].advisorScore);
-  return Math.max(72, Math.min(98, 82 + gap * 2));
+  const top = ranked[0];
+  const second = ranked[1];
+  const gap = second ? number(top.advisorScore) - number(second.advisorScore) : 12;
+  const quality = providerDataQuality(top);
+  const competitionBonus = ranked.length >= 3 ? 3 : ranked.length === 2 ? 1 : 0;
+  const raw = 72 + Math.min(14, Math.max(0, gap) * 1.5) + quality * 10 + competitionBonus;
+  return Math.max(70, Math.min(98, Math.round(raw)));
 }
