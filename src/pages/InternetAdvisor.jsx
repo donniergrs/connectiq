@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
-import { ArrowRight, CheckCircle2, ChevronLeft, MessageCircle, ShieldCheck, Sparkles, X, Zap } from "lucide-react";
+import { ArrowRight, CheckCircle2, ChevronLeft, MessageCircle, ShieldCheck, Sparkles, X } from "lucide-react";
 import AdvisorProgress from "../components/advisor/AdvisorProgress";
 import AdvisorConversation from "../components/advisor/AdvisorConversation";
 import CustomerProfile from "../components/advisor/CustomerProfile";
 import ProviderCardV2 from "../components/advisor/ProviderCardV2";
 import ScoreBreakdown from "../components/advisor/ScoreBreakdown";
+import ProfessionalQuoteCard from "../components/advisor/ProfessionalQuoteCard";
 import { lookupAddressWithBrain, updateNeedsWithBrain } from "../services/brain/brain";
 import { answerQuestionMessage } from "../services/brain/conversationEngine";
 import { CONVERSATION_STATES } from "../services/brain/conversationState";
@@ -294,12 +295,17 @@ export default function InternetAdvisor() {
           )}
 
           {step === CONVERSATION_STATES.QUOTE && quote && (
-            <section className="v040-panel">
+            <section className="v040-panel v040-quote-panel">
               <button className="v040-back" onClick={() => setSession({ ...session, step: CONVERSATION_STATES.RECOMMENDATION })}><ChevronLeft size={16} /> Back to comparison</button>
-              <span className="v040-step-label">Step 4 of 5</span><h2>Your personalized internet estimate</h2><p>Based on your address and household needs.</p>
-              <div className="v040-quote"><div><span>Recommended provider</span><h3>{quote.provider}</h3><p>{quote.productName}</p></div><div className="v040-price"><strong>{currency(quote.monthlyPrice)}</strong><span>estimated monthly</span></div><div className="v040-quote-details"><span><b>{quote.download} Mbps</b> download</span><span><b>{quote.upload} Mbps</b> upload</span><span><b>{quote.technology}</b> technology</span><span><b>{quote.contract}</b></span></div><div className="v040-promo"><Zap size={18} /><span><b>Current offer:</b> {quote.promotion}</span></div></div>
-              <p className="v040-disclaimer">{quote.disclaimer}</p>
-              <button className="v040-primary" type="button" onClick={beginOrder}>Start my order <ArrowRight size={18} /></button>
+              <span className="v040-step-label">Step 4 of 5</span>
+              <ProfessionalQuoteCard
+                quote={quote}
+                recommendation={recommendation}
+                providers={providers}
+                needs={needs}
+                confidence={confidence}
+                onContinue={beginOrder}
+              />
             </section>
           )}
 
