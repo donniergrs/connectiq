@@ -1,5 +1,6 @@
 import { collection, doc, serverTimestamp, writeBatch } from "firebase/firestore";
 import { db } from "../../firebase";
+import { formatCustomerReference } from "./customerCompletion";
 
 function clean(value) { return String(value || "").trim(); }
 
@@ -13,6 +14,8 @@ export async function createReadyToSubmitOrder({ customer, address, providers, r
   const conversationRef = doc(collection(db, "conversations"));
   const batch = writeBatch(db);
 
+  const customerReference = formatCustomerReference(orderRef.id);
+
   const shared = {
     name: clean(customer.name), email: clean(customer.email).toLowerCase(), phone: clean(customer.phone),
     address: clean(address), source: campaign.source || "AI Internet Advisor",
@@ -24,6 +27,7 @@ export async function createReadyToSubmitOrder({ customer, address, providers, r
     readinessScore: salesSummary?.advisorNotes?.readinessScore || 0,
     readinessStatus: salesSummary?.advisorNotes?.readinessStatus || "",
     nextAction: salesSummary?.advisorNotes?.nextAction || "",
+    customerReference,
     updatedAt: serverTimestamp(),
   };
 

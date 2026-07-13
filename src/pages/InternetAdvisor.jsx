@@ -6,7 +6,7 @@ import CustomerProfile from "../components/advisor/CustomerProfile";
 import ProviderCardV2 from "../components/advisor/ProviderCardV2";
 import ScoreBreakdown from "../components/advisor/ScoreBreakdown";
 import ProfessionalQuoteCard from "../components/advisor/ProfessionalQuoteCard";
-import SalesSummaryCard from "../components/advisor/SalesSummaryCard";
+import CustomerCompletionCard from "../components/advisor/CustomerCompletionCard";
 import { lookupAddressWithBrain, updateNeedsWithBrain } from "../services/brain/brain";
 import { answerQuestionMessage } from "../services/brain/conversationEngine";
 import { CONVERSATION_STATES } from "../services/brain/conversationState";
@@ -15,6 +15,7 @@ import { buildQuote } from "../services/brain/quoteEngine";
 import { recommendationConfidence } from "../services/brain/explainability";
 import { trackConversionEvent } from "../services/brain/analyticsTracker";
 import { buildSalesSummary } from "../services/brain/salesSummary";
+import { buildCustomerCompletion } from "../services/brain/customerCompletion";
 import { useCustomerContext } from "../context/CustomerContext";
 
 function currency(value) {
@@ -72,6 +73,7 @@ export default function InternetAdvisor() {
   const { providers, recommendation, quote, needs, step } = session;
   const confidence = useMemo(() => recommendationConfidence(providers), [providers]);
   const selectedId = recommendation?.id || recommendation?.providerId || recommendation?.displayName;
+  const customerCompletion = useMemo(() => order ? buildCustomerCompletion({ order, recommendation, quote, customer }) : null, [order, recommendation, quote, customer]);
 
   useEffect(() => {
     if (!busy) {
@@ -334,8 +336,8 @@ export default function InternetAdvisor() {
           )}
 
           {order && (
-            <section className="v040-panel v040-sales-summary-panel">
-              <SalesSummaryCard summary={order.salesSummary} order={order} onRestart={restart} />
+            <section className="v040-panel v040-customer-completion-panel">
+              <CustomerCompletionCard completion={customerCompletion} onRestart={restart} onOpenChat={() => setChatOpen(true)} />
             </section>
           )}
             </div>
