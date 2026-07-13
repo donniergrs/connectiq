@@ -1,6 +1,8 @@
 import { useMemo, useState } from "react";
-import { ArrowRight, Bot, CheckCircle2, ChevronLeft, ShieldCheck, Sparkles, Zap } from "lucide-react";
+import { ArrowRight, CheckCircle2, ChevronLeft, ShieldCheck, Sparkles, Zap } from "lucide-react";
 import AdvisorProgress from "../components/advisor/AdvisorProgress";
+import AdvisorConversation from "../components/advisor/AdvisorConversation";
+import CustomerProfile from "../components/advisor/CustomerProfile";
 import ProviderCardV2 from "../components/advisor/ProviderCardV2";
 import ScoreBreakdown from "../components/advisor/ScoreBreakdown";
 import { createBrainSession, lookupAddressWithBrain, updateNeedsWithBrain } from "../services/brain/brain";
@@ -160,7 +162,9 @@ export default function InternetAdvisor() {
 
         <div className="v040-workspace">
           <AdvisorProgress activeIndex={stepIndex(step)} />
-          <section className="v040-advisor-bar"><div className="v040-avatar"><Bot /></div><div><span>ConnectIQ Advisor</span><p>{messages.at(-1)?.text}</p></div><i /></section>
+          <div className="v040-advisor-layout">
+            <AdvisorConversation messages={messages} busy={busy} />
+            <div className="v040-stage">
 
           {[CONVERSATION_STATES.GREETING, CONVERSATION_STATES.ADDRESS, CONVERSATION_STATES.LOOKUP, CONVERSATION_STATES.ERROR].includes(step) && !order && (
             <section className="v040-panel v040-address-panel">
@@ -216,6 +220,9 @@ export default function InternetAdvisor() {
           {order && (
             <section className="v040-panel v040-success"><CheckCircle2 /><span>Order package created</span><h2>We’ve got it, {customer.name}.</h2><p>ConnectIQ will verify the final provider offer and installation availability before submission.</p><div><small>Reference number</small><strong>{order.id.slice(0, 8).toUpperCase()}</strong></div><button type="button" onClick={restart}>Start another search</button></section>
           )}
+            </div>
+            <CustomerProfile address={session.address || address} needs={needs} providers={providers} recommendation={recommendation} />
+          </div>
         </div>
       </section>
       <footer className="v040-footer"><span>ConnectIQ does not collect payment on this page.</span><span>Final pricing and availability require provider confirmation.</span></footer>
