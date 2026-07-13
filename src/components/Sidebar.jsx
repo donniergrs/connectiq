@@ -9,7 +9,7 @@ export default function Sidebar() {
       </div>
 
       <nav>
-        <NavLink to="/admin" end>Command Center</NavLink>
+        <NavLink to="/admin" end>Advisor Dashboard</NavLink>
         <NavLink to="/admin/leads">Leads</NavLink>
         <NavLink to="/admin/fcc-lookup">FCC Lookup</NavLink>
         <NavLink to="/admin/fcc-explorer">FCC Explorer</NavLink>

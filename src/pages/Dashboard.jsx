@@ -1,263 +1,147 @@
 import { useEffect, useMemo, useState } from "react";
 import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
+import { ArrowRight, BriefcaseBusiness, CircleDollarSign, Clock3, FileCheck2, PhoneCall, RefreshCw, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 import { db } from "../firebase";
-import { formatCurrency, STATUS_FLOW } from "../services/providerIntelligence";
+import { buildAdvisorDashboard } from "../services/advisorDashboard";
 
-function leadRevenueOpportunity(lead) {
-  const best = Array.isArray(lead.providers) ? lead.providers[0] : null;
-  return Number(
-    lead.recommendationSnapshot?.annualRevenueOpportunity ||
-    best?.annualRevenueOpportunity ||
-    best?.revenueProduct?.annualRevenueOpportunity ||
-    best?.commission ||
-    175
-  );
+function currency(value) {
+  return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(Number(value || 0));
 }
 
-function getLeadRecommendationName(lead) {
-  const best = Array.isArray(lead.providers) ? lead.providers[0] : null;
+function relativeTime(date) {
+  if (!date) return "Recently";
+  const seconds = Math.max(0, Math.floor((Date.now() - date.getTime()) / 1000));
+  if (seconds < 60) return "Just now";
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return `${minutes}m ago`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h ago`;
+  return `${Math.floor(hours / 24)}d ago`;
+}
+
+function MetricCard({ icon: Icon, label, value, detail, tone = "blue" }) {
   return (
-    lead.recommendationSnapshot?.displayName ||
-    lead.recommendationSnapshot?.name ||
-    lead.recommendedProvider ||
-    best?.displayName ||
-    best?.name ||
-    "Pending Recommendation"
+    <article className={`advisor-kpi advisor-kpi-${tone}`}>
+      <div className="advisor-kpi-icon"><Icon size={21} /></div>
+      <div><span>{label}</span><strong>{value}</strong><small>{detail}</small></div>
+    </article>
   );
 }
 
-function isDateToday(dateString) {
-  if (!dateString) return false;
-  return dateString === new Date().toISOString().slice(0, 10);
-}
-
-function isDateOverdue(dateString) {
-  if (!dateString) return false;
-  return dateString < new Date().toISOString().slice(0, 10);
+function QualityBadge({ quality }) {
+  const slug = String(quality || "needs-review").toLowerCase().replace(/\s+/g, "-");
+  return <span className={`advisor-quality advisor-quality-${slug}`}>{quality || "Needs Review"}</span>;
 }
 
 export default function Dashboard() {
   const [leads, setLeads] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const q = query(collection(db, "leads"), orderBy("createdAt", "desc"));
     return onSnapshot(q, (snapshot) => {
       setLeads(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
+      setLoading(false);
+      setError("");
+    }, (snapshotError) => {
+      console.error(snapshotError);
+      setError("Unable to load the advisor lead queue. Check Firestore access and try again.");
+      setLoading(false);
     });
   }, []);
 
-  const stats = useMemo(() => {
-    const today = new Date().toDateString();
-    const todayLeads = leads.filter((lead) => lead.createdAt?.toDate?.()?.toDateString() === today);
-    const newLeads = leads.filter((lead) => !lead.status || lead.status === "New Lead");
-    const followUps = leads.filter((lead) => lead.followUpDate);
-    const dueToday = leads.filter((lead) => isDateToday(lead.followUpDate));
-    const overdue = leads.filter((lead) => isDateOverdue(lead.followUpDate));
-    const sold = leads.filter((lead) => ["Sale Closed", "Sold", "Installed"].includes(lead.status));
-    const revenueOpportunity = leads.reduce((sum, lead) => sum + leadRevenueOpportunity(lead), 0);
-
-    return {
-      total: leads.length,
-      today: todayLeads.length,
-      newLeads: newLeads.length,
-      followUps: followUps.length,
-      dueToday: dueToday.length,
-      overdue: overdue.length,
-      conversion: leads.length ? Math.round((sold.length / leads.length) * 100) : 0,
-      revenueOpportunity,
-      sold: sold.length,
-    };
-  }, [leads]);
-
-  const providerCounts = useMemo(() => {
-    const counts = {};
-    leads.forEach((lead) => {
-      const provider = getLeadRecommendationName(lead);
-      counts[provider] = (counts[provider] || 0) + 1;
-    });
-    return Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 5);
-  }, [leads]);
-
-  const highestRevenueLeads = useMemo(() => {
-    return [...leads]
-      .map((lead) => ({
-        ...lead,
-        revenueOpportunity: leadRevenueOpportunity(lead),
-        recommendationName: getLeadRecommendationName(lead),
-      }))
-      .sort((a, b) => b.revenueOpportunity - a.revenueOpportunity)
-      .slice(0, 5);
-  }, [leads]);
-
-  const taskQueue = useMemo(() => {
-    return [...leads]
-      .filter((lead) => lead.followUpDate)
-      .map((lead) => ({
-        ...lead,
-        revenueOpportunity: leadRevenueOpportunity(lead),
-        recommendationName: getLeadRecommendationName(lead),
-        taskStatus: isDateOverdue(lead.followUpDate) ? "Overdue" : isDateToday(lead.followUpDate) ? "Due Today" : "Upcoming",
-      }))
-      .sort((a, b) => {
-        if (a.taskStatus === "Overdue" && b.taskStatus !== "Overdue") return -1;
-        if (a.taskStatus !== "Overdue" && b.taskStatus === "Overdue") return 1;
-        return String(a.followUpDate).localeCompare(String(b.followUpDate));
-      })
-      .slice(0, 8);
-  }, [leads]);
+  const dashboard = useMemo(() => buildAdvisorDashboard(leads), [leads]);
+  const { metrics, priorityQueue, providerMix } = dashboard;
 
   return (
-    <section className="sprint9-page">
-      <div className="sprint19-hero">
+    <section className="advisor-dashboard-page">
+      <header className="advisor-dashboard-hero">
         <div>
-          <span className="eyebrow">Advisor Task Center</span>
-          <h1>ConnectIQ Advisor Command Center</h1>
-          <p>Prioritize today’s follow-ups, overdue leads, and the highest revenue opportunities.</p>
+          <span className="advisor-eyebrow"><BriefcaseBusiness size={15} /> ConnectIQ Advisor Workspace</span>
+          <h1>Start with the leads most likely to convert.</h1>
+          <p>AI-qualified opportunities, recommendations, quotes, and next actions in one place.</p>
         </div>
-        <Link to="/admin/leads" className="sprint9-primary">Work Leads</Link>
+        <div className="advisor-hero-actions">
+          <Link to="/admin/leads" className="advisor-secondary-action">View full pipeline</Link>
+          <Link to="/internet" className="advisor-primary-action">Open customer advisor <ArrowRight size={17} /></Link>
+        </div>
+      </header>
+
+      <div className="advisor-kpi-grid">
+        <MetricCard icon={Users} label="Today's Leads" value={metrics.today} detail={`${metrics.total} total opportunities`} />
+        <MetricCard icon={PhoneCall} label="Ready to Call" value={metrics.readyToCall} detail="High-readiness advisor queue" tone="green" />
+        <MetricCard icon={FileCheck2} label="Quotes Generated" value={metrics.quotesGenerated} detail={`${metrics.ordersSubmitted} order-ready`} tone="violet" />
+        <MetricCard icon={CircleDollarSign} label="Projected Commission" value={currency(metrics.projectedCommission)} detail="Based on available carrier data" tone="gold" />
       </div>
 
-      <div className="sprint19-metrics">
-        <Metric title="Revenue Opportunity" value={formatCurrency(stats.revenueOpportunity)} accent="money" />
-        <Metric title="Due Today" value={stats.dueToday} accent="today" />
-        <Metric title="Overdue" value={stats.overdue} accent="danger" />
-        <Metric title="New Leads" value={stats.newLeads} />
-        <Metric title="Conversion" value={`${stats.conversion}%`} />
-      </div>
+      {error && <div className="advisor-dashboard-error">{error}</div>}
 
-      <div className="sprint19-grid">
-        <div className="sprint19-panel sprint19-focus">
-          <div className="sprint9-panel-header">
-            <div>
-              <span className="eyebrow">Highest Revenue</span>
-              <h2>Revenue Priority Queue</h2>
-            </div>
+      <div className="advisor-dashboard-grid">
+        <section className="advisor-panel advisor-priority-panel">
+          <div className="advisor-panel-heading">
+            <div><span>Priority queue</span><h2>Advisor-ready opportunities</h2></div>
+            <Link to="/admin/leads">Open all leads</Link>
           </div>
 
-          {highestRevenueLeads.length === 0 ? (
-            <div className="empty-state">No revenue opportunities yet.</div>
+          {loading ? (
+            <div className="advisor-loading"><RefreshCw className="is-spinning" /> Loading lead intelligence…</div>
+          ) : priorityQueue.length === 0 ? (
+            <div className="advisor-empty-state"><Users size={26} /><strong>No leads yet</strong><p>Completed customer journeys will appear here automatically.</p></div>
           ) : (
-            <div className="sprint19-opportunity-list">
-              {highestRevenueLeads.map((lead, index) => (
-                <div className="sprint19-opportunity" key={lead.id}>
-                  <div className="sprint19-rank">#{index + 1}</div>
-                  <div>
-                    <strong>{lead.name || "Unknown Customer"}</strong>
-                    <span>{lead.recommendationName}</span>
-                    <small>{lead.address || lead.email || "No address captured"}</small>
+            <div className="advisor-lead-queue">
+              {priorityQueue.map((lead) => (
+                <article className="advisor-lead-card" key={lead.id}>
+                  <div className="advisor-lead-card-top">
+                    <QualityBadge quality={lead.quality} />
+                    <span className="advisor-readiness">{lead.readiness || 0}% ready</span>
                   </div>
-                  <div className="sprint19-money">{formatCurrency(lead.revenueOpportunity)}</div>
-                  <Link to={`/admin/leads/${lead.id}`} className="sprint19-mini-button">Open Lead</Link>
-                </div>
+                  <div className="advisor-lead-person">
+                    <div className="advisor-avatar">{String(lead.name || "?").slice(0, 1).toUpperCase()}</div>
+                    <div><h3>{lead.name || "Unknown Customer"}</h3><p>{lead.address || lead.email || "No address captured"}</p></div>
+                    <small>{relativeTime(lead.createdDate)}</small>
+                  </div>
+                  <div className="advisor-lead-offer">
+                    <div><span>Recommendation</span><strong>{lead.provider}</strong><small>{lead.plan}</small></div>
+                    <div><span>Estimate</span><strong>{lead.monthlyPrice ? `${currency(lead.monthlyPrice)}/mo` : "Verify price"}</strong><small>{lead.currentStatus}</small></div>
+                  </div>
+                  <div className="advisor-lead-next"><span>Next action</span><p>{lead.action}</p></div>
+                  <Link to={`/admin/leads/${lead.id}`} className="advisor-open-lead">Open lead workspace <ArrowRight size={16} /></Link>
+                </article>
               ))}
             </div>
           )}
-        </div>
+        </section>
 
-        <div className="sprint19-panel">
-          <div className="sprint9-panel-header">
-            <div>
-              <span className="eyebrow">Task Queue</span>
-              <h2>Follow-Ups</h2>
+        <aside className="advisor-dashboard-side">
+          <section className="advisor-panel">
+            <div className="advisor-panel-heading compact"><div><span>Business pulse</span><h2>Pipeline health</h2></div></div>
+            <div className="advisor-health-score"><strong>{metrics.averageReadiness}%</strong><span>Average readiness</span></div>
+            <div className="advisor-health-list">
+              <div><span>Orders submitted</span><strong>{metrics.ordersSubmitted}</strong></div>
+              <div><span>Closed / installed</span><strong>{metrics.closed}</strong></div>
+              <div><span>Quotes generated</span><strong>{metrics.quotesGenerated}</strong></div>
             </div>
-          </div>
+          </section>
 
-          {taskQueue.length === 0 ? (
-            <div className="empty-state">No follow-up tasks scheduled.</div>
-          ) : (
-            <div className="sprint19-task-list">
-              {taskQueue.map((lead) => (
-                <Link to={`/admin/leads/${lead.id}`} className={`sprint19-task ${lead.taskStatus === "Overdue" ? "is-overdue" : ""}`} key={lead.id}>
-                  <div>
-                    <strong>{lead.taskStatus}</strong>
-                    <span>{lead.name || "Unknown Customer"}</span>
-                    <small>{lead.followUpDate} • {lead.recommendationName}</small>
-                  </div>
-                  <div>{formatCurrency(lead.revenueOpportunity)}</div>
-                </Link>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-
-      <div className="sprint9-grid-two">
-        <div className="sprint9-panel">
-          <div className="sprint9-panel-header">
-            <div>
-              <span className="eyebrow">Pipeline</span>
-              <h2>Status Distribution</h2>
-            </div>
-          </div>
-          <div className="sprint9-pipeline-bars">
-            {STATUS_FLOW.filter((s) => s !== "Lost").map((status) => {
-              const count = leads.filter((lead) => (lead.status || "New Lead") === status).length;
-              const width = leads.length ? Math.max(8, Math.round((count / leads.length) * 100)) : 8;
-              return (
-                <div className="pipeline-bar-row" key={status}>
-                  <div className="pipeline-bar-label"><span>{status}</span><strong>{count}</strong></div>
-                  <div className="pipeline-bar-track"><div style={{ width: `${width}%` }} /></div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        <div className="sprint9-panel">
-          <div className="sprint9-panel-header">
-            <div>
-              <span className="eyebrow">Providers</span>
-              <h2>Top Recommendations</h2>
-            </div>
-          </div>
-          <div className="provider-rank-list">
-            {providerCounts.length === 0 ? <div className="empty-state">No provider data yet.</div> : providerCounts.map(([name, count]) => (
-              <div className="provider-rank" key={name}>
-                <span>{name}</span>
-                <strong>{count}</strong>
+          <section className="advisor-panel">
+            <div className="advisor-panel-heading compact"><div><span>Recommendation mix</span><h2>Top providers</h2></div></div>
+            {providerMix.length === 0 ? <div className="advisor-mini-empty">Provider mix appears after leads are generated.</div> : (
+              <div className="advisor-provider-mix">
+                {providerMix.map(([provider, count], index) => (
+                  <div key={provider}><i>{index + 1}</i><span>{provider}</span><strong>{count}</strong></div>
+                ))}
               </div>
-            ))}
-          </div>
-        </div>
-      </div>
+            )}
+          </section>
 
-      <div className="sprint9-panel">
-        <div className="sprint9-panel-header">
-          <div>
-            <span className="eyebrow">Recent Activity</span>
-            <h2>Newest Leads</h2>
-          </div>
-          <Link to="/admin/leads">View All</Link>
-        </div>
-
-        {leads.length === 0 ? <div className="empty-state">No leads yet.</div> : (
-          <div className="sprint9-lead-list">
-            {leads.slice(0, 8).map((lead) => (
-              <Link to={`/admin/leads/${lead.id}`} className="sprint9-lead-row" key={lead.id}>
-                <div>
-                  <strong>{lead.name || "Unknown Customer"}</strong>
-                  <span>{lead.address || lead.email || "No address"}</span>
-                </div>
-                <div>
-                  <strong>{getLeadRecommendationName(lead)}</strong>
-                  <span>{lead.priority || "No priority"}</span>
-                </div>
-                <span className="sprint9-status">{lead.status || "New Lead"}</span>
-              </Link>
-            ))}
-          </div>
-        )}
+          <section className="advisor-panel advisor-next-shift">
+            <Clock3 size={22} />
+            <div><span>Advisor focus</span><h3>Work high-readiness leads first.</h3><p>Open the queue, confirm current offers, and contact customers while their recommendation is fresh.</p></div>
+          </section>
+        </aside>
       </div>
     </section>
-  );
-}
-
-function Metric({ title, value, accent = "" }) {
-  return (
-    <div className={`sprint19-metric ${accent ? `is-${accent}` : ""}`}>
-      <span>{title}</span>
-      <strong>{value}</strong>
-    </div>
   );
 }
