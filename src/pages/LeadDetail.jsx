@@ -1,279 +1,272 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { arrayUnion, doc, onSnapshot, serverTimestamp, updateDoc } from "firebase/firestore";
-import { db } from "../firebase";
-import { formatCurrency, STATUS_FLOW } from "../services/providerIntelligence";
-import { summarizeCarrierOptions } from "../services/carrierIntelligenceService";
+import {
+  ArrowLeft,
+  CalendarClock,
+  CheckCircle2,
+  CircleDollarSign,
+  ClipboardList,
+  Clock3,
+  ExternalLink,
+  FileText,
+  Gauge,
+  HeartPulse,
+  Mail,
+  MessageSquareText,
+  Phone,
+  Save,
+  ShieldCheck,
+  Sparkles,
+  Target,
+  Users,
+  Wifi,
+  RefreshCw,
+} from "lucide-react";
+import { auth, db } from "../firebase";
+import { STATUS_FLOW } from "../services/providerIntelligence";
+import { buildLeadWorkspace } from "../services/leadWorkspace";
+import { buildWorkspaceJournalEvents, JOURNAL_EVENT_TYPES } from "../services/opportunityJournal";
 
-export default function LeadDetail() {
-  const { leadId } = useParams();
-  const [lead, setLead] = useState(null);
-  const [status, setStatus] = useState("New Lead");
-  const [advisorNotes, setAdvisorNotes] = useState("");
-  const [activityNote, setActivityNote] = useState("");
-  const [followUpDate, setFollowUpDate] = useState("");
-  const [saved, setSaved] = useState(false);
+function currency(value) {
+  return value ? new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(value) : "Verify price";
+}
 
-  useEffect(() => {
-    const ref = doc(db, "leads", leadId);
-    return onSnapshot(ref, (snapshot) => {
-      if (snapshot.exists()) {
-        const data = { id: snapshot.id, ...snapshot.data() };
-        setLead(data);
-        setStatus(data.status || "New Lead");
-        setAdvisorNotes(data.advisorNotes || "");
-        setFollowUpDate(data.followUpDate || "");
-      }
-    });
-  }, [leadId]);
+function dateTime(value) {
+  return value instanceof Date ? value.toLocaleString([], { dateStyle: "medium", timeStyle: "short" }) : "Recently";
+}
 
-  const carrierSummary = useMemo(() => {
-    return summarizeCarrierOptions(lead?.providers || []);
-  }, [lead]);
+function JournalIcon({ type }) {
+  const Icon = {
+    [JOURNAL_EVENT_TYPES.STATUS_CHANGE]: RefreshCw,
+    [JOURNAL_EVENT_TYPES.ADVISOR_NOTE]: FileText,
+    [JOURNAL_EVENT_TYPES.FOLLOW_UP]: CalendarClock,
+    [JOURNAL_EVENT_TYPES.ADVISOR_ACTIVITY]: ClipboardList,
+    lead_created: Users,
+    recommendation_generated: Sparkles,
+    quote_generated: CircleDollarSign,
+  }[type] || Clock3;
+  return <Icon size={16} />;
+}
 
-  const bestProvider = carrierSummary.best;
-  const activity = [...(lead?.activity || [])].reverse();
+function qualityClass(value) {
+  return String(value || "needs-review").toLowerCase().replace(/\s+/g, "-");
+}
 
-  async function saveLead() {
-    await updateDoc(doc(db, "leads", leadId), {
-      status,
-      advisorNotes,
-      followUpDate,
-      updatedAt: serverTimestamp(),
-      activity: arrayUnion({
-        type: "Advisor Update",
-        status,
-        note: activityNote || `Status updated to ${status}`,
-        createdAt: new Date().toISOString(),
-      }),
-    });
+function Detail({ label, value }) {
+  return <div className="lead502-detail"><span>{label}</span><strong>{value || "Not captured"}</strong></div>;
+}
 
-    setActivityNote("");
-    setSaved(true);
-    setTimeout(() => setSaved(false), 1800);
-  }
-
-  async function acceptRecommendation() {
-    if (!bestProvider) return;
-
-    await updateDoc(doc(db, "leads", leadId), {
-      recommendedProvider: bestProvider.displayName || bestProvider.name,
-      recommendationAccepted: true,
-      recommendedAt: new Date().toISOString(),
-      recommendationHistory: arrayUnion({
-        provider: bestProvider.displayName || bestProvider.name,
-        product: bestProvider.revenueProduct?.productName || "",
-        advisorScore: bestProvider.advisorScore || 0,
-        revenueScore: bestProvider.revenueScore || 0,
-        customerScore: bestProvider.customerScore || 0,
-        annualRevenueOpportunity: bestProvider.annualRevenueOpportunity || 0,
-        commission: bestProvider.revenueProduct?.commission || bestProvider.commissionResidential || 0,
-        spiff: bestProvider.revenueProduct?.spiff || 0,
-        accepted: true,
-        createdAt: new Date().toISOString(),
-      }),
-      recommendationSnapshot: bestProvider,
-      updatedAt: serverTimestamp(),
-      activity: arrayUnion({
-        type: "Recommendation Accepted",
-        status,
-        note: `Advisor accepted ConnectIQ recommendation: ${bestProvider.displayName || bestProvider.name}`,
-        createdAt: new Date().toISOString(),
-      }),
-    });
-
-    setSaved(true);
-    setTimeout(() => setSaved(false), 1800);
-  }
-
-  if (!lead) {
-    return (
-      <section className="sprint9-page">
-        <div className="sprint9-panel">Loading customer record...</div>
-      </section>
-    );
-  }
-
+function Panel({ eyebrow, title, icon: Icon, children, className = "" }) {
   return (
-    <section className="sprint9-page">
-      <Link to="/admin/leads" className="back-link">← Back to Leads</Link>
-
-      <div className="lead-workspace-hero">
-        <div>
-          <span className="eyebrow">Lead Workspace</span>
-          <h1>{lead.name || "Unknown Customer"}</h1>
-          <p>{lead.address || "No address captured"}</p>
-        </div>
-        <div className="workspace-actions">
-          {lead.phone && <a href={`tel:${lead.phone}`} className="sprint9-primary">Call Customer</a>}
-          {lead.email && <a href={`mailto:${lead.email}`} className="sprint9-secondary">Email</a>}
-        </div>
-      </div>
-
-      <div className="sprint17-recommendation">
-        <span className="eyebrow">ConnectIQ Revenue Recommendation</span>
-
-        {bestProvider ? (
-          <>
-            <div className="sprint17-rec-header">
-              <div>
-                <h2>🥇 {bestProvider.displayName || bestProvider.name}</h2>
-                <p>{bestProvider.revenueProduct?.productName || "Best available product"}</p>
-              </div>
-              <div className="sprint17-score">{bestProvider.advisorScore}/100</div>
-            </div>
-
-            <div className="sprint17-score-grid">
-              <Score label="Overall" value={bestProvider.advisorScore} />
-              <Score label="Revenue" value={bestProvider.revenueScore} />
-              <Score label="Customer" value={bestProvider.customerScore} />
-              <Score label="Weighting" value="70/30" />
-            </div>
-
-            <div className="sprint17-info-grid">
-              <Info label="Commission" value={formatCurrency(bestProvider.revenueProduct?.commission || bestProvider.commissionResidential || 0)} />
-              <Info label="SPIFF" value={formatCurrency(bestProvider.revenueProduct?.spiff || 0)} />
-              <Info label="Residual" value={`${formatCurrency(bestProvider.revenueProduct?.residualMonthly || 0)}/mo`} />
-              <Info label="Annual Revenue" value={formatCurrency(bestProvider.annualRevenueOpportunity || 0)} />
-              <Info label="Technology" value={bestProvider.technology || "—"} />
-              <Info label="Speed" value={`${bestProvider.download || "—"} / ${bestProvider.upload || "—"} Mbps`} />
-              <Info label="Install ETA" value={bestProvider.installEta || "Unknown"} />
-              <Info label="Promotion" value={bestProvider.revenueProduct?.promotion || bestProvider.promotion || "Verify current promo"} />
-            </div>
-
-            <div className="sprint17-why">
-              <h3>Why ConnectIQ recommends this carrier</h3>
-              <ul>
-                {bestProvider.revenueScore >= 80 && <li>✓ Strongest revenue opportunity</li>}
-                {bestProvider.annualRevenueOpportunity > 0 && <li>✓ {formatCurrency(bestProvider.annualRevenueOpportunity)} estimated first-year revenue</li>}
-                {bestProvider.dsiSupported && <li>✓ DSI supported carrier</li>}
-                {String(bestProvider.technology).toLowerCase().includes("fiber") && <li>✓ Fiber available at this address</li>}
-                {bestProvider.customerScore >= 80 && <li>✓ Strong customer fit based on speed and technology</li>}
-              </ul>
-            </div>
-
-            <button className="sprint17-recommend-button" onClick={acceptRecommendation}>
-              Recommend Carrier
-            </button>
-            {saved && <div className="save-success">Saved successfully.</div>}
-          </>
-        ) : (
-          <p>No provider recommendation available yet.</p>
-        )}
-      </div>
-
-      <div className="sprint9-grid-two workspace-grid">
-        <div className="sprint9-panel">
-          <span className="eyebrow">Customer</span>
-          <div className="detail-list sprint9-detail-list">
-            <div><strong>Name</strong><span>{lead.name || "—"}</span></div>
-            <div><strong>Email</strong><span>{lead.email || "—"}</span></div>
-            <div><strong>Phone</strong><span>{lead.phone || "—"}</span></div>
-            <div><strong>Priority</strong><span>{lead.priority || "—"}</span></div>
-            <div><strong>Status</strong><span>{lead.status || "New Lead"}</span></div>
-            <div><strong>Follow Up</strong><span>{lead.followUpDate || "Not set"}</span></div>
-          </div>
-        </div>
-
-        <div className="sprint9-panel">
-          <span className="eyebrow">Advisor Workflow</span>
-          <h2>Update Lead</h2>
-
-          <label>Status</label>
-          <select className="admin-input" value={status} onChange={(e) => setStatus(e.target.value)}>
-            {STATUS_FLOW.map((item) => <option key={item}>{item}</option>)}
-          </select>
-
-          <label>Follow-up Date</label>
-          <input className="admin-input" type="date" value={followUpDate} onChange={(e) => setFollowUpDate(e.target.value)} />
-
-          <label>Advisor Notes</label>
-          <textarea className="admin-textarea" value={advisorNotes} onChange={(e) => setAdvisorNotes(e.target.value)} placeholder="Customer objections, current provider, desired speed, next steps..." />
-
-          <label>Activity Note</label>
-          <input className="admin-input" value={activityNote} onChange={(e) => setActivityNote(e.target.value)} placeholder="Example: Called customer and discussed provider options" />
-
-          <button className="admin-save-button" onClick={saveLead}>Save Workspace</button>
-          {saved && <div className="save-success">Saved successfully.</div>}
-        </div>
-      </div>
-
-      <div className="sprint9-grid-two workspace-grid">
-        <div className="sprint9-panel">
-          <span className="eyebrow">Other Carrier Options</span>
-          <h2>Ranked Providers</h2>
-          <div className="provider-intelligence-grid">
-            {carrierSummary.providers.slice(1).map((provider, index) => (
-              <div className="provider-intel-card" key={provider.id || provider.name}>
-                <div className="provider-intel-top">
-                  <h3>#{index + 2} {provider.displayName || provider.name}</h3>
-                  <span>{provider.advisorScore}/100</span>
-                </div>
-                <p>{provider.technology}</p>
-                <div className="provider-intel-stats">
-                  <div><strong>{provider.revenueScore}</strong><span>Revenue</span></div>
-                  <div><strong>{provider.customerScore}</strong><span>Customer</span></div>
-                  <div><strong>{formatCurrency(provider.annualRevenueOpportunity || 0)}</strong><span>Annual Rev</span></div>
-                  <div><strong>{provider.download || "—"}</strong><span>Mbps Down</span></div>
-                </div>
-                <small>{provider.revenueProduct?.promotion || provider.promotion || "Advisor should verify current promo."}</small>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="sprint9-panel">
-          <span className="eyebrow">Recommendation History</span>
-          <h2>Accepted Recommendations</h2>
-          {lead.recommendationHistory?.length ? (
-            <div className="timeline sprint9-timeline">
-              {[...lead.recommendationHistory].reverse().map((item, index) => (
-                <div className="timeline-item" key={`${item.createdAt}-${index}`}>
-                  <strong>{item.provider}</strong>
-                  <p>{item.product || "Recommended carrier"} • Score {item.advisorScore}/100 • Revenue ${item.annualRevenueOpportunity}</p>
-                  <small>{new Date(item.createdAt).toLocaleString()}</small>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="empty-state">No accepted recommendations yet.</div>
-          )}
-        </div>
-
-        <div className="sprint9-panel">
-          <span className="eyebrow">Timeline</span>
-          <h2>Activity</h2>
-          {activity.length === 0 ? <div className="empty-state">No activity yet.</div> : (
-            <div className="timeline sprint9-timeline">
-              {activity.map((item, index) => (
-                <div className="timeline-item" key={`${item.createdAt}-${index}`}>
-                  <strong>{item.status || item.type}</strong>
-                  <p>{item.note}</p>
-                  <small>{new Date(item.createdAt).toLocaleString()}</small>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
+    <section className={`lead502-panel ${className}`}>
+      <header><div className="lead502-panel-icon"><Icon size={18} /></div><div><span>{eyebrow}</span><h2>{title}</h2></div></header>
+      {children}
     </section>
   );
 }
 
-function Score({ label, value }) {
-  return (
-    <div>
-      <strong>{value}</strong>
-      <span>{label}</span>
-    </div>
-  );
-}
+export default function LeadDetail() {
+  const { leadId } = useParams();
+  const [lead, setLead] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [status, setStatus] = useState("New Lead");
+  const [advisorNotes, setAdvisorNotes] = useState("");
+  const [activityNote, setActivityNote] = useState("");
+  const [followUpDate, setFollowUpDate] = useState("");
+  const [noteCategory, setNoteCategory] = useState("General");
+  const [notePriority, setNotePriority] = useState("Normal");
+  const [saved, setSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
 
-function Info({ label, value }) {
+  useEffect(() => {
+    const ref = doc(db, "leads", leadId);
+    return onSnapshot(ref, (snapshot) => {
+      if (!snapshot.exists()) {
+        setError("This lead could not be found.");
+        setLoading(false);
+        return;
+      }
+      const data = { id: snapshot.id, ...snapshot.data() };
+      setLead(data);
+      setStatus(data.status || data.readinessStatus || "New Lead");
+      setAdvisorNotes("");
+      setFollowUpDate(data.followUpDate || "");
+      setError("");
+      setLoading(false);
+    }, (snapshotError) => {
+      console.error(snapshotError);
+      setError("Unable to load this lead. Check Firestore access and try again.");
+      setLoading(false);
+    });
+  }, [leadId]);
+
+  const workspace = useMemo(() => buildLeadWorkspace(lead || {}), [lead]);
+
+  async function saveWorkspace() {
+    if (!lead) return;
+    setSaving(true);
+    try {
+      const currentStatus = lead.status || lead.readinessStatus || "New Lead";
+      const currentFollowUp = lead.followUpDate || "";
+      const events = buildWorkspaceJournalEvents({
+        previousStatus: currentStatus,
+        nextStatus: status,
+        previousFollowUp: currentFollowUp,
+        nextFollowUp: followUpDate,
+        note: advisorNotes,
+        noteCategory,
+        notePriority,
+        activityNote,
+        advisor: auth.currentUser,
+      });
+
+      const actorName = auth.currentUser?.displayName || auth.currentUser?.email || "Unknown Advisor";
+      const update = {
+        status,
+        followUpDate,
+        updatedAt: serverTimestamp(),
+        lastActivityAt: serverTimestamp(),
+        lastModifiedBy: actorName,
+      };
+      if (advisorNotes.trim()) update.advisorNotes = advisorNotes.trim();
+      if (events.length) update.opportunityJournal = arrayUnion(...events);
+
+      await updateDoc(doc(db, "leads", leadId), update);
+      setAdvisorNotes("");
+      setActivityNote("");
+      setSaved(true);
+      setTimeout(() => setSaved(false), 1800);
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  if (loading) return <section className="lead502-state"><Clock3 className="is-spinning" /><strong>Loading customer workspace…</strong></section>;
+  if (error) return <section className="lead502-state lead502-state-error"><strong>{error}</strong><Link to="/admin">Return to dashboard</Link></section>;
+
+  const { customer, household, recommendation, coaching, timeline, health } = workspace;
+
   return (
-    <div>
-      <strong>{label}</strong>
-      <span>{value}</span>
-    </div>
+    <section className="lead502-page">
+      <Link to="/admin" className="lead502-back"><ArrowLeft size={16} /> Back to Advisor Dashboard</Link>
+
+      <header className="lead502-hero">
+        <div className="lead502-customer-id">
+          <div className="lead502-avatar">{customer.name.slice(0, 1).toUpperCase()}</div>
+          <div>
+            <span className="lead502-eyebrow"><Sparkles size={14} /> Customer 360</span>
+            <h1>{customer.name}</h1>
+            <p>{customer.address}</p>
+          </div>
+        </div>
+        <div className="lead502-hero-badges">
+          <span className={`lead502-quality lead502-quality-${qualityClass(workspace.quality)}`}>{workspace.quality}</span>
+          <span className="lead502-status">{workspace.status}</span>
+          <span className="lead502-score">{workspace.readiness}% ready</span>
+        </div>
+        <div className="lead502-quick-actions">
+          {customer.phone !== "Not captured" && <a href={`tel:${customer.phone}`}><Phone size={16} /> Call</a>}
+          {customer.email !== "Not captured" && <a href={`mailto:${customer.email}`}><Mail size={16} /> Email</a>}
+          <button type="button" onClick={() => document.getElementById("advisor-workflow")?.scrollIntoView({ behavior: "smooth" })}><ClipboardList size={16} /> Update lead</button>
+        </div>
+      </header>
+
+      <div className="lead502-snapshot-grid">
+        <article><Users size={18} /><div><span>Household</span><strong>{household.people || "—"} people</strong><small>{household.devices || "—"} devices</small></div></article>
+        <article><Target size={18} /><div><span>Primary priority</span><strong>{household.priority}</strong><small>{household.usage.join(" · ") || "Usage not captured"}</small></div></article>
+        <article><CircleDollarSign size={18} /><div><span>Budget / quote</span><strong>{currency(household.budget)} target</strong><small>{currency(recommendation.monthlyPrice)} estimated</small></div></article>
+        <article><HeartPulse size={18} /><div><span>Lead health</span><strong>{health.score}% complete</strong><small>{health.missing.length ? `Missing: ${health.missing.join(", ")}` : "Advisor-ready record"}</small></div></article>
+      </div>
+
+      <div className="lead502-main-grid">
+        <div className="lead502-column">
+          <Panel eyebrow="Customer profile" title="Who you are helping" icon={Users}>
+            <div className="lead502-detail-grid">
+              <Detail label="Email" value={customer.email} />
+              <Detail label="Phone" value={customer.phone} />
+              <Detail label="Current provider" value={household.currentProvider} />
+              <Detail label="Contact consent" value={customer.consent ? "Confirmed" : "Not confirmed"} />
+              <Detail label="Household" value={household.people ? `${household.people} people` : "Not captured"} />
+              <Detail label="Connected devices" value={household.devices ? `${household.devices} devices` : "Not captured"} />
+            </div>
+            <div className="lead502-tags">{household.usage.length ? household.usage.map((item) => <span key={item}>{item}</span>) : <small>No usage preferences captured.</small>}</div>
+          </Panel>
+
+          <Panel eyebrow="Conversation intelligence" title="What the customer told ConnectIQ" icon={MessageSquareText}>
+            <p className="lead502-summary">{workspace.conversationSummary}</p>
+          </Panel>
+
+          <Panel eyebrow="Customer timeline" title="Opportunity history" icon={Clock3}>
+            <div className="lead502-timeline">
+              {timeline.length ? timeline.map((event, index) => (
+                <div key={event.id || `${event.type}-${index}`} className={`lead502-journal-event lead502-journal-${event.type}`}>
+                  <i><JournalIcon type={event.type} /></i>
+                  <div>
+                    <strong>{event.title || event.type}</strong>
+                    <p>{event.detail}</p>
+                    {event.metadata?.category && <div className="lead502-journal-meta"><span>{event.metadata.category}</span><span>{event.metadata.priority}</span></div>}
+                    <small>{event.createdBy?.name ? `By ${event.createdBy.name} · ` : ""}{dateTime(event.date)}</small>
+                  </div>
+                </div>
+              )) : <p className="lead502-muted">No timeline events recorded yet.</p>}
+            </div>
+          </Panel>
+        </div>
+
+        <div className="lead502-column">
+          <Panel eyebrow="ConnectIQ recommendation" title="Best-fit offer" icon={Wifi} className="lead502-recommendation-panel">
+            <div className="lead502-rec-head"><div><span>Recommended provider</span><h3>{recommendation.provider}</h3><p>{recommendation.plan}</p></div><div className="lead502-match"><strong>{recommendation.matchScore || "—"}</strong><span>match</span></div></div>
+            <div className="lead502-offer-grid">
+              <Detail label="Monthly estimate" value={currency(recommendation.monthlyPrice)} />
+              <Detail label="Confidence" value={recommendation.confidence ? `${recommendation.confidence}%` : "Not scored"} />
+              <Detail label="Technology" value={recommendation.technology} />
+              <Detail label="Download / upload" value={`${recommendation.download || "—"} / ${recommendation.upload || "—"} Mbps`} />
+              <Detail label="Installation" value={recommendation.installationMethod} />
+              <Detail label="Scheduling" value={recommendation.installationWindow} />
+            </div>
+            <div className="lead502-reasons"><strong>Why it fits</strong>{recommendation.reasons.length ? recommendation.reasons.map((reason) => <p key={reason}><CheckCircle2 size={14} /> {reason}</p>) : <p><CheckCircle2 size={14} /> Best available fit based on the completed customer profile.</p>}</div>
+            {recommendation.nextBest && <div className="lead502-next-best"><span>Next-best alternative</span><strong>{recommendation.nextBest.provider}</strong><small>{recommendation.nextBest.matchScore || "—"} match · {recommendation.nextBest.technology}</small></div>}
+          </Panel>
+
+          <Panel eyebrow="AI coaching" title="How to advance this lead" icon={Sparkles} className="lead502-coaching">
+            <div><span>Likely objection</span><p>{coaching.likelyObjection}</p></div>
+            <div><span>Primary selling point</span><p>{coaching.primarySellingPoint}</p></div>
+            <div><span>Recommended next action</span><p>{coaching.nextAction}</p></div>
+            {coaching.talkingPoints.length > 0 && <ul>{coaching.talkingPoints.map((point) => <li key={point}>{point}</li>)}</ul>}
+          </Panel>
+        </div>
+
+        <aside className="lead502-column lead502-actions-column">
+          <Panel eyebrow="Advisor actions" title="Move the opportunity forward" icon={Gauge} className="lead502-actions-panel">
+            <a className="lead502-action-primary" href={customer.phone !== "Not captured" ? `tel:${customer.phone}` : undefined}><Phone size={16} /> Call customer</a>
+            <a href={customer.email !== "Not captured" ? `mailto:${customer.email}?subject=${encodeURIComponent(`Your ConnectIQ recommendation: ${recommendation.provider}`)}` : undefined}><Mail size={16} /> Email recommendation</a>
+            <button type="button" onClick={() => document.getElementById("advisor-workflow")?.scrollIntoView({ behavior: "smooth" })}><FileText size={16} /> Add advisor note</button>
+            <button type="button" disabled><ExternalLink size={16} /> Prepare order <small>Coming in 5.0.4</small></button>
+          </Panel>
+
+          <Panel eyebrow="Record health" title="Ready to act?" icon={ShieldCheck}>
+            <div className="lead502-health-ring"><strong>{health.score}%</strong><span>complete</span></div>
+            {health.missing.length ? <div className="lead502-missing"><span>Missing information</span>{health.missing.map((item) => <p key={item}>• {item}</p>)}</div> : <p className="lead502-ready"><CheckCircle2 size={16} /> This record contains the core details needed for advisor outreach.</p>}
+          </Panel>
+
+          <Panel eyebrow="Advisor workflow" title="Update lead" icon={CalendarClock} className="lead502-workflow" >
+            <div id="advisor-workflow">
+              <label>Status<select value={status} onChange={(event) => setStatus(event.target.value)}>{STATUS_FLOW.map((item) => <option key={item}>{item}</option>)}</select></label>
+              <label>Follow-up date and time<input type="datetime-local" value={followUpDate} onChange={(event) => setFollowUpDate(event.target.value)} /></label>
+              <div className="lead502-note-options">
+                <label>Note category<select value={noteCategory} onChange={(event) => setNoteCategory(event.target.value)}>{["General", "Scheduling", "Pricing", "Technical", "Competition", "Installation", "Billing", "Escalation"].map((item) => <option key={item}>{item}</option>)}</select></label>
+                <label>Priority<select value={notePriority} onChange={(event) => setNotePriority(event.target.value)}>{["Low", "Normal", "High", "Urgent"].map((item) => <option key={item}>{item}</option>)}</select></label>
+              </div>
+              <label>Advisor note<textarea value={advisorNotes} onChange={(event) => setAdvisorNotes(event.target.value)} placeholder="Document objections, commitments, and next steps. This note will be added to Opportunity History." /></label>
+              <label>Activity note<input value={activityNote} onChange={(event) => setActivityNote(event.target.value)} placeholder="Example: Called customer and reviewed quote" /></label>
+              <button type="button" className="lead502-save" onClick={saveWorkspace} disabled={saving}><Save size={16} /> {saving ? "Saving…" : "Save workspace"}</button>
+              {saved && <p className="lead502-saved"><CheckCircle2 size={15} /> Saved successfully.</p>}
+            </div>
+          </Panel>
+        </aside>
+      </div>
+    </section>
   );
 }
