@@ -19,6 +19,8 @@ import FccLookup from "./pages/FccLookup";
 import FccExplorer from "./pages/FccExplorer";
 import LeadDetail from "./pages/LeadDetail";
 import Leads from "./pages/Leads";
+import LeadPipeline from "./pages/LeadPipeline";
+import TeamDirectory from "./pages/TeamDirectory";
 import Login from "./pages/Login";
 
 import InternetAdvisor from "./pages/InternetAdvisor";
@@ -50,6 +52,8 @@ export default function App() {
           <Route path="carriers" element={<CarrierDatabase />} />
           <Route path="fcc-lookup" element={<FccLookup />} />
           <Route path="fcc-explorer" element={<FccExplorer />} />
+          <Route path="pipeline" element={<LeadPipeline />} />
+          <Route path="team" element={<TeamDirectory />} />
           <Route path="leads" element={<Leads />} />
           <Route path="leads/:leadId" element={<LeadDetail />} />
         </Route>

@@ -8,6 +8,8 @@ export const JOURNAL_EVENT_TYPES = Object.freeze({
   ADVISOR_NOTE: "advisor_note",
   FOLLOW_UP: "follow_up",
   ADVISOR_ACTIVITY: "advisor_activity",
+  PIPELINE_STAGE_CHANGE: "pipeline_stage_change",
+  LEAD_ASSIGNMENT: "lead_assignment",
 });
 
 export function advisorIdentity(user) {
@@ -110,6 +112,8 @@ export function eventLabel(type) {
     advisor_note: "Note",
     follow_up: "Follow-up",
     advisor_activity: "Activity",
+    pipeline_stage_change: "Stage",
+    lead_assignment: "Assignment",
     lead_created: "Lead",
     recommendation_generated: "AI",
     quote_generated: "Quote",

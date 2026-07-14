@@ -64,7 +64,7 @@ export default function Dashboard() {
           <p>AI-qualified opportunities, recommendations, quotes, and next actions in one place.</p>
         </div>
         <div className="advisor-hero-actions">
-          <Link to="/admin/leads" className="advisor-secondary-action">View full pipeline</Link>
+          <Link to="/admin/pipeline" className="advisor-secondary-action">View full pipeline</Link>
           <Link to="/internet" className="advisor-primary-action">Open customer advisor <ArrowRight size={17} /></Link>
         </div>
       </header>

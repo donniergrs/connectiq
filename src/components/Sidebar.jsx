@@ -10,7 +10,9 @@ export default function Sidebar() {
 
       <nav>
         <NavLink to="/admin" end>Advisor Dashboard</NavLink>
-        <NavLink to="/admin/leads">Leads</NavLink>
+        <NavLink to="/admin/pipeline">Lead Pipeline</NavLink>
+        <NavLink to="/admin/leads">Lead List</NavLink>
+        <NavLink to="/admin/team">Sales Team</NavLink>
         <NavLink to="/admin/fcc-lookup">FCC Lookup</NavLink>
         <NavLink to="/admin/fcc-explorer">FCC Explorer</NavLink>
         <NavLink to="/admin/carriers">Carrier Intelligence</NavLink>
