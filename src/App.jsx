@@ -21,6 +21,7 @@ import LeadDetail from "./pages/LeadDetail";
 import Leads from "./pages/Leads";
 import LeadPipeline from "./pages/LeadPipeline";
 import TeamDirectory from "./pages/TeamDirectory";
+import DistributionRules from "./pages/DistributionRules";
 import Login from "./pages/Login";
 
 import InternetAdvisor from "./pages/InternetAdvisor";
@@ -54,6 +55,7 @@ export default function App() {
           <Route path="fcc-explorer" element={<FccExplorer />} />
           <Route path="pipeline" element={<LeadPipeline />} />
           <Route path="team" element={<TeamDirectory />} />
+          <Route path="distribution-rules" element={<DistributionRules />} />
           <Route path="leads" element={<Leads />} />
           <Route path="leads/:leadId" element={<LeadDetail />} />
         </Route>

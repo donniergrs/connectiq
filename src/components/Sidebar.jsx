@@ -13,6 +13,7 @@ export default function Sidebar() {
         <NavLink to="/admin/pipeline">Lead Pipeline</NavLink>
         <NavLink to="/admin/leads">Lead List</NavLink>
         <NavLink to="/admin/team">Sales Team</NavLink>
+        <NavLink to="/admin/distribution-rules">Distribution Rules</NavLink>
         <NavLink to="/admin/fcc-lookup">FCC Lookup</NavLink>
         <NavLink to="/admin/fcc-explorer">FCC Explorer</NavLink>
         <NavLink to="/admin/carriers">Carrier Intelligence</NavLink>
