@@ -22,6 +22,8 @@ import Leads from "./pages/Leads";
 import LeadPipeline from "./pages/LeadPipeline";
 import TeamDirectory from "./pages/TeamDirectory";
 import DistributionRules from "./pages/DistributionRules";
+import MyDay from "./pages/MyDay";
+import ExecutiveCommandCenter from "./pages/ExecutiveCommandCenter";
 import Login from "./pages/Login";
 
 import InternetAdvisor from "./pages/InternetAdvisor";
@@ -50,6 +52,8 @@ export default function App() {
           }
         >
           <Route index element={<Dashboard />} />
+          <Route path="my-day" element={<MyDay />} />
+          <Route path="executive" element={<ExecutiveCommandCenter />} />
           <Route path="carriers" element={<CarrierDatabase />} />
           <Route path="fcc-lookup" element={<FccLookup />} />
           <Route path="fcc-explorer" element={<FccExplorer />} />

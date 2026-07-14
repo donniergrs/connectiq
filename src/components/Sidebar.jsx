@@ -10,6 +10,8 @@ export default function Sidebar() {
 
       <nav>
         <NavLink to="/admin" end>Advisor Dashboard</NavLink>
+        <NavLink to="/admin/my-day">My Day</NavLink>
+        <NavLink to="/admin/executive">Executive Command Center</NavLink>
         <NavLink to="/admin/pipeline">Lead Pipeline</NavLink>
         <NavLink to="/admin/leads">Lead List</NavLink>
         <NavLink to="/admin/team">Sales Team</NavLink>

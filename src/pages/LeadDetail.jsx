@@ -27,6 +27,7 @@ import { auth, db } from "../firebase";
 import { STATUS_FLOW } from "../services/providerIntelligence";
 import { buildLeadWorkspace } from "../services/leadWorkspace";
 import { buildWorkspaceJournalEvents, JOURNAL_EVENT_TYPES } from "../services/opportunityJournal";
+import { buildSalesCoach } from "../services/aiSalesIntelligence";
 
 function currency(value) {
   return value ? new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(value) : "Verify price";
@@ -103,6 +104,7 @@ export default function LeadDetail() {
   }, [leadId]);
 
   const workspace = useMemo(() => buildLeadWorkspace(lead || {}), [lead]);
+  const aiCoach = useMemo(() => buildSalesCoach(lead || {}), [lead]);
 
   async function saveWorkspace() {
     if (!lead) return;
@@ -230,10 +232,13 @@ export default function LeadDetail() {
             {recommendation.nextBest && <div className="lead502-next-best"><span>Next-best alternative</span><strong>{recommendation.nextBest.provider}</strong><small>{recommendation.nextBest.matchScore || "—"} match · {recommendation.nextBest.technology}</small></div>}
           </Panel>
 
-          <Panel eyebrow="AI coaching" title="How to advance this lead" icon={Sparkles} className="lead502-coaching">
-            <div><span>Likely objection</span><p>{coaching.likelyObjection}</p></div>
+          <Panel eyebrow="AI sales coach" title="How to advance this lead" icon={Sparkles} className="lead502-coaching ai503-coach">
+            <div className="ai503-coach-score"><strong>{aiCoach.closeProbability}%</strong><span>close probability</span><small>{aiCoach.confidence}% confidence · {aiCoach.riskLevel} risk</small></div>
+            <div><span>Likely objection</span><p>{aiCoach.likelyObjection || coaching.likelyObjection}</p></div>
+            <div><span>Suggested response</span><p>{aiCoach.suggestedResponse}</p></div>
             <div><span>Primary selling point</span><p>{coaching.primarySellingPoint}</p></div>
-            <div><span>Recommended next action</span><p>{coaching.nextAction}</p></div>
+            <div><span>Recommended next action</span><p>{aiCoach.nextAction}</p><small>Best contact window: {aiCoach.contactWindow}</small></div>
+            <div className="ai503-evidence"><span>Evidence</span>{aiCoach.evidence.map((item) => <p key={item}><CheckCircle2 size={13}/> {item}</p>)}</div>
             {coaching.talkingPoints.length > 0 && <ul>{coaching.talkingPoints.map((point) => <li key={point}>{point}</li>)}</ul>}
           </Panel>
         </div>

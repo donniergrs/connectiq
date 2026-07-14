@@ -8,7 +8,7 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "node --test test/recommendationEngine.test.js test/knowledgeEngine.test.js test/quoteEngine.test.js test/quotePresentation.test.js test/quoteAdvisor.test.js test/salesSummary.test.js test/customerCompletion.test.js test/advisorDashboard.test.js test/leadWorkspace.test.js test/opportunityJournal.test.js test/leadPipeline.test.js test/salesOperations.test.js test/leadDistribution.test.js"
+    "test": "node --test test/recommendationEngine.test.js test/knowledgeEngine.test.js test/quoteEngine.test.js test/quotePresentation.test.js test/quoteAdvisor.test.js test/salesSummary.test.js test/customerCompletion.test.js test/advisorDashboard.test.js test/leadWorkspace.test.js test/opportunityJournal.test.js test/leadPipeline.test.js test/salesOperations.test.js test/leadDistribution.test.js test/aiSalesIntelligence.test.js test/financialMetricsService.test.js"
   },
   "dependencies": {
     "clsx": "^2.1.1",
