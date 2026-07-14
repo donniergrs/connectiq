@@ -24,6 +24,7 @@ import TeamDirectory from "./pages/TeamDirectory";
 import DistributionRules from "./pages/DistributionRules";
 import MyDay from "./pages/MyDay";
 import ExecutiveCommandCenter from "./pages/ExecutiveCommandCenter";
+import LeadIntakeCenter from "./pages/LeadIntakeCenter";
 import Login from "./pages/Login";
 
 import InternetAdvisor from "./pages/InternetAdvisor";
@@ -60,6 +61,7 @@ export default function App() {
           <Route path="pipeline" element={<LeadPipeline />} />
           <Route path="team" element={<TeamDirectory />} />
           <Route path="distribution-rules" element={<DistributionRules />} />
+          <Route path="lead-intake" element={<LeadIntakeCenter />} />
           <Route path="leads" element={<Leads />} />
           <Route path="leads/:leadId" element={<LeadDetail />} />
         </Route>
