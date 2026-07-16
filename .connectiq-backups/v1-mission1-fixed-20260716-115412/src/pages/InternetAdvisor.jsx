@@ -44,7 +44,7 @@ function stepIndex(step) {
   return 4;
 }
 
-export default function InternetAdvisor({ embedded = false }) {
+export default function InternetAdvisor() {
   const {
     session,
     setSession,
@@ -240,7 +240,7 @@ export default function InternetAdvisor({ embedded = false }) {
 
   return (
     <main className="v040-page">
-      {!embedded && <header className="v040-nav"><a href="/" className="v040-logo">Connect<span>IQ</span></a><div><ShieldCheck size={16} /> Independent broadband guidance</div></header>}
+      <header className="v040-nav"><a href="/" className="v040-logo">Connect<span>IQ</span></a><div><ShieldCheck size={16} /> Independent broadband guidance</div></header>
       <section className="v040-shell">
         <div className="v040-intro">
           <span className="v040-kicker"><Sparkles size={15} /> ConnectIQ AI Advisor</span>

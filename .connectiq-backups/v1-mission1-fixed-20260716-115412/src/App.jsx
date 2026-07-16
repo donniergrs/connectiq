@@ -8,6 +8,7 @@ import PublicLayout from "./layouts/PublicLayout";
 import AppLayout from "./layouts/AppLayout";
 
 import Home from "./pages/Home";
+import AddressLookup from "./pages/AddressLookup";
 import BusinessInternet from "./pages/BusinessInternet";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
@@ -33,10 +34,10 @@ export default function App() {
     <AuthProvider>
       <CustomerContextProvider>
       <Routes>
+        <Route path="/internet" element={<InternetAdvisor />} />
         <Route element={<PublicLayout />}>
           <Route path="/" element={<Home />} />
-          <Route path="/availability" element={<InternetAdvisor embedded />} />
-          <Route path="/internet" element={<Navigate to="/availability" replace />} />
+          <Route path="/availability" element={<AddressLookup />} />
           <Route path="/business" element={<BusinessInternet />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
