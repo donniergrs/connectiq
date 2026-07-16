@@ -5,16 +5,6 @@ import { buildConsentSnapshot, calculateLeadScore } from "./leadScoring";
 
 function clean(value) { return String(value || "").trim(); }
 
-function buildInitialActivity(nowIso) {
-  return [
-    { type: "address_searched", label: "Address searched", createdAt: nowIso },
-    { type: "questionnaire_completed", label: "Questionnaire completed", createdAt: nowIso },
-    { type: "recommendation_generated", label: "ConnectIQ Pick generated", createdAt: nowIso },
-    { type: "customer_submitted", label: "Customer submitted request", createdAt: nowIso },
-    { type: "lead_created", label: "Lead created", createdAt: nowIso },
-  ];
-}
-
 export async function createReadyToSubmitOrder({ customer, address, providers, recommendation, quote, conversation, needs, salesSummary = null, campaign = {} }) {
   const preferences = customer?.contactPreferences || {};
   const needsEmail = Boolean(preferences.email);
@@ -22,18 +12,21 @@ export async function createReadyToSubmitOrder({ customer, address, providers, r
   if (!clean(customer?.name) || (needsEmail && !clean(customer?.email)) || (needsPhone && !clean(customer?.phone))) {
     throw new Error("Please complete the contact information for the methods you selected.");
   }
-  if (!preferences.text && !preferences.phone && !preferences.email) throw new Error("Please select at least one contact method.");
-  if (!customer?.consent) throw new Error("Contact permission is required before submitting.");
+  if (!preferences.text && !preferences.phone && !preferences.email) {
+    throw new Error("Please select at least one contact method.");
+  }
+  if (!customer?.consent) {
+    throw new Error("Contact permission is required before submitting.");
+  }
 
   const leadRef = doc(collection(db, "leads"));
   const orderRef = doc(collection(db, "orders"));
   const conversationRef = doc(collection(db, "conversations"));
   const batch = writeBatch(db);
-  const nowIso = new Date().toISOString();
-  const customerReference = formatCustomerReference(leadRef.id, new Date());
+
+  const customerReference = formatCustomerReference(orderRef.id);
   const consent = buildConsentSnapshot(customer);
   const leadScore = calculateLeadScore({ customer, providers, recommendation, needs });
-  const activity = buildInitialActivity(nowIso);
 
   const shared = {
     name: clean(customer.name), email: clean(customer.email).toLowerCase(), phone: clean(customer.phone),
@@ -44,7 +37,7 @@ export async function createReadyToSubmitOrder({ customer, address, providers, r
     salesSummary: salesSummary || null,
     readinessScore: salesSummary?.advisorNotes?.readinessScore || 0,
     readinessStatus: salesSummary?.advisorNotes?.readinessStatus || "",
-    nextAction: salesSummary?.advisorNotes?.nextAction || "Contact customer using preferred method",
+    nextAction: salesSummary?.advisorNotes?.nextAction || "",
     customerReference,
     contactPreferences: consent.methods,
     communicationConsent: consent,
@@ -59,53 +52,23 @@ export async function createReadyToSubmitOrder({ customer, address, providers, r
   };
 
   batch.set(leadRef, {
-    ...shared,
-    status: "NEW",
-    pipelineStage: "NEW",
-    orderReadiness: "Ready to Submit",
-    orderId: orderRef.id,
-    providerCount: providers?.length || 0,
-    providers: providers || [],
-    activity,
-    lastActivityAt: serverTimestamp(),
-    createdAt: serverTimestamp(),
+    ...shared, status: "Ready to Submit", orderId: orderRef.id,
+    providerCount: providers?.length || 0, providers: providers || [], createdAt: serverTimestamp(),
+    activity: [{ type: "AI Sale Qualified", status: "Ready to Submit", note: "Customer completed the ConnectIQ guided buying flow.", createdAt: new Date().toISOString() }],
   });
 
   batch.set(orderRef, {
-    ...shared,
-    leadId: leadRef.id,
-    conversationId: conversationRef.id,
-    status: "Ready to Submit",
-    pipelineStage: "NEW",
-    fulfillmentStatus: "Awaiting advisor verification",
-    provider: recommendation?.displayName || "",
-    product: quote?.productName || recommendation?.revenueProduct?.productName || "",
-    estimatedMonthlyPrice: quote?.monthlyPrice || 0,
-    activity,
-    createdAt: serverTimestamp(),
+    ...shared, leadId: leadRef.id, conversationId: conversationRef.id,
+    status: "Ready to Submit", fulfillmentStatus: "Awaiting manual DSI submission",
+    provider: recommendation?.displayName || "", product: quote?.productName || "",
+    estimatedMonthlyPrice: quote?.monthlyPrice || 0, createdAt: serverTimestamp(),
   });
 
   batch.set(conversationRef, {
-    leadId: leadRef.id,
-    orderId: orderRef.id,
-    customerReference,
-    address: clean(address),
-    messages: conversation || [],
-    channel: "web",
-    status: "converted",
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp(),
+    leadId: leadRef.id, orderId: orderRef.id, address: clean(address), messages: conversation || [],
+    channel: "web", status: "converted", createdAt: serverTimestamp(), updatedAt: serverTimestamp(),
   });
 
   await batch.commit();
-  return {
-    id: orderRef.id,
-    orderId: orderRef.id,
-    leadId: leadRef.id,
-    conversationId: conversationRef.id,
-    status: "Ready to Submit",
-    pipelineStage: "NEW",
-    activity,
-    ...shared,
-  };
+  return { id: orderRef.id, orderId: orderRef.id, leadId: leadRef.id, conversationId: conversationRef.id, status: "Ready to Submit", ...shared };
 }
