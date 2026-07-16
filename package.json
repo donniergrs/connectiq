@@ -1,14 +1,15 @@
 {
   "name": "connectiqvscode",
   "private": true,
-  "version": "0.5.0",
+  "version": "0.7.6",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "node --test test/recommendationEngine.test.js test/knowledgeEngine.test.js test/quoteEngine.test.js test/quotePresentation.test.js test/quoteAdvisor.test.js test/salesSummary.test.js test/customerCompletion.test.js test/advisorDashboard.test.js test/leadWorkspace.test.js test/opportunityJournal.test.js test/leadPipeline.test.js test/salesOperations.test.js test/leadDistribution.test.js test/aiSalesIntelligence.test.js test/financialMetricsService.test.js test/smartLeadIntake.test.js"
+    "test": "node --test test/*.test.js test/bdcRepository.test.js",
+    "verify": "npm run lint && npm run test && npm run build"
   },
   "dependencies": {
     "clsx": "^2.1.1",
