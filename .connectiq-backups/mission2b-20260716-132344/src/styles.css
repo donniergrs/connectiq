@@ -3601,20 +3601,3 @@ td{
 .v040-alt-reasons span { display: flex; gap: 8px; align-items: flex-start; line-height: 1.35; }
 @media (max-width: 720px) { .v040-simple-match { width: 100%; } }
 
-
-/* ConnectIQ v1.0 Mission 2B - quiet, guided customer experience */
-.v040-intro { max-width: 920px; }
-.v040-intro h1 { max-width: 780px; letter-spacing: -.035em; }
-.v040-address-panel { max-width: 760px; margin-inline: auto; }
-.v040-address-panel h2 { font-size: clamp(1.7rem, 4vw, 2.35rem); }
-.v040-simple-pick { max-width: 900px; margin-inline: auto; }
-.v040-simple-pick .v040-recommend-actions { grid-template-columns: 1fr 1.25fr; }
-.v040-chat-launcher { z-index: 70; }
-.v040-chat-launcher:not(:hover) { box-shadow: 0 12px 30px rgba(0,0,0,.25); }
-.v040-chat-drawer { animation: connectiq-chat-in .18s ease-out; }
-@keyframes connectiq-chat-in { from { opacity: 0; transform: translateY(12px) scale(.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
-@media (max-width: 720px) {
-  .v040-simple-pick .v040-recommend-actions { grid-template-columns: 1fr; }
-  .v040-chat-launcher span { display: inline; }
-}
-

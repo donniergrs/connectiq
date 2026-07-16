@@ -4,6 +4,7 @@ import AdvisorProgress from "../components/advisor/AdvisorProgress";
 import AdvisorConversation from "../components/advisor/AdvisorConversation";
 import CustomerProfile from "../components/advisor/CustomerProfile";
 import ProviderCardV2 from "../components/advisor/ProviderCardV2";
+import ScoreBreakdown from "../components/advisor/ScoreBreakdown";
 import ProfessionalQuoteCard from "../components/advisor/ProfessionalQuoteCard";
 import CustomerCompletionCard from "../components/advisor/CustomerCompletionCard";
 import { lookupAddressWithBrain, updateNeedsWithBrain } from "../services/brain/brain";
@@ -68,7 +69,6 @@ export default function InternetAdvisor({ embedded = false }) {
   const [busyMode, setBusyMode] = useState("lookup");
   const [busyStep, setBusyStep] = useState(0);
   const [chatResponding, setChatResponding] = useState(false);
-  const [showAlternatives, setShowAlternatives] = useState(false);
 
   const { providers, recommendation, quote, needs, step } = session;
   const confidence = useMemo(() => recommendationConfidence(providers), [providers]);
@@ -235,7 +235,7 @@ export default function InternetAdvisor({ embedded = false }) {
 
   function restart() {
     setQuestion("");
-    resetCustomerContext({ openChat: false });
+    resetCustomerContext({ openChat: true });
   }
 
   return (
@@ -244,8 +244,8 @@ export default function InternetAdvisor({ embedded = false }) {
       <section className="v040-shell">
         <div className="v040-intro">
           <span className="v040-kicker"><Sparkles size={15} /> ConnectIQ AI Advisor</span>
-          <h1>Find internet that fits your home.</h1>
-          <p>Enter your address, answer a few simple questions, and I’ll help you choose a good option.</p>
+          <h1>Find internet that actually fits your household.</h1>
+          <p>We check your address, compare available technologies, and explain the best choice without sending you to carrier websites.</p>
           <div className="v040-value"><span><CheckCircle2 /> Address-level availability</span><span><CheckCircle2 /> Personalized recommendation</span><span><CheckCircle2 /> One guided order</span></div>
         </div>
 
@@ -256,7 +256,7 @@ export default function InternetAdvisor({ embedded = false }) {
 
           {[CONVERSATION_STATES.GREETING, CONVERSATION_STATES.ADDRESS, CONVERSATION_STATES.LOOKUP, CONVERSATION_STATES.ERROR].includes(step) && !order && (
             <section className="v040-panel v040-address-panel">
-              <span className="v040-step-label">Step 1 of 5</span><h2>Where do you need internet?</h2><p>Type your full address below to see what is available.</p>
+              <span className="v040-step-label">Step 1 of 5</span><h2>Where do you need service?</h2><p>Enter the full service address so I can check provider availability.</p>
               <form onSubmit={findOptions} style={{ display: "grid", gridTemplateColumns: "1fr", gap: "12px", width: "100%" }}><input value={address} onChange={(e) => setAddress(e.target.value)} placeholder="101 Main St, Greenville, SC 29601" autoComplete="street-address" required style={{ width: "100%", minWidth: 0, maxWidth: "100%", boxSizing: "border-box" }} /><button disabled={busy} style={{ width: "100%", minWidth: 0, maxWidth: "100%", boxSizing: "border-box", whiteSpace: "normal" }}>{busy ? "Checking providers..." : <>Check my address <ArrowRight size={18} /></>}</button></form>
               {session.error && <p className="v040-error">{session.error}</p>}
               <small>Your address is used only to verify internet availability.</small>
@@ -284,46 +284,26 @@ export default function InternetAdvisor({ embedded = false }) {
               ) : (
                 <div className="v040-discovery-ready">
                   <CheckCircle2 />
-                  <span>All done</span>
-                  <h2>I found a good option for your home.</h2>
-                  <p>I used your answers to choose an option that should work well for your family.</p>
-                  <button className="v040-primary" type="button" onClick={showRecommendation}>Show my ConnectIQ Pick <ArrowRight size={18} /></button>
+                  <span>Household profile complete</span>
+                  <h2>I’m ready to show your strongest match.</h2>
+                  <p>I compared {providers.length} options using your household size, connected devices, usage, priorities, and target budget.</p>
+                  <button className="v040-primary" type="button" onClick={showRecommendation}>Show my recommendation <ArrowRight size={18} /></button>
                 </div>
               )}
             </section>
           )}
 
           {step === CONVERSATION_STATES.RECOMMENDATION && recommendation && (
-            <section className="v040-panel v040-simple-pick">
-              <span className="v040-step-label">Step 3 of 5</span>
-              <div className="v040-recommend-head">
-                <div>
-                  <span className="v040-best-badge">⭐ ConnectIQ Pick</span>
-                  <h2>{recommendation.revenueProduct?.productName || recommendation.displayName}</h2>
-                  <p>Here’s what I would choose for your home.</p>
-                </div>
-                <div className="v040-simple-match"><strong>👍</strong><span>{recommendation.recommendationTier || "Great Match"}</span></div>
+            <section className="v040-panel">
+              <span className="v040-step-label">Step 3 of 5</span><div className="v040-recommend-head"><div><span className="v040-best-badge">Best match</span><h2>{recommendation.displayName}</h2><p>{recommendation.recommendationReason}</p></div><div className="v040-score"><strong>{recommendation.advisorScore}</strong><span>/100 match</span><small>{confidence}% confidence</small></div></div>
+              <div className="v040-reason-list" aria-label="Personalized recommendation reasons">
+                {(recommendation.recommendationReasons || [recommendation.recommendationReason]).filter(Boolean).map((reason) => <span key={reason}><CheckCircle2 size={16} />{reason}</span>)}
               </div>
-              <div className="v040-simple-reasons" aria-label="Why ConnectIQ picked this option">
-                <h3>Why I picked it</h3>
-                {(recommendation.recommendationReasons || [recommendation.recommendationReason]).filter(Boolean).slice(0, 3).map((reason) => <p key={reason}><CheckCircle2 size={18} />{reason}</p>)}
-              </div>
-              <div className="v040-rec-summary v040-simple-summary">
-                <div><span>What it should handle</span><b>Work, school, TV, gaming, and everyday use</b></div>
-                <div><span>Estimated monthly price</span><b>{currency(quote?.monthlyPrice)}</b></div>
-                <small>Final price and plan details are confirmed before your order is submitted.</small>
-              </div>
-              {providers.length > 1 && (
-                <button className="v040-secondary v040-other-options" type="button" onClick={() => setShowAlternatives((current) => !current)}>
-                  {showAlternatives ? "Hide other options" : `See ${providers.length - 1} other option${providers.length - 1 === 1 ? "" : "s"}`}
-                </button>
-              )}
-              {showAlternatives && (
-                <div className="v040-provider-scroll" aria-label="Other available provider options"><div className="v040-provider-grid">{providers.slice(1).map((provider, index) => <ProviderCardV2 key={provider.id || provider.displayName} provider={provider} needs={needs} rank={index + 1} selected={(provider.id || provider.providerId || provider.displayName) === selectedId} onSelect={chooseProvider} />)}</div></div>
-              )}
+              <div className="v040-rec-grid"><div><h3>How the match was scored</h3><ScoreBreakdown breakdown={recommendation.scoreBreakdown} /></div><div className="v040-rec-summary"><h3>Recommended service</h3><div><span>Match tier</span><b>{recommendation.recommendationTier || "Strong match"}</b></div><div><span>Technology</span><b>{recommendation.technology}</b></div><div><span>Download</span><b>{recommendation.download || "—"} Mbps</b></div><div><span>Upload</span><b>{recommendation.upload || "—"} Mbps</b></div><div><span>Estimated monthly</span><b>{currency(quote?.monthlyPrice)}</b></div></div></div>
+              <div className="v040-provider-scroll" aria-label="Available provider recommendations"><div className="v040-provider-grid">{providers.map((provider, index) => <ProviderCardV2 key={provider.id || provider.displayName} provider={provider} needs={needs} rank={index} selected={(provider.id || provider.providerId || provider.displayName) === selectedId} onSelect={chooseProvider} />)}</div></div>
               <div className="v040-recommend-actions">
-                <button className="v040-secondary" type="button" onClick={() => setShowAlternatives((current) => !current)}><Sparkles size={18} /> Compare other options</button>
-                <button className="v040-primary" type="button" onClick={openQuote}>This looks great <ArrowRight size={18} /></button>
+                <button className="v040-secondary" type="button" onClick={() => setChatOpen(true)}><MessageCircle size={18} /> Ask the Advisor a question</button>
+                <button className="v040-primary" type="button" onClick={openQuote}>Continue with {recommendation.displayName} <ArrowRight size={18} /></button>
               </div>
             </section>
           )}

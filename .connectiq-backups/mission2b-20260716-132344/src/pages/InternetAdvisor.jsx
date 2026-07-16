@@ -235,7 +235,7 @@ export default function InternetAdvisor({ embedded = false }) {
 
   function restart() {
     setQuestion("");
-    resetCustomerContext({ openChat: false });
+    resetCustomerContext({ openChat: true });
   }
 
   return (
@@ -244,8 +244,8 @@ export default function InternetAdvisor({ embedded = false }) {
       <section className="v040-shell">
         <div className="v040-intro">
           <span className="v040-kicker"><Sparkles size={15} /> ConnectIQ AI Advisor</span>
-          <h1>Find internet that fits your home.</h1>
-          <p>Enter your address, answer a few simple questions, and I’ll help you choose a good option.</p>
+          <h1>Find internet that actually fits your household.</h1>
+          <p>We check your address, compare available technologies, and explain the best choice without sending you to carrier websites.</p>
           <div className="v040-value"><span><CheckCircle2 /> Address-level availability</span><span><CheckCircle2 /> Personalized recommendation</span><span><CheckCircle2 /> One guided order</span></div>
         </div>
 
@@ -256,7 +256,7 @@ export default function InternetAdvisor({ embedded = false }) {
 
           {[CONVERSATION_STATES.GREETING, CONVERSATION_STATES.ADDRESS, CONVERSATION_STATES.LOOKUP, CONVERSATION_STATES.ERROR].includes(step) && !order && (
             <section className="v040-panel v040-address-panel">
-              <span className="v040-step-label">Step 1 of 5</span><h2>Where do you need internet?</h2><p>Type your full address below to see what is available.</p>
+              <span className="v040-step-label">Step 1 of 5</span><h2>Where do you need service?</h2><p>Enter the full service address so I can check provider availability.</p>
               <form onSubmit={findOptions} style={{ display: "grid", gridTemplateColumns: "1fr", gap: "12px", width: "100%" }}><input value={address} onChange={(e) => setAddress(e.target.value)} placeholder="101 Main St, Greenville, SC 29601" autoComplete="street-address" required style={{ width: "100%", minWidth: 0, maxWidth: "100%", boxSizing: "border-box" }} /><button disabled={busy} style={{ width: "100%", minWidth: 0, maxWidth: "100%", boxSizing: "border-box", whiteSpace: "normal" }}>{busy ? "Checking providers..." : <>Check my address <ArrowRight size={18} /></>}</button></form>
               {session.error && <p className="v040-error">{session.error}</p>}
               <small>Your address is used only to verify internet availability.</small>
@@ -284,10 +284,10 @@ export default function InternetAdvisor({ embedded = false }) {
               ) : (
                 <div className="v040-discovery-ready">
                   <CheckCircle2 />
-                  <span>All done</span>
-                  <h2>I found a good option for your home.</h2>
-                  <p>I used your answers to choose an option that should work well for your family.</p>
-                  <button className="v040-primary" type="button" onClick={showRecommendation}>Show my ConnectIQ Pick <ArrowRight size={18} /></button>
+                  <span>Household profile complete</span>
+                  <h2>I’m ready to show your strongest match.</h2>
+                  <p>I compared {providers.length} options using your household size, connected devices, usage, priorities, and target budget.</p>
+                  <button className="v040-primary" type="button" onClick={showRecommendation}>Show my recommendation <ArrowRight size={18} /></button>
                 </div>
               )}
             </section>
@@ -300,7 +300,7 @@ export default function InternetAdvisor({ embedded = false }) {
                 <div>
                   <span className="v040-best-badge">⭐ ConnectIQ Pick</span>
                   <h2>{recommendation.revenueProduct?.productName || recommendation.displayName}</h2>
-                  <p>Here’s what I would choose for your home.</p>
+                  <p>I think this is the best fit for your home.</p>
                 </div>
                 <div className="v040-simple-match"><strong>👍</strong><span>{recommendation.recommendationTier || "Great Match"}</span></div>
               </div>
@@ -309,7 +309,7 @@ export default function InternetAdvisor({ embedded = false }) {
                 {(recommendation.recommendationReasons || [recommendation.recommendationReason]).filter(Boolean).slice(0, 3).map((reason) => <p key={reason}><CheckCircle2 size={18} />{reason}</p>)}
               </div>
               <div className="v040-rec-summary v040-simple-summary">
-                <div><span>What it should handle</span><b>Work, school, TV, gaming, and everyday use</b></div>
+                <div><span>Good for</span><b>Your family’s everyday internet needs</b></div>
                 <div><span>Estimated monthly price</span><b>{currency(quote?.monthlyPrice)}</b></div>
                 <small>Final price and plan details are confirmed before your order is submitted.</small>
               </div>
@@ -322,8 +322,8 @@ export default function InternetAdvisor({ embedded = false }) {
                 <div className="v040-provider-scroll" aria-label="Other available provider options"><div className="v040-provider-grid">{providers.slice(1).map((provider, index) => <ProviderCardV2 key={provider.id || provider.displayName} provider={provider} needs={needs} rank={index + 1} selected={(provider.id || provider.providerId || provider.displayName) === selectedId} onSelect={chooseProvider} />)}</div></div>
               )}
               <div className="v040-recommend-actions">
-                <button className="v040-secondary" type="button" onClick={() => setShowAlternatives((current) => !current)}><Sparkles size={18} /> Compare other options</button>
-                <button className="v040-primary" type="button" onClick={openQuote}>This looks great <ArrowRight size={18} /></button>
+                <button className="v040-secondary" type="button" onClick={() => setChatOpen(true)}><MessageCircle size={18} /> Ask a question</button>
+                <button className="v040-primary" type="button" onClick={openQuote}>Choose this option <ArrowRight size={18} /></button>
               </div>
             </section>
           )}

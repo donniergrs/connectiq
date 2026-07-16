@@ -28,16 +28,16 @@ export function CustomerContextProvider({ children }) {
   const [contactStep, setContactStep] = useState(() => saved?.contactStep || 0);
   const [discoveryStep, setDiscoveryStep] = useState(() => saved?.discoveryStep || 0);
   const [order, setOrder] = useState(() => saved?.order || null);
-  const [chatOpen, setChatOpen] = useState(false);
+  const [chatOpen, setChatOpen] = useState(() => saved?.chatOpen ?? false);
 
   useEffect(() => {
     window.localStorage.setItem(
       STORAGE_KEY,
-      JSON.stringify({ session, address, messages, customer, contactStep, discoveryStep, order }),
+      JSON.stringify({ session, address, messages, customer, contactStep, discoveryStep, order, chatOpen }),
     );
-  }, [session, address, messages, customer, contactStep, discoveryStep, order]);
+  }, [session, address, messages, customer, contactStep, discoveryStep, order, chatOpen]);
 
-  const resetCustomerContext = ({ openChat = false } = {}) => {
+  const resetCustomerContext = ({ openChat = true } = {}) => {
     setSession(createBrainSession());
     setAddress("");
     setMessages([DEFAULT_MESSAGE]);
