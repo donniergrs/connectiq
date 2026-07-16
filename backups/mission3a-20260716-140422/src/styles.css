@@ -3618,7 +3618,3 @@ td{
   .v040-chat-launcher span { display: inline; }
 }
 
-
-/* ConnectIQ v1.0 Mission 3A - Contact and Consent */
-.v100-contact-step{display:grid;gap:14px}.v100-contact-step h3{margin:4px 0 0;font-size:18px}.v100-contact-step>p{margin:0;color:#64748b;font-size:13px}.v100-contact-choices{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.v100-contact-choices label{display:flex!important;align-items:center;gap:9px!important;border:1px solid #cbd5e1;border-radius:12px;padding:14px;font-size:13px!important;font-weight:750!important;cursor:pointer;background:#fff}.v100-contact-choices label.is-selected{border-color:#2563eb;background:#eff6ff;color:#1d4ed8}.v100-contact-choices input{margin:0}.v100-timeline{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.v100-timeline button{background:#f1f5f9;color:#334155}.v100-timeline button.is-selected{background:#dbeafe;color:#1d4ed8;box-shadow:inset 0 0 0 1px #93c5fd}.v100-future-offers{display:flex!important;align-items:flex-start;gap:9px!important;background:#f8fafc;border:1px solid #e2e8f0;padding:12px;border-radius:10px;font-size:12px!important;font-weight:650!important;line-height:1.4}.v100-future-offers input{margin-top:2px}.v100-lead-preview{border:1px solid #bfdbfe!important;background:#eff6ff!important}.v100-lead-preview b{color:#1d4ed8}@media(max-width:650px){.v100-contact-choices,.v100-timeline{grid-template-columns:1fr}.v040-contact-panel{padding:24px}}
-

@@ -15,7 +15,6 @@ import { recommendationConfidence } from "../services/brain/explainability";
 import { trackConversionEvent } from "../services/brain/analyticsTracker";
 import { buildSalesSummary } from "../services/brain/salesSummary";
 import { buildCustomerCompletion } from "../services/brain/customerCompletion";
-import { calculateLeadScore } from "../services/brain/leadScoring";
 import { useCustomerContext } from "../context/CustomerContext";
 
 function currency(value) {
@@ -75,9 +74,6 @@ export default function InternetAdvisor({ embedded = false }) {
   const confidence = useMemo(() => recommendationConfidence(providers), [providers]);
   const selectedId = recommendation?.id || recommendation?.providerId || recommendation?.displayName;
   const customerCompletion = useMemo(() => order ? buildCustomerCompletion({ order, recommendation, quote, customer }) : null, [order, recommendation, quote, customer]);
-  const leadScore = useMemo(() => calculateLeadScore({ customer, providers, recommendation, needs }), [customer, providers, recommendation, needs]);
-  const selectedContactCount = Object.values(customer.contactPreferences || {}).filter(Boolean).length;
-  const hasRequiredContact = Boolean(customer.name?.trim()) && (!customer.contactPreferences?.email || Boolean(customer.email?.trim())) && (!(customer.contactPreferences?.text || customer.contactPreferences?.phone) || Boolean(customer.phone?.trim()));
 
   useEffect(() => {
     if (!busy) {
@@ -200,7 +196,7 @@ export default function InternetAdvisor({ embedded = false }) {
 
   async function submitOrder(event) {
     event.preventDefault();
-    if (!hasRequiredContact || selectedContactCount === 0 || !customer.consent || busy) return;
+    if (!customer.name || !customer.email || !customer.phone || !customer.consent || busy) return;
     setBusyMode("order");
     setBusyStep(0);
     setBusy(true);
@@ -351,11 +347,10 @@ export default function InternetAdvisor({ embedded = false }) {
             <section className="v040-panel v040-contact-panel">
               <span className="v040-step-label">Step 5 of 5</span><h2>Almost done.</h2><p>I’ll create a Ready-to-Submit order package. No payment is collected here.</p>
               <form onSubmit={submitOrder}>
-                {contactStep === 0 && <div className="v100-contact-step"><h3>How should we contact you?</h3><p>Choose one or more. We will only use the methods you select.</p><div className="v100-contact-choices">{[["text", "Text message"], ["phone", "Phone call"], ["email", "Email"]].map(([key, label]) => <label key={key} className={customer.contactPreferences?.[key] ? "is-selected" : ""}><input type="checkbox" checked={Boolean(customer.contactPreferences?.[key])} onChange={(e) => setCustomer({ ...customer, contactPreferences: { ...customer.contactPreferences, [key]: e.target.checked } })} /><span>{label}</span></label>)}</div><h3>How soon are you looking to switch?</h3><div className="v100-timeline">{[["today", "Today"], ["week", "This week"], ["month", "This month"], ["comparing", "Just comparing"]].map(([value, label]) => <button type="button" key={value} className={customer.buyingTimeline === value ? "is-selected" : ""} onClick={() => setCustomer({ ...customer, buyingTimeline: value })}>{label}</button>)}</div><button className="v040-primary" type="button" disabled={!selectedContactCount || !customer.buyingTimeline} onClick={() => setContactStep(1)}>Continue <ArrowRight size={18} /></button></div>}
-                {contactStep === 1 && <label>What is your full name?<input autoFocus value={customer.name} onChange={(e) => setCustomer({ ...customer, name: e.target.value })} placeholder="Full name" required /><button type="button" disabled={!customer.name.trim()} onClick={() => setContactStep(customer.contactPreferences?.email ? 2 : 3)}>Continue <ArrowRight size={18} /></button></label>}
-                {contactStep === 2 && <label>What is the best email address?<input autoFocus type="email" value={customer.email} onChange={(e) => setCustomer({ ...customer, email: e.target.value })} placeholder="Email address" required /><button type="button" disabled={!customer.email.trim()} onClick={() => setContactStep(customer.contactPreferences?.text || customer.contactPreferences?.phone ? 3 : 4)}>Continue <ArrowRight size={18} /></button></label>}
-                {contactStep === 3 && <label>What is the best phone number?<input autoFocus value={customer.phone} onChange={(e) => setCustomer({ ...customer, phone: e.target.value })} placeholder="Phone number" required /><button type="button" disabled={!customer.phone.trim()} onClick={() => setContactStep(4)}>Review my choices <ArrowRight size={18} /></button></label>}
-                {contactStep === 4 && <div className="v040-final-contact"><div><span>Name</span><b>{customer.name}</b></div>{customer.contactPreferences?.email && <div><span>Email</span><b>{customer.email}</b></div>}{(customer.contactPreferences?.text || customer.contactPreferences?.phone) && <div><span>Phone</span><b>{customer.phone}</b></div>}<div><span>Contact by</span><b>{Object.entries(customer.contactPreferences || {}).filter(([, enabled]) => enabled).map(([key]) => key === "text" ? "Text" : key === "phone" ? "Phone" : "Email").join(", ")}</b></div><div><span>Switching</span><b>{{ today: "Today", week: "This week", month: "This month", comparing: "Just comparing" }[customer.buyingTimeline]}</b></div><label className="v100-future-offers"><input type="checkbox" checked={Boolean(customer.futureOffersOptIn)} onChange={(e) => setCustomer({ ...customer, futureOffersOptIn: e.target.checked })} /><span>Let me know if a better internet offer becomes available at my address.</span></label><label className="v040-consent"><input type="checkbox" checked={customer.consent} onChange={(e) => setCustomer({ ...customer, consent: e.target.checked })} /><span>I agree that ConnectIQ may contact me using the methods I selected above about this request. Message and data rates may apply. I can opt out at any time.</span></label><div className="v100-lead-preview"><span>Advisor priority</span><b>{leadScore.label}</b></div><button className="v040-primary" disabled={!customer.consent || !hasRequiredContact || busy}>{busy ? "Creating order..." : "Connect My Home"}</button></div>}
+                {contactStep === 0 && <label>What is your full name?<input autoFocus value={customer.name} onChange={(e) => setCustomer({ ...customer, name: e.target.value })} placeholder="Full name" required /><button type="button" disabled={!customer.name.trim()} onClick={() => setContactStep(1)}>Continue <ArrowRight size={18} /></button></label>}
+                {contactStep === 1 && <label>What is the best email address?<input autoFocus type="email" value={customer.email} onChange={(e) => setCustomer({ ...customer, email: e.target.value })} placeholder="Email address" required /><button type="button" disabled={!customer.email.trim()} onClick={() => setContactStep(2)}>Continue <ArrowRight size={18} /></button></label>}
+                {contactStep === 2 && <label>What is the best phone number?<input autoFocus value={customer.phone} onChange={(e) => setCustomer({ ...customer, phone: e.target.value })} placeholder="Phone number" required /><button type="button" disabled={!customer.phone.trim()} onClick={() => setContactStep(3)}>Review consent <ArrowRight size={18} /></button></label>}
+                {contactStep === 3 && <div className="v040-final-contact"><div><span>Name</span><b>{customer.name}</b></div><div><span>Email</span><b>{customer.email}</b></div><div><span>Phone</span><b>{customer.phone}</b></div><label className="v040-consent"><input type="checkbox" checked={customer.consent} onChange={(e) => setCustomer({ ...customer, consent: e.target.checked })} /><span>I agree that ConnectIQ may contact me about this internet request by phone, text, or email.</span></label><button className="v040-primary" disabled={!customer.consent || busy}>{busy ? "Creating order..." : "Create Ready-to-Submit Order"}</button></div>}
               </form>
             </section>
           )}

@@ -1,21 +1,12 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { createBrainSession } from "../services/brain/brain";
 
-const STORAGE_KEY = "connectiq:advisor:v1.0.0";
+const STORAGE_KEY = "connectiq:advisor:v0.4.0";
 const DEFAULT_MESSAGE = {
   role: "advisor",
   text: "Hi! I’m your ConnectIQ Advisor. Use the guided steps to find service, and message me anytime with questions about providers, pricing, installation, Wi-Fi, or switching.",
 };
-const DEFAULT_CUSTOMER = {
-  name: "",
-  email: "",
-  phone: "",
-  consent: false,
-  contactPreferences: { text: false, phone: false, email: false },
-  futureOffersOptIn: false,
-  buyingTimeline: "",
-  contactTime: "asap",
-};
+const DEFAULT_CUSTOMER = { name: "", email: "", phone: "", consent: false };
 
 const CustomerContext = createContext(null);
 
@@ -33,7 +24,7 @@ export function CustomerContextProvider({ children }) {
   const [session, setSession] = useState(() => saved?.session || createBrainSession());
   const [address, setAddress] = useState(() => saved?.address || "");
   const [messages, setMessages] = useState(() => saved?.messages || [DEFAULT_MESSAGE]);
-  const [customer, setCustomer] = useState(() => ({ ...DEFAULT_CUSTOMER, ...(saved?.customer || {}), contactPreferences: { ...DEFAULT_CUSTOMER.contactPreferences, ...(saved?.customer?.contactPreferences || {}) } }));
+  const [customer, setCustomer] = useState(() => saved?.customer || DEFAULT_CUSTOMER);
   const [contactStep, setContactStep] = useState(() => saved?.contactStep || 0);
   const [discoveryStep, setDiscoveryStep] = useState(() => saved?.discoveryStep || 0);
   const [order, setOrder] = useState(() => saved?.order || null);
