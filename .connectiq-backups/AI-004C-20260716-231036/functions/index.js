@@ -1,6 +1,4 @@
-﻿// CONNECTIQ-AI-004C-IMPORT
-import { buildAdvisorResponse, buildAdvisorQuote } from "./services/aiAdvisor/index.js";
-// CONNECTIQ-AI-004B-IMPORT
+﻿// CONNECTIQ-AI-004B-IMPORT
 import {
   initializeToolRouter,
   routeConversationTurn,
@@ -536,28 +534,6 @@ app.post("/api/conversations/router/turn", async (req, res) => {
 });
 
 app.get("/api/conversations/router/diagnostics", (req, res) => {
-  const limit = Math.max(1, Math.min(Number(req.query.limit || 100), 500));
-  res.json(routerDiagnostics({ sessionId: req.query.sessionId || "", limit }));
-});
-
-// CONNECTIQ-AI-004C-ROUTES
-app.get("/api/conversations/advisor/health", (req, res) => {
-  res.json({ ok: true, service: "connectiq-ai-sales-advisor", version: "AI-004C-v1.0" });
-});
-
-app.post("/api/conversations/advisor/turn", async (req, res) => {
-  try {
-    const routerResult = await routeConversationTurn(req.body || {});
-    const providers = Array.isArray(req.body?.providers) ? req.body.providers : [];
-    const quote = buildAdvisorQuote({ routerResult, providers, selectedProvider: req.body?.selectedProvider });
-    const advisor = buildAdvisorResponse({ routerResult, providers, quote });
-    res.json({ ...routerResult, advisor, quote });
-  } catch (error) {
-    res.status(400).json({ ok: false, error: error.message });
-  }
-});
-
-app.get("/api/conversations/advisor/sessions", (req, res) => {
   const limit = Math.max(1, Math.min(Number(req.query.limit || 100), 500));
   res.json(routerDiagnostics({ sessionId: req.query.sessionId || "", limit }));
 });

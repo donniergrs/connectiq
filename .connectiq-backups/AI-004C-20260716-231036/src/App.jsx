@@ -1,4 +1,4 @@
-﻿import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 import { AuthProvider } from "./context/AuthContext";
 import { CustomerContextProvider } from "./context/CustomerContext";
@@ -29,10 +29,6 @@ import Commissions from "./pages/Commissions";
 import Login from "./pages/Login";
 
 import InternetAdvisor from "./pages/InternetAdvisor";
-// CONNECTIQ-AI-004C-IMPORTS
-import AiSalesAdvisor from "./pages/AiSalesAdvisor";
-import AiConversationMonitor from "./pages/AiConversationMonitor";
-import "./ai004c.css";
 export default function App() {
   return (
     <AuthProvider>
@@ -42,7 +38,6 @@ export default function App() {
         <Route element={<PublicLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="/availability" element={<InternetAdvisor embedded />} />
-          <Route path="/advisor" element={<AiSalesAdvisor />} />
           <Route path="/internet" element={<Navigate to="/availability" replace />} />
           <Route path="/business" element={<BusinessInternet />} />
           <Route path="/about" element={<About />} />
@@ -68,7 +63,6 @@ export default function App() {
           <Route path="distribution-rules" element={<DistributionRules />} />
           <Route path="lead-intake" element={<LeadIntakeCenter />} />
           <Route path="provider-diagnostics" element={<ProviderDiagnostics />} />
-          <Route path="conversation-monitor" element={<AiConversationMonitor />} />
           <Route path="orders" element={<Orders />} />
           <Route path="commissions" element={<Commissions />} />
           <Route path="leads" element={<Leads />} />
