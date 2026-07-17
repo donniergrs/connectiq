@@ -1,11 +1,3 @@
-﻿// CONNECTIQ-AI-004B-IMPORT
-import {
-  initializeToolRouter,
-  routeConversationTurn,
-  routerDiagnostics,
-  routerHealth,
-} from "./services/toolRouter/index.js";
-initializeToolRouter();
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -518,22 +510,3 @@ app.post("/api/fcc/lookup", async (req, res) => {
 });
 
 app.listen(PORT, () => console.log(`ConnectIQ backend running on port ${PORT}`));
-
-// CONNECTIQ-AI-004B-ROUTES
-app.get("/api/conversations/router/health", (req, res) => {
-  res.json(routerHealth());
-});
-
-app.post("/api/conversations/router/turn", async (req, res) => {
-  try {
-    const result = await routeConversationTurn(req.body || {});
-    res.json(result);
-  } catch (error) {
-    res.status(400).json({ ok: false, error: error.message });
-  }
-});
-
-app.get("/api/conversations/router/diagnostics", (req, res) => {
-  const limit = Math.max(1, Math.min(Number(req.query.limit || 100), 500));
-  res.json(routerDiagnostics({ sessionId: req.query.sessionId || "", limit }));
-});
