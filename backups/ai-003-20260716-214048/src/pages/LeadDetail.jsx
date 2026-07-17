@@ -30,7 +30,6 @@ import { buildWorkspaceJournalEvents, JOURNAL_EVENT_TYPES } from "../services/op
 import { buildSalesCoach } from "../services/aiSalesIntelligence";
 import SalesBrainPanel from "../components/sales/SalesBrainPanel";
 import SalesDiscoveryPanel from "../components/sales/SalesDiscoveryPanel";
-import RecommendationObjectionPanel from "../components/sales/RecommendationObjectionPanel";
 
 function currency(value) {
   return value ? new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(value) : "Verify price";
@@ -238,8 +237,6 @@ export default function LeadDetail() {
           <SalesDiscoveryPanel lead={lead} />
 
           <SalesBrainPanel lead={lead} />
-
-          <RecommendationObjectionPanel lead={lead} />
 
           <Panel eyebrow="AI sales coach" title="How to advance this lead" icon={Sparkles} className="lead502-coaching ai503-coach">
             <div className="ai503-coach-score"><strong>{aiCoach.closeProbability}%</strong><span>close probability</span><small>{aiCoach.confidence}% confidence · {aiCoach.riskLevel} risk</small></div>

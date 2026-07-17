@@ -6,7 +6,6 @@ import { lookupProviderIntelligence, providerIntelligenceStatus } from "./servic
 import { createSalesBrainPlan } from "./services/salesBrainService.js";
 
 import { buildDiscoveryPlan } from "./services/discoveryEngineService.js";
-import { buildRecommendationStrategy } from "./services/recommendationObjectionService.js";
 dotenv.config();
 
 const app = express();
@@ -390,25 +389,6 @@ app.post("/api/fcc/method-explorer", async (req, res) => {
 
 
 
-
-
-app.get("/api/ai-sales/recommendation/health", (req, res) => {
-  res.json({ ok: true, service: "connectiq-recommendation-objection", version: "recommendation-objection-v1.0" });
-});
-
-app.post("/api/ai-sales/recommendation/strategy", (req, res) => {
-  try { return res.json({ ok: true, ...buildRecommendationStrategy(req.body?.lead || req.body || {}) }); }
-  catch (error) { return res.status(400).json({ ok: false, error: error.message || "Unable to build recommendation strategy." }); }
-});
-
-app.post("/api/ai-sales/recommendation/respond", (req, res) => {
-  try {
-    const strategy = buildRecommendationStrategy(req.body?.lead || {});
-    const requested = String(req.body?.objection || "").trim().toLowerCase();
-    const match = strategy.objections.find((item) => requested.includes(item.key) || item.examples.some((example) => requested.includes(example.toLowerCase())));
-    return res.json({ ok: true, strategy, response: match || strategy.primaryObjection });
-  } catch (error) { return res.status(400).json({ ok: false, error: error.message || "Unable to respond to objection." }); }
-});
 
 app.get("/api/ai-sales/discovery/health", (req, res) => {
   res.json({ ok: true, service: "connectiq-sales-discovery", version: "discovery-engine-v1.0" });
