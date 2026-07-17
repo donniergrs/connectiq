@@ -2,7 +2,6 @@ import { Routes, Route, Navigate } from "react-router-dom";
 
 import { AuthProvider } from "./context/AuthContext";
 import { CustomerContextProvider } from "./context/CustomerContext";
-import { ConversationProvider } from "./context/ConversationContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 import PublicLayout from "./layouts/PublicLayout";
@@ -33,7 +32,6 @@ export default function App() {
   return (
     <AuthProvider>
       <CustomerContextProvider>
-        <ConversationProvider>
       <Routes>
         <Route element={<PublicLayout />}>
           <Route path="/" element={<Home />} />
@@ -71,7 +69,6 @@ export default function App() {
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-        </ConversationProvider>
       </CustomerContextProvider>
     </AuthProvider>
   );

@@ -7,7 +7,6 @@ import { createSalesBrainPlan } from "./services/salesBrainService.js";
 
 import { buildDiscoveryPlan } from "./services/discoveryEngineService.js";
 import { buildRecommendationStrategy } from "./services/recommendationObjectionService.js";
-import { createConversationSession, getConversationSession, updateConversationSession, pauseConversationSession, resumeConversationSession, appendConversationEvent, listConversationEvents, runtimeSnapshot, SALES_STAGES } from "./services/conversationRuntimeService.js";
 dotenv.config();
 
 const app = express();
@@ -208,16 +207,6 @@ async function testCandidate(url, index) {
 }
 
 app.get("/health", (req, res) => res.json({ status: "ok", service: "connectiq-functions" }));
-app.get("/api/conversations/health", (req, res) => res.json({ ok: true, service: "connectiq-conversation-runtime", stages: SALES_STAGES }));
-app.post("/api/conversations/sessions", (req, res) => { try { res.status(201).json({ ok: true, session: createConversationSession(req.body || {}) }); } catch (error) { res.status(400).json({ ok: false, error: error.message }); } });
-app.get("/api/conversations/sessions/:sessionId", (req, res) => { const session = getConversationSession(req.params.sessionId); if (!session) return res.status(404).json({ ok: false, error: "Conversation session not found." }); res.json({ ok: true, session }); });
-app.patch("/api/conversations/sessions/:sessionId", (req, res) => { try { res.json({ ok: true, session: updateConversationSession(req.params.sessionId, req.body || {}) }); } catch (error) { res.status(error.message.includes("not found") ? 404 : 400).json({ ok: false, error: error.message }); } });
-app.post("/api/conversations/sessions/:sessionId/pause", (req, res) => { try { res.json({ ok: true, session: pauseConversationSession(req.params.sessionId) }); } catch (error) { res.status(404).json({ ok: false, error: error.message }); } });
-app.post("/api/conversations/sessions/:sessionId/resume", (req, res) => { try { res.json({ ok: true, session: resumeConversationSession(req.params.sessionId) }); } catch (error) { res.status(404).json({ ok: false, error: error.message }); } });
-app.post("/api/conversations/sessions/:sessionId/events", (req, res) => { try { res.status(201).json({ ok: true, event: appendConversationEvent(req.params.sessionId, req.body || {}) }); } catch (error) { res.status(404).json({ ok: false, error: error.message }); } });
-app.get("/api/conversations/sessions/:sessionId/events", (req, res) => { const session = getConversationSession(req.params.sessionId); if (!session) return res.status(404).json({ ok: false, error: "Conversation session not found." }); res.json({ ok: true, events: listConversationEvents(req.params.sessionId) }); });
-app.get("/api/conversations/sessions/:sessionId/snapshot", (req, res) => { const snapshot = runtimeSnapshot(req.params.sessionId); if (!snapshot) return res.status(404).json({ ok: false, error: "Conversation session not found." }); res.json({ ok: true, ...snapshot }); });
-
 
 app.get("/api/fcc/diagnostic", async (req, res) => {
   try {
