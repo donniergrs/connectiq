@@ -28,7 +28,6 @@ import { STATUS_FLOW } from "../services/providerIntelligence";
 import { buildLeadWorkspace } from "../services/leadWorkspace";
 import { buildWorkspaceJournalEvents, JOURNAL_EVENT_TYPES } from "../services/opportunityJournal";
 import { buildSalesCoach } from "../services/aiSalesIntelligence";
-import SalesBrainPanel from "../components/sales/SalesBrainPanel";
 
 function currency(value) {
   return value ? new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(value) : "Verify price";
@@ -232,8 +231,6 @@ export default function LeadDetail() {
             <div className="lead502-reasons"><strong>Why it fits</strong>{recommendation.reasons.length ? recommendation.reasons.map((reason) => <p key={reason}><CheckCircle2 size={14} /> {reason}</p>) : <p><CheckCircle2 size={14} /> Best available fit based on the completed customer profile.</p>}</div>
             {recommendation.nextBest && <div className="lead502-next-best"><span>Next-best alternative</span><strong>{recommendation.nextBest.provider}</strong><small>{recommendation.nextBest.matchScore || "—"} match · {recommendation.nextBest.technology}</small></div>}
           </Panel>
-
-          <SalesBrainPanel lead={lead} />
 
           <Panel eyebrow="AI sales coach" title="How to advance this lead" icon={Sparkles} className="lead502-coaching ai503-coach">
             <div className="ai503-coach-score"><strong>{aiCoach.closeProbability}%</strong><span>close probability</span><small>{aiCoach.confidence}% confidence · {aiCoach.riskLevel} risk</small></div>

@@ -3,7 +3,6 @@ import cors from "cors";
 import dotenv from "dotenv";
 import fetch from "node-fetch";
 import { lookupProviderIntelligence, providerIntelligenceStatus } from "./services/providerIntelligenceService.js";
-import { createSalesBrainPlan } from "./services/salesBrainService.js";
 
 dotenv.config();
 
@@ -388,36 +387,6 @@ app.post("/api/fcc/method-explorer", async (req, res) => {
 
 
 
-
-app.get("/api/ai-sales/health", (req, res) => {
-  res.json({ ok: true, service: "connectiq-sales-brain", version: "sales-brain-v1.0" });
-});
-
-app.post("/api/ai-sales/plan", (req, res) => {
-  try {
-    return res.json(createSalesBrainPlan(req.body?.lead || req.body || {}));
-  } catch (error) {
-    return res.status(400).json({ ok: false, error: error.message || "Unable to create sales plan." });
-  }
-});
-
-app.post("/api/ai-sales/conversation/next", (req, res) => {
-  try {
-    const plan = createSalesBrainPlan(req.body?.lead || {});
-    return res.json({
-      ok: true,
-      conversationId: req.body?.conversationId || `cq-${Date.now()}`,
-      stage: plan.stage,
-      opening: plan.opening,
-      nextQuestion: plan.nextQuestion,
-      nextAction: plan.nextAction,
-      missing: plan.missing,
-      dispositions: plan.dispositions,
-    });
-  } catch (error) {
-    return res.status(400).json({ ok: false, error: error.message || "Unable to continue conversation." });
-  }
-});
 
 app.get("/api/provider-intelligence/status", (req, res) => {
   res.json({ ok: true, ...providerIntelligenceStatus() });
