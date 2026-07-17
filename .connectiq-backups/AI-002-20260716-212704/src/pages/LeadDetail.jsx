@@ -29,7 +29,6 @@ import { buildLeadWorkspace } from "../services/leadWorkspace";
 import { buildWorkspaceJournalEvents, JOURNAL_EVENT_TYPES } from "../services/opportunityJournal";
 import { buildSalesCoach } from "../services/aiSalesIntelligence";
 import SalesBrainPanel from "../components/sales/SalesBrainPanel";
-import SalesDiscoveryPanel from "../components/sales/SalesDiscoveryPanel";
 
 function currency(value) {
   return value ? new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(value) : "Verify price";
@@ -233,8 +232,6 @@ export default function LeadDetail() {
             <div className="lead502-reasons"><strong>Why it fits</strong>{recommendation.reasons.length ? recommendation.reasons.map((reason) => <p key={reason}><CheckCircle2 size={14} /> {reason}</p>) : <p><CheckCircle2 size={14} /> Best available fit based on the completed customer profile.</p>}</div>
             {recommendation.nextBest && <div className="lead502-next-best"><span>Next-best alternative</span><strong>{recommendation.nextBest.provider}</strong><small>{recommendation.nextBest.matchScore || "—"} match · {recommendation.nextBest.technology}</small></div>}
           </Panel>
-
-          <SalesDiscoveryPanel lead={lead} />
 
           <SalesBrainPanel lead={lead} />
 

@@ -5,7 +5,6 @@ import fetch from "node-fetch";
 import { lookupProviderIntelligence, providerIntelligenceStatus } from "./services/providerIntelligenceService.js";
 import { createSalesBrainPlan } from "./services/salesBrainService.js";
 
-import { buildDiscoveryPlan } from "./services/discoveryEngineService.js";
 dotenv.config();
 
 const app = express();
@@ -389,22 +388,6 @@ app.post("/api/fcc/method-explorer", async (req, res) => {
 
 
 
-
-app.get("/api/ai-sales/discovery/health", (req, res) => {
-  res.json({ ok: true, service: "connectiq-sales-discovery", version: "discovery-engine-v1.0" });
-});
-
-app.post("/api/ai-sales/discovery/plan", (req, res) => {
-  try { return res.json({ ok: true, ...buildDiscoveryPlan(req.body?.lead || req.body || {}) }); }
-  catch (error) { return res.status(400).json({ ok: false, error: error.message || "Unable to build discovery plan." }); }
-});
-
-app.post("/api/ai-sales/discovery/next", (req, res) => {
-  try {
-    const plan = buildDiscoveryPlan(req.body?.lead || {});
-    return res.json({ ok: true, conversationId: req.body?.conversationId || `cq-${Date.now()}`, version: plan.version, completionPercent: plan.completionPercent, next: plan.next, scoring: plan.scoring, complete: plan.complete, summary: plan.summary });
-  } catch (error) { return res.status(400).json({ ok: false, error: error.message || "Unable to continue discovery." }); }
-});
 
 app.get("/api/ai-sales/health", (req, res) => {
   res.json({ ok: true, service: "connectiq-sales-brain", version: "sales-brain-v1.0" });
