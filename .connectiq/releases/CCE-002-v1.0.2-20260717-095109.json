@@ -1,0 +1,16 @@
+﻿{
+    "status":  "installed",
+    "installedAt":  "2026-07-17T09:51:10.3332252-04:00",
+    "projectPath":  "C:\\connectiqvscode",
+    "release":  {
+                    "id":  "CCE-002",
+                    "name":  "Semantic Understanding Engine",
+                    "version":  "1.0.2",
+                    "requires":  [
+                                     "CCE-001",
+                                     "CCE-002-v1.0.1"
+                                 ],
+                    "description":  "Fixes negative sentiment detection and provider extraction from billing statements."
+                },
+    "backupPath":  "C:\\connectiqvscode\\.connectiq\\backups\\CCE-002-v1.0.2-20260717-095109"
+}

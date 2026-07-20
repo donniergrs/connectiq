@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useEffect, useMemo, useState } from "react";
 import { ArrowRight, CheckCircle2, ChevronLeft, MessageCircle, ShieldCheck, Sparkles, X } from "lucide-react";
 import AdvisorProgress from "../components/advisor/AdvisorProgress";
@@ -7,7 +8,6 @@ import ProviderCardV2 from "../components/advisor/ProviderCardV2";
 import ProfessionalQuoteCard from "../components/advisor/ProfessionalQuoteCard";
 import CustomerCompletionCard from "../components/advisor/CustomerCompletionCard";
 import { lookupAddressWithBrain, updateNeedsWithBrain } from "../services/brain/brain";
-import { answerQuestionMessage } from "../services/brain/conversationEngine";
 import { CONVERSATION_STATES } from "../services/brain/conversationState";
 import { createReadyToSubmitOrder } from "../services/brain/orderEngine";
 import { buildQuote } from "../services/brain/quoteEngine";
@@ -17,6 +17,9 @@ import { buildSalesSummary } from "../services/brain/salesSummary";
 import { buildCustomerCompletion } from "../services/brain/customerCompletion";
 import { calculateLeadScore } from "../services/brain/leadScoring";
 import { useCustomerContext } from "../context/CustomerContext";
+import { processAdvisorMessage } from "../services/semanticUnderstandingService";
+import CognitiveQuoteBuilder from "../components/advisor/CognitiveQuoteBuilder";
+import BrainDebugPanel from "../components/advisor/BrainDebugPanel";
 
 function currency(value) {
   return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 2 }).format(Number(value || 0));
@@ -70,6 +73,8 @@ export default function InternetAdvisor({ embedded = false }) {
   const [busyStep, setBusyStep] = useState(0);
   const [chatResponding, setChatResponding] = useState(false);
   const [showAlternatives, setShowAlternatives] = useState(false);
+  const [customerTwin, setCustomerTwin] = useState(null);
+  const [brainResult, setBrainResult] = useState(null);
 
   const { providers, recommendation, quote, needs, step } = session;
   const confidence = useMemo(() => recommendationConfidence(providers), [providers]);
@@ -179,6 +184,52 @@ export default function InternetAdvisor({ embedded = false }) {
     trackConversionEvent("quote_viewed", next);
   }
 
+  function composeCognitiveResponse(result) {
+    const facts = result?.analysis?.facts || [];
+    const acknowledgements = [];
+    const provider = facts.find((fact) => fact.domain === "currentService" && fact.key === "currentProvider")?.value;
+    const bill = facts.find((fact) => fact.domain === "budget" && fact.key === "monthlyBill")?.value;
+    const priority = facts.find((fact) => fact.domain === "goals" && fact.key === "primaryPriority")?.value;
+    const addressFact = facts.find((fact) => fact.domain === "location" && fact.key === "address")?.value;
+
+    if (provider) acknowledgements.push(`I have ${provider} as your current provider.`);
+    if (bill !== undefined) acknowledgements.push(`I recorded your current internet bill as $${Number(bill).toFixed(0)} per month.`);
+    if (priority) acknowledgements.push(`I’ll prioritize ${String(priority).replaceAll("_", " ")}.`);
+    if (addressFact) acknowledgements.push(`I saved ${addressFact} as the service address.`);
+
+    const nextQuestion = result?.nextBestQuestion?.question;
+    if (!acknowledgements.length && result?.analysis?.intent?.primary === "ASK_QUESTION") {
+      acknowledgements.push("I understand. I’m using that information to build your recommendation.");
+    }
+    return [...acknowledgements, nextQuestion].filter(Boolean).join(" ") || "I have updated your profile. What would you like me to consider next?";
+  }
+
+  function synchronizeTwin(result) {
+    const twin = result?.twin;
+    if (!twin) return;
+    setCustomerTwin(twin);
+    const twinAddress = twin?.understanding?.location?.address?.value;
+    if (twinAddress && twinAddress !== address) setAddress(String(twinAddress));
+
+    const priority = twin?.understanding?.goals?.primaryPriority?.value;
+    const bill = twin?.understanding?.budget?.monthlyBill?.value;
+    const householdSize = twin?.understanding?.household?.householdSize?.value;
+    const usage = twin?.understanding?.usage?.internetUsage?.value;
+    setSession((current) => ({
+      ...current,
+      address: twinAddress || current.address,
+      needs: {
+        ...current.needs,
+        priority: priority || current.needs?.priority,
+        budget: bill || current.needs?.budget,
+        people: householdSize || current.needs?.people,
+        cognitiveUsage: usage || current.needs?.cognitiveUsage,
+      },
+      cognitiveTwinVersion: twin.version,
+      recommendationReadiness: result?.readiness || null,
+    }));
+  }
+
   async function askAdvisor(event) {
     event.preventDefault();
     if (!question.trim() || chatResponding) return;
@@ -186,10 +237,21 @@ export default function InternetAdvisor({ embedded = false }) {
     setQuestion("");
     setMessages((current) => [...current, { role: "customer", text: customerMessage }]);
     setChatResponding(true);
-    await new Promise((resolve) => window.setTimeout(resolve, 650));
-    const answer = answerQuestionMessage(customerMessage, { recommendation, quote, providers, needs, address: session.address, conversation: messages });
-    setMessages((current) => [...current, answer]);
-    setChatResponding(false);
+    try {
+      const result = await processAdvisorMessage({
+        text: customerMessage,
+        customerId: session.customerId || `web-${session.sessionId}`,
+        sessionId: session.sessionId,
+        channel: "web",
+      });
+      setBrainResult(result);
+      synchronizeTwin(result);
+      setMessages((current) => [...current, { role: "advisor", text: composeCognitiveResponse(result), cognitive: true }]);
+    } catch (error) {
+      setMessages((current) => [...current, { role: "advisor", text: error?.message || "The Cognitive Engine could not process that message. Please try again." }]);
+    } finally {
+      setChatResponding(false);
+    }
   }
 
   function beginOrder() {
@@ -239,6 +301,8 @@ export default function InternetAdvisor({ embedded = false }) {
 
   function restart() {
     setQuestion("");
+    setCustomerTwin(null);
+    setBrainResult(null);
     resetCustomerContext({ openChat: false });
   }
 
@@ -381,6 +445,8 @@ export default function InternetAdvisor({ embedded = false }) {
             </section>
           )}
             </div>
+            <CognitiveQuoteBuilder twin={customerTwin} readiness={brainResult?.readiness} />
+            <BrainDebugPanel result={brainResult} />
             <CustomerProfile address={session.address || address} needs={needs} providers={providers} recommendation={recommendation} />
           </div>
 

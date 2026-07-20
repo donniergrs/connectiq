@@ -1,0 +1,57 @@
+{
+  "schemaVersion": "1.0.0",
+  "topics": {
+    "fiber": {
+      "definition": "Fiber-to-the-home carries service over optical fiber to the residence.",
+      "advantages": [
+        "high capacity",
+        "strong upload potential",
+        "low latency characteristics"
+      ],
+      "cautions": [
+        "actual performance depends on plan, network design, Wi-Fi, and equipment"
+      ]
+    },
+    "cable": {
+      "definition": "Cable broadband commonly uses hybrid fiber-coaxial networks.",
+      "advantages": [
+        "broad availability",
+        "high download speeds"
+      ],
+      "cautions": [
+        "upload performance and architecture vary by market"
+      ]
+    },
+    "fixed_wireless": {
+      "definition": "Fixed wireless delivers home internet over a radio connection.",
+      "advantages": [
+        "fast deployment"
+      ],
+      "cautions": [
+        "capacity and signal vary by location"
+      ]
+    },
+    "satellite": {
+      "definition": "Satellite internet reaches locations through satellite links.",
+      "advantages": [
+        "broad geographic reach"
+      ],
+      "cautions": [
+        "latency, data policies, weather, and equipment differ"
+      ]
+    },
+    "wifi": {
+      "definition": "Wi-Fi is the in-home wireless network, not the internet service itself.",
+      "diagnostics": [
+        "router placement",
+        "home materials",
+        "interference",
+        "mesh design",
+        "device capability"
+      ]
+    },
+    "speed_guidance": {
+      "principle": "Recommend based on concurrent use, upload needs, latency sensitivity, and Wi-Fi\u2014not household size alone."
+    }
+  }
+}

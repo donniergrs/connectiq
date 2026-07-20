@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { arrayUnion, doc, serverTimestamp, updateDoc } from "firebase/firestore";
-import { CheckCircle2, MessageCircleQuestion, Save, ShieldCheck, Sparkles, Target } from "lucide-react";
+import { CheckCircle2, Save, ShieldCheck, Sparkles, Target } from "lucide-react";
 import { db } from "../../firebase";
 import { buildRecommendationStrategy } from "../../services/salesBrain/recommendationObjectionEngine";
 

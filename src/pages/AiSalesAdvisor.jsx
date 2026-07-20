@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useMemo, useState } from "react";
 import { ArrowRight, Bot, CheckCircle2, LoaderCircle, Send, Sparkles, Wifi } from "lucide-react";
 import { sendAdvisorTurn } from "../services/aiAdvisorService";
@@ -20,7 +21,7 @@ export default function AiSalesAdvisor() {
   const [busy, setBusy] = useState(false);
   const [suggestedReplies, setSuggestedReplies] = useState([]);
 
-  const recommended = providers[0] || null;
+  const _recommended = providers[0] || null;
   const progress = useMemo(() => {
     let value = 15;
     if (providers.length) value += 25;

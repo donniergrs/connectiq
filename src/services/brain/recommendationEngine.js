@@ -136,7 +136,7 @@ function simpleReasons(provider = {}, needs = {}) {
   const download = providerDownload(provider);
   const reasons = [];
   if (needs.streaming) reasons.push("Everyone should be able to watch shows without slowing each other down.");
-  if (needs.workFromHome) reasons.push("Work and video calls should stay smooth.");
+  if (needs.workFromHome) reasons.push("Strong upload capacity helps work and video calls stay smooth.");
   if (needs.gaming) reasons.push("Games should feel quick and responsive.");
   if (number(needs.devices) >= 20) reasons.push("It can handle lots of phones, TVs, and other devices at once.");
   if (String(needs.priority).toLowerCase() === "price") reasons.push("It is a strong choice for the budget you picked.");

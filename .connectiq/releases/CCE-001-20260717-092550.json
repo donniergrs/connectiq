@@ -1,0 +1,11 @@
+﻿{
+    "status":  "installed",
+    "installedAt":  "2026-07-17T09:25:54.0010264-04:00",
+    "projectPath":  "C:\\connectiqvscode",
+    "release":  {
+                    "id":  "CCE-001",
+                    "name":  "Customer Digital Twin",
+                    "version":  "1.0.0"
+                },
+    "backupPath":  "C:\\connectiqvscode\\.connectiq\\backups\\CCE-001-20260717-092550"
+}

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect, react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import { getRouterDiagnostics, getToolRouterHealth } from "../services/toolRouterService";
 

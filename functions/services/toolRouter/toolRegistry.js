@@ -33,7 +33,7 @@ export function listTools({ enabledOnly = false } = {}) {
   return [...registry.values()]
     .filter((tool) => !enabledOnly || tool.enabled)
     .sort((a, b) => a.priority - b.priority || a.name.localeCompare(b.name))
-    .map(({ execute, ...metadata }) => metadata);
+    .map((tool) => { const metadata = { ...tool }; delete metadata.execute; return metadata; });
 }
 
 export function clearTools() {

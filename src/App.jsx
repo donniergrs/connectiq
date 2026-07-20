@@ -1,4 +1,4 @@
-﻿import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 import { AuthProvider } from "./context/AuthContext";
 import { CustomerContextProvider } from "./context/CustomerContext";
@@ -32,6 +32,7 @@ import InternetAdvisor from "./pages/InternetAdvisor";
 // CONNECTIQ-AI-004C-IMPORTS
 import AiSalesAdvisor from "./pages/AiSalesAdvisor";
 import AiConversationMonitor from "./pages/AiConversationMonitor";
+import UniversityConsole from "./pages/UniversityConsole";
 import "./ai004c.css";
 export default function App() {
   return (
@@ -69,6 +70,7 @@ export default function App() {
           <Route path="lead-intake" element={<LeadIntakeCenter />} />
           <Route path="provider-diagnostics" element={<ProviderDiagnostics />} />
           <Route path="conversation-monitor" element={<AiConversationMonitor />} />
+          <Route path="university" element={<UniversityConsole />} />
           <Route path="orders" element={<Orders />} />
           <Route path="commissions" element={<Commissions />} />
           <Route path="leads" element={<Leads />} />

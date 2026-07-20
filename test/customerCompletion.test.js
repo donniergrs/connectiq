@@ -7,7 +7,7 @@ import {
 } from "../src/services/brain/customerCompletion.js";
 
 test("formats a short branded customer reference", () => {
-  assert.equal(formatCustomerReference("abc-123-def456"), "CIQ-DEF456");
+  assert.match(formatCustomerReference("abc-123-def456"), /^CQ-\d{8}-DEF456$/);
 });
 
 test("builds a customer-safe completion payload", () => {

@@ -1,0 +1,2166 @@
+{
+  "schemaVersion": "1.0.0",
+  "count": 80,
+  "scenarios": [
+    {
+      "id": "S001",
+      "persona": "remote worker",
+      "goal": "lower the bill",
+      "turns": [
+        {
+          "customer": "I am a remote worker and I want to lower the bill.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S002",
+      "persona": "remote worker",
+      "goal": "improve reliability",
+      "turns": [
+        {
+          "customer": "I am a remote worker and I want to improve reliability.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S003",
+      "persona": "remote worker",
+      "goal": "fix upstairs Wi-Fi",
+      "turns": [
+        {
+          "customer": "I am a remote worker and I want to fix upstairs Wi-Fi.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S004",
+      "persona": "remote worker",
+      "goal": "get faster uploads",
+      "turns": [
+        {
+          "customer": "I am a remote worker and I want to get faster uploads.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S005",
+      "persona": "remote worker",
+      "goal": "bundle mobile",
+      "turns": [
+        {
+          "customer": "I am a remote worker and I want to bundle mobile.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S006",
+      "persona": "remote worker",
+      "goal": "schedule a fast installation",
+      "turns": [
+        {
+          "customer": "I am a remote worker and I want to schedule a fast installation.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S007",
+      "persona": "remote worker",
+      "goal": "avoid a contract",
+      "turns": [
+        {
+          "customer": "I am a remote worker and I want to avoid a contract.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S008",
+      "persona": "remote worker",
+      "goal": "compare all providers",
+      "turns": [
+        {
+          "customer": "I am a remote worker and I want to compare all providers.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S009",
+      "persona": "family of five",
+      "goal": "lower the bill",
+      "turns": [
+        {
+          "customer": "I am a family of five and I want to lower the bill.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S010",
+      "persona": "family of five",
+      "goal": "improve reliability",
+      "turns": [
+        {
+          "customer": "I am a family of five and I want to improve reliability.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S011",
+      "persona": "family of five",
+      "goal": "fix upstairs Wi-Fi",
+      "turns": [
+        {
+          "customer": "I am a family of five and I want to fix upstairs Wi-Fi.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S012",
+      "persona": "family of five",
+      "goal": "get faster uploads",
+      "turns": [
+        {
+          "customer": "I am a family of five and I want to get faster uploads.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S013",
+      "persona": "family of five",
+      "goal": "bundle mobile",
+      "turns": [
+        {
+          "customer": "I am a family of five and I want to bundle mobile.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S014",
+      "persona": "family of five",
+      "goal": "schedule a fast installation",
+      "turns": [
+        {
+          "customer": "I am a family of five and I want to schedule a fast installation.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S015",
+      "persona": "family of five",
+      "goal": "avoid a contract",
+      "turns": [
+        {
+          "customer": "I am a family of five and I want to avoid a contract.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S016",
+      "persona": "family of five",
+      "goal": "compare all providers",
+      "turns": [
+        {
+          "customer": "I am a family of five and I want to compare all providers.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S017",
+      "persona": "gamer",
+      "goal": "lower the bill",
+      "turns": [
+        {
+          "customer": "I am a gamer and I want to lower the bill.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S018",
+      "persona": "gamer",
+      "goal": "improve reliability",
+      "turns": [
+        {
+          "customer": "I am a gamer and I want to improve reliability.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S019",
+      "persona": "gamer",
+      "goal": "fix upstairs Wi-Fi",
+      "turns": [
+        {
+          "customer": "I am a gamer and I want to fix upstairs Wi-Fi.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S020",
+      "persona": "gamer",
+      "goal": "get faster uploads",
+      "turns": [
+        {
+          "customer": "I am a gamer and I want to get faster uploads.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S021",
+      "persona": "gamer",
+      "goal": "bundle mobile",
+      "turns": [
+        {
+          "customer": "I am a gamer and I want to bundle mobile.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S022",
+      "persona": "gamer",
+      "goal": "schedule a fast installation",
+      "turns": [
+        {
+          "customer": "I am a gamer and I want to schedule a fast installation.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S023",
+      "persona": "gamer",
+      "goal": "avoid a contract",
+      "turns": [
+        {
+          "customer": "I am a gamer and I want to avoid a contract.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S024",
+      "persona": "gamer",
+      "goal": "compare all providers",
+      "turns": [
+        {
+          "customer": "I am a gamer and I want to compare all providers.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S025",
+      "persona": "retiree",
+      "goal": "lower the bill",
+      "turns": [
+        {
+          "customer": "I am a retiree and I want to lower the bill.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S026",
+      "persona": "retiree",
+      "goal": "improve reliability",
+      "turns": [
+        {
+          "customer": "I am a retiree and I want to improve reliability.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S027",
+      "persona": "retiree",
+      "goal": "fix upstairs Wi-Fi",
+      "turns": [
+        {
+          "customer": "I am a retiree and I want to fix upstairs Wi-Fi.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S028",
+      "persona": "retiree",
+      "goal": "get faster uploads",
+      "turns": [
+        {
+          "customer": "I am a retiree and I want to get faster uploads.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S029",
+      "persona": "retiree",
+      "goal": "bundle mobile",
+      "turns": [
+        {
+          "customer": "I am a retiree and I want to bundle mobile.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S030",
+      "persona": "retiree",
+      "goal": "schedule a fast installation",
+      "turns": [
+        {
+          "customer": "I am a retiree and I want to schedule a fast installation.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S031",
+      "persona": "retiree",
+      "goal": "avoid a contract",
+      "turns": [
+        {
+          "customer": "I am a retiree and I want to avoid a contract.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S032",
+      "persona": "retiree",
+      "goal": "compare all providers",
+      "turns": [
+        {
+          "customer": "I am a retiree and I want to compare all providers.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S033",
+      "persona": "small business owner",
+      "goal": "lower the bill",
+      "turns": [
+        {
+          "customer": "I am a small business owner and I want to lower the bill.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S034",
+      "persona": "small business owner",
+      "goal": "improve reliability",
+      "turns": [
+        {
+          "customer": "I am a small business owner and I want to improve reliability.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S035",
+      "persona": "small business owner",
+      "goal": "fix upstairs Wi-Fi",
+      "turns": [
+        {
+          "customer": "I am a small business owner and I want to fix upstairs Wi-Fi.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S036",
+      "persona": "small business owner",
+      "goal": "get faster uploads",
+      "turns": [
+        {
+          "customer": "I am a small business owner and I want to get faster uploads.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S037",
+      "persona": "small business owner",
+      "goal": "bundle mobile",
+      "turns": [
+        {
+          "customer": "I am a small business owner and I want to bundle mobile.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S038",
+      "persona": "small business owner",
+      "goal": "schedule a fast installation",
+      "turns": [
+        {
+          "customer": "I am a small business owner and I want to schedule a fast installation.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S039",
+      "persona": "small business owner",
+      "goal": "avoid a contract",
+      "turns": [
+        {
+          "customer": "I am a small business owner and I want to avoid a contract.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S040",
+      "persona": "small business owner",
+      "goal": "compare all providers",
+      "turns": [
+        {
+          "customer": "I am a small business owner and I want to compare all providers.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S041",
+      "persona": "new mover",
+      "goal": "lower the bill",
+      "turns": [
+        {
+          "customer": "I am a new mover and I want to lower the bill.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S042",
+      "persona": "new mover",
+      "goal": "improve reliability",
+      "turns": [
+        {
+          "customer": "I am a new mover and I want to improve reliability.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S043",
+      "persona": "new mover",
+      "goal": "fix upstairs Wi-Fi",
+      "turns": [
+        {
+          "customer": "I am a new mover and I want to fix upstairs Wi-Fi.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S044",
+      "persona": "new mover",
+      "goal": "get faster uploads",
+      "turns": [
+        {
+          "customer": "I am a new mover and I want to get faster uploads.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S045",
+      "persona": "new mover",
+      "goal": "bundle mobile",
+      "turns": [
+        {
+          "customer": "I am a new mover and I want to bundle mobile.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S046",
+      "persona": "new mover",
+      "goal": "schedule a fast installation",
+      "turns": [
+        {
+          "customer": "I am a new mover and I want to schedule a fast installation.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S047",
+      "persona": "new mover",
+      "goal": "avoid a contract",
+      "turns": [
+        {
+          "customer": "I am a new mover and I want to avoid a contract.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S048",
+      "persona": "new mover",
+      "goal": "compare all providers",
+      "turns": [
+        {
+          "customer": "I am a new mover and I want to compare all providers.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S049",
+      "persona": "budget shopper",
+      "goal": "lower the bill",
+      "turns": [
+        {
+          "customer": "I am a budget shopper and I want to lower the bill.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S050",
+      "persona": "budget shopper",
+      "goal": "improve reliability",
+      "turns": [
+        {
+          "customer": "I am a budget shopper and I want to improve reliability.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S051",
+      "persona": "budget shopper",
+      "goal": "fix upstairs Wi-Fi",
+      "turns": [
+        {
+          "customer": "I am a budget shopper and I want to fix upstairs Wi-Fi.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S052",
+      "persona": "budget shopper",
+      "goal": "get faster uploads",
+      "turns": [
+        {
+          "customer": "I am a budget shopper and I want to get faster uploads.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S053",
+      "persona": "budget shopper",
+      "goal": "bundle mobile",
+      "turns": [
+        {
+          "customer": "I am a budget shopper and I want to bundle mobile.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S054",
+      "persona": "budget shopper",
+      "goal": "schedule a fast installation",
+      "turns": [
+        {
+          "customer": "I am a budget shopper and I want to schedule a fast installation.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S055",
+      "persona": "budget shopper",
+      "goal": "avoid a contract",
+      "turns": [
+        {
+          "customer": "I am a budget shopper and I want to avoid a contract.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S056",
+      "persona": "budget shopper",
+      "goal": "compare all providers",
+      "turns": [
+        {
+          "customer": "I am a budget shopper and I want to compare all providers.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S057",
+      "persona": "rural customer",
+      "goal": "lower the bill",
+      "turns": [
+        {
+          "customer": "I am a rural customer and I want to lower the bill.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S058",
+      "persona": "rural customer",
+      "goal": "improve reliability",
+      "turns": [
+        {
+          "customer": "I am a rural customer and I want to improve reliability.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S059",
+      "persona": "rural customer",
+      "goal": "fix upstairs Wi-Fi",
+      "turns": [
+        {
+          "customer": "I am a rural customer and I want to fix upstairs Wi-Fi.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S060",
+      "persona": "rural customer",
+      "goal": "get faster uploads",
+      "turns": [
+        {
+          "customer": "I am a rural customer and I want to get faster uploads.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S061",
+      "persona": "rural customer",
+      "goal": "bundle mobile",
+      "turns": [
+        {
+          "customer": "I am a rural customer and I want to bundle mobile.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S062",
+      "persona": "rural customer",
+      "goal": "schedule a fast installation",
+      "turns": [
+        {
+          "customer": "I am a rural customer and I want to schedule a fast installation.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S063",
+      "persona": "rural customer",
+      "goal": "avoid a contract",
+      "turns": [
+        {
+          "customer": "I am a rural customer and I want to avoid a contract.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S064",
+      "persona": "rural customer",
+      "goal": "compare all providers",
+      "turns": [
+        {
+          "customer": "I am a rural customer and I want to compare all providers.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S065",
+      "persona": "apartment renter",
+      "goal": "lower the bill",
+      "turns": [
+        {
+          "customer": "I am a apartment renter and I want to lower the bill.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S066",
+      "persona": "apartment renter",
+      "goal": "improve reliability",
+      "turns": [
+        {
+          "customer": "I am a apartment renter and I want to improve reliability.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S067",
+      "persona": "apartment renter",
+      "goal": "fix upstairs Wi-Fi",
+      "turns": [
+        {
+          "customer": "I am a apartment renter and I want to fix upstairs Wi-Fi.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S068",
+      "persona": "apartment renter",
+      "goal": "get faster uploads",
+      "turns": [
+        {
+          "customer": "I am a apartment renter and I want to get faster uploads.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S069",
+      "persona": "apartment renter",
+      "goal": "bundle mobile",
+      "turns": [
+        {
+          "customer": "I am a apartment renter and I want to bundle mobile.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S070",
+      "persona": "apartment renter",
+      "goal": "schedule a fast installation",
+      "turns": [
+        {
+          "customer": "I am a apartment renter and I want to schedule a fast installation.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S071",
+      "persona": "apartment renter",
+      "goal": "avoid a contract",
+      "turns": [
+        {
+          "customer": "I am a apartment renter and I want to avoid a contract.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S072",
+      "persona": "apartment renter",
+      "goal": "compare all providers",
+      "turns": [
+        {
+          "customer": "I am a apartment renter and I want to compare all providers.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S073",
+      "persona": "heavy streamer",
+      "goal": "lower the bill",
+      "turns": [
+        {
+          "customer": "I am a heavy streamer and I want to lower the bill.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S074",
+      "persona": "heavy streamer",
+      "goal": "improve reliability",
+      "turns": [
+        {
+          "customer": "I am a heavy streamer and I want to improve reliability.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S075",
+      "persona": "heavy streamer",
+      "goal": "fix upstairs Wi-Fi",
+      "turns": [
+        {
+          "customer": "I am a heavy streamer and I want to fix upstairs Wi-Fi.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S076",
+      "persona": "heavy streamer",
+      "goal": "get faster uploads",
+      "turns": [
+        {
+          "customer": "I am a heavy streamer and I want to get faster uploads.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S077",
+      "persona": "heavy streamer",
+      "goal": "bundle mobile",
+      "turns": [
+        {
+          "customer": "I am a heavy streamer and I want to bundle mobile.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S078",
+      "persona": "heavy streamer",
+      "goal": "schedule a fast installation",
+      "turns": [
+        {
+          "customer": "I am a heavy streamer and I want to schedule a fast installation.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S079",
+      "persona": "heavy streamer",
+      "goal": "avoid a contract",
+      "turns": [
+        {
+          "customer": "I am a heavy streamer and I want to avoid a contract.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    },
+    {
+      "id": "S080",
+      "persona": "heavy streamer",
+      "goal": "compare all providers",
+      "turns": [
+        {
+          "customer": "I am a heavy streamer and I want to compare all providers.",
+          "expected": "Acknowledge, extract facts, ask at most one high-value discovery question."
+        },
+        {
+          "customer": "How reliable is the provider you recommended?",
+          "expected": "Answer reliability directly with technology evidence and honest limits."
+        },
+        {
+          "customer": "How much is it?",
+          "expected": "Give verified price or state it is unverified."
+        },
+        {
+          "customer": "I do not want that provider.",
+          "expected": "Reject it and synchronize recommendation and quote."
+        },
+        {
+          "customer": "Show me the alternatives.",
+          "expected": "Compare remaining address-available providers."
+        }
+      ]
+    }
+  ]
+}

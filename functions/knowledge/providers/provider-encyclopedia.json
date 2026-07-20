@@ -1,0 +1,2233 @@
+{
+  "schemaVersion": "1.0.0",
+  "scope": "U.S. broadband provider seed encyclopedia. Address-level FCC/provider results remain authoritative for availability.",
+  "providers": [
+    {
+      "id": "provider-001",
+      "name": "AT&T",
+      "aliases": [
+        "AT&T Fiber",
+        "ATT"
+      ],
+      "technologies": [
+        "Fiber",
+        "Fixed Wireless"
+      ],
+      "mobile": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-002",
+      "name": "Spectrum",
+      "aliases": [
+        "Charter Spectrum",
+        "Charter"
+      ],
+      "technologies": [
+        "Cable",
+        "Fiber in selected networks"
+      ],
+      "mobile": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-003",
+      "name": "Frontier",
+      "aliases": [
+        "Frontier Fiber"
+      ],
+      "technologies": [
+        "Fiber",
+        "DSL in legacy areas"
+      ],
+      "mobile": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-004",
+      "name": "Xfinity",
+      "aliases": [
+        "Comcast"
+      ],
+      "technologies": [
+        "Cable",
+        "Fiber in limited products"
+      ],
+      "mobile": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-005",
+      "name": "Verizon Fios",
+      "aliases": [
+        "Fios",
+        "Verizon"
+      ],
+      "technologies": [
+        "Fiber"
+      ],
+      "mobile": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-006",
+      "name": "T-Mobile",
+      "aliases": [
+        "T-Mobile Home Internet",
+        "TMHI"
+      ],
+      "technologies": [
+        "Fixed Wireless",
+        "Fiber in selected partnerships"
+      ],
+      "mobile": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-007",
+      "name": "Quantum Fiber",
+      "aliases": [
+        "CenturyLink Fiber",
+        "Lumen Fiber"
+      ],
+      "technologies": [
+        "Fiber"
+      ],
+      "mobile": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-008",
+      "name": "Google Fiber",
+      "aliases": [
+        "GFiber"
+      ],
+      "technologies": [
+        "Fiber"
+      ],
+      "mobile": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-009",
+      "name": "Brightspeed",
+      "aliases": [
+        "Brightspeed Fiber"
+      ],
+      "technologies": [
+        "Fiber",
+        "DSL in legacy areas"
+      ],
+      "mobile": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-010",
+      "name": "Ziply Fiber",
+      "aliases": [
+        "Ziply"
+      ],
+      "technologies": [
+        "Fiber",
+        "DSL in legacy areas"
+      ],
+      "mobile": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-011",
+      "name": "Metronet",
+      "aliases": [
+        "MetroNet"
+      ],
+      "technologies": [
+        "Fiber"
+      ],
+      "mobile": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-012",
+      "name": "Kinetic by Windstream",
+      "aliases": [
+        "Kinetic",
+        "Windstream"
+      ],
+      "technologies": [
+        "Fiber",
+        "DSL in legacy areas"
+      ],
+      "mobile": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-013",
+      "name": "Fidium Fiber",
+      "aliases": [
+        "Consolidated Communications",
+        "Fidium"
+      ],
+      "technologies": [
+        "Fiber"
+      ],
+      "mobile": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-014",
+      "name": "Altafiber",
+      "aliases": [
+        "Cincinnati Bell"
+      ],
+      "technologies": [
+        "Fiber"
+      ],
+      "mobile": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-015",
+      "name": "EPB Fiber Optics",
+      "aliases": [
+        "EPB"
+      ],
+      "technologies": [
+        "Fiber"
+      ],
+      "mobile": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-016",
+      "name": "Ting Internet",
+      "aliases": [
+        "Ting Fiber"
+      ],
+      "technologies": [
+        "Fiber"
+      ],
+      "mobile": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-017",
+      "name": "Sonic",
+      "aliases": [
+        "Sonic Fiber"
+      ],
+      "technologies": [
+        "Fiber"
+      ],
+      "mobile": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-018",
+      "name": "US Internet",
+      "aliases": [
+        "USI Fiber"
+      ],
+      "technologies": [
+        "Fiber"
+      ],
+      "mobile": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-019",
+      "name": "Greenlight Networks",
+      "aliases": [
+        "Greenlight"
+      ],
+      "technologies": [
+        "Fiber"
+      ],
+      "mobile": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-020",
+      "name": "GoNetspeed",
+      "aliases": [
+        "GoNetSpeed"
+      ],
+      "technologies": [
+        "Fiber"
+      ],
+      "mobile": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-021",
+      "name": "Gateway Fiber",
+      "aliases": [
+        "Gateway"
+      ],
+      "technologies": [
+        "Fiber"
+      ],
+      "mobile": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-022",
+      "name": "Lumos",
+      "aliases": [
+        "Lumos Fiber",
+        "NorthState"
+      ],
+      "technologies": [
+        "Fiber"
+      ],
+      "mobile": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-023",
+      "name": "C Spire",
+      "aliases": [
+        "C Spire Fiber"
+      ],
+      "technologies": [
+        "Fiber"
+      ],
+      "mobile": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-024",
+      "name": "REV",
+      "aliases": [
+        "EATEL",
+        "EATEL Fiber"
+      ],
+      "technologies": [
+        "Fiber"
+      ],
+      "mobile": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-025",
+      "name": "Vexus Fiber",
+      "aliases": [
+        "Vexus"
+      ],
+      "technologies": [
+        "Fiber"
+      ],
+      "mobile": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-026",
+      "name": "ALLO Fiber",
+      "aliases": [
+        "ALLO"
+      ],
+      "technologies": [
+        "Fiber"
+      ],
+      "mobile": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-027",
+      "name": "Bluepeak",
+      "aliases": [
+        "Vast Broadband"
+      ],
+      "technologies": [
+        "Fiber",
+        "Cable"
+      ],
+      "mobile": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-028",
+      "name": "Clearwave Fiber",
+      "aliases": [
+        "Clearwave"
+      ],
+      "technologies": [
+        "Fiber"
+      ],
+      "mobile": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-029",
+      "name": "IQ Fiber",
+      "aliases": [
+        "IQ"
+      ],
+      "technologies": [
+        "Fiber"
+      ],
+      "mobile": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-030",
+      "name": "Ripple Fiber",
+      "aliases": [
+        "Ripple"
+      ],
+      "technologies": [
+        "Fiber"
+      ],
+      "mobile": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-031",
+      "name": "Surf Internet",
+      "aliases": [
+        "Surf Fiber"
+      ],
+      "technologies": [
+        "Fiber",
+        "Fixed Wireless"
+      ],
+      "mobile": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-032",
+      "name": "i3 Broadband",
+      "aliases": [
+        "i3"
+      ],
+      "technologies": [
+        "Fiber"
+      ],
+      "mobile": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-033",
+      "name": "Omni Fiber",
+      "aliases": [
+        "Omni"
+      ],
+      "technologies": [
+        "Fiber"
+      ],
+      "mobile": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-034",
+      "name": "KwiKom",
+      "aliases": [
+        "KwiKom Fiber"
+      ],
+      "technologies": [
+        "Fiber",
+        "Fixed Wireless"
+      ],
+      "mobile": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-035",
+      "name": "NextLight",
+      "aliases": [
+        "Longmont NextLight"
+      ],
+      "technologies": [
+        "Fiber"
+      ],
+      "mobile": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-036",
+      "name": "UTOPIA Fiber",
+      "aliases": [
+        "UTOPIA"
+      ],
+      "technologies": [
+        "Open Access Fiber"
+      ],
+      "mobile": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-037",
+      "name": "Ammon Fiber",
+      "aliases": [
+        "Ammon Fiber Network"
+      ],
+      "technologies": [
+        "Open Access Fiber"
+      ],
+      "mobile": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-038",
+      "name": "SiFi Networks",
+      "aliases": [
+        "FiberCity"
+      ],
+      "technologies": [
+        "Open Access Fiber"
+      ],
+      "mobile": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-039",
+      "name": "Hotwire Communications",
+      "aliases": [
+        "Fision"
+      ],
+      "technologies": [
+        "Fiber"
+      ],
+      "mobile": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-040",
+      "name": "Shentel Glo Fiber",
+      "aliases": [
+        "Glo Fiber"
+      ],
+      "technologies": [
+        "Fiber"
+      ],
+      "mobile": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-041",
+      "name": "TDS Telecom",
+      "aliases": [
+        "TDS Fiber"
+      ],
+      "technologies": [
+        "Fiber",
+        "DSL"
+      ],
+      "mobile": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-042",
+      "name": "GVTC",
+      "aliases": [
+        "GVTC Communications"
+      ],
+      "technologies": [
+        "Fiber"
+      ],
+      "mobile": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-043",
+      "name": "Cumberland Connect",
+      "aliases": [
+        "Cumberland Electric Membership Corporation"
+      ],
+      "technologies": [
+        "Fiber"
+      ],
+      "mobile": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-044",
+      "name": "Conexon Connect",
+      "aliases": [
+        "Conexon"
+      ],
+      "technologies": [
+        "Fiber"
+      ],
+      "mobile": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-045",
+      "name": "Co-Mo Connect",
+      "aliases": [
+        "Co-Mo Electric Cooperative"
+      ],
+      "technologies": [
+        "Fiber"
+      ],
+      "mobile": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-046",
+      "name": "OzarksGo",
+      "aliases": [
+        "Ozarks Electric Cooperative"
+      ],
+      "technologies": [
+        "Fiber"
+      ],
+      "mobile": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-047",
+      "name": "Ritter Communications",
+      "aliases": [
+        "RightFiber"
+      ],
+      "technologies": [
+        "Fiber"
+      ],
+      "mobile": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-048",
+      "name": "Tachus Fiber Internet",
+      "aliases": [
+        "Tachus"
+      ],
+      "technologies": [
+        "Fiber"
+      ],
+      "mobile": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-049",
+      "name": "Ezee Fiber",
+      "aliases": [
+        "Ezee"
+      ],
+      "technologies": [
+        "Fiber"
+      ],
+      "mobile": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-050",
+      "name": "Empire Access",
+      "aliases": [
+        "Empire"
+      ],
+      "technologies": [
+        "Fiber"
+      ],
+      "mobile": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-051",
+      "name": "United Communications",
+      "aliases": [
+        "United Fiber"
+      ],
+      "technologies": [
+        "Fiber"
+      ],
+      "mobile": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-052",
+      "name": "Mediacom",
+      "aliases": [
+        "Xtream"
+      ],
+      "technologies": [
+        "Cable",
+        "Fiber in selected networks"
+      ],
+      "mobile": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-053",
+      "name": "Midco",
+      "aliases": [
+        "Midcontinent Communications"
+      ],
+      "technologies": [
+        "Cable",
+        "Fiber"
+      ],
+      "mobile": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-054",
+      "name": "WOW!",
+      "aliases": [
+        "WideOpenWest"
+      ],
+      "technologies": [
+        "Cable",
+        "Fiber in selected markets"
+      ],
+      "mobile": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-055",
+      "name": "Astound Broadband",
+      "aliases": [
+        "RCN",
+        "Grande",
+        "Wave",
+        "enTouch"
+      ],
+      "technologies": [
+        "Cable",
+        "Fiber"
+      ],
+      "mobile": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-056",
+      "name": "Breezeline",
+      "aliases": [
+        "Atlantic Broadband"
+      ],
+      "technologies": [
+        "Cable",
+        "Fiber"
+      ],
+      "mobile": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-057",
+      "name": "Armstrong",
+      "aliases": [
+        "Zoom Internet"
+      ],
+      "technologies": [
+        "Cable",
+        "Fiber"
+      ],
+      "mobile": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-058",
+      "name": "Blue Ridge Communications",
+      "aliases": [
+        "Blue Ridge"
+      ],
+      "technologies": [
+        "Cable",
+        "Fiber"
+      ],
+      "mobile": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-059",
+      "name": "Municipal Fiber Network",
+      "aliases": [
+        "City Fiber Utility"
+      ],
+      "technologies": [
+        "Fiber"
+      ],
+      "mobile": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-060",
+      "name": "Electric Cooperative Fiber",
+      "aliases": [
+        "Co-op Fiber"
+      ],
+      "technologies": [
+        "Fiber"
+      ],
+      "mobile": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": true,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    },
+    {
+      "id": "provider-061",
+      "name": "Open Access Fiber Network",
+      "aliases": [
+        "Open Access"
+      ],
+      "technologies": [
+        "Open Access Fiber"
+      ],
+      "mobile": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "voice": {
+        "offered": false,
+        "verification": "market_and_plan_required"
+      },
+      "strengths": [
+        "fiber-capable or fiber-focused service in eligible areas",
+        "address-level availability can be evaluated through ConnectIQ"
+      ],
+      "limitations": [
+        "plans, pricing, technology, and promotions vary by address",
+        "exact reliability and customer-experience claims require verified local evidence"
+      ],
+      "factsPolicy": {
+        "doNotClaim": [
+          "exact address availability without lookup",
+          "exact price without verified plan data",
+          "guaranteed uptime",
+          "universal customer satisfaction"
+        ],
+        "lastReviewed": "2026-07-17",
+        "confidence": "seed_profile"
+      }
+    }
+  ]
+}

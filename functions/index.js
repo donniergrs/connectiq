@@ -1,5 +1,9 @@
-﻿// CONNECTIQ-AI-004C-IMPORT
+// CONNECTIQ-AI-005A-IMPORT
+import { evaluateRecommendations, runTestHarness, listRecommendationAudit, auditHealth, DEFAULT_RECOMMENDATION_CONFIG } from "./services/recommendationIntelligence/index.js";
+// CONNECTIQ-AI-004C-IMPORT
 import { buildAdvisorResponse, buildAdvisorQuote } from "./services/aiAdvisor/index.js";
+import { universityHealth, listProviders, listArticles, upsertProvider, answerFromUniversity } from "./services/university/index.js";
+import { orchestrateEnterpriseResponse } from "./services/enterprise/orchestrator.js";
 // CONNECTIQ-AI-004B-IMPORT
 import {
   initializeToolRouter,
@@ -18,6 +22,8 @@ import { createSalesBrainPlan } from "./services/salesBrainService.js";
 import { buildDiscoveryPlan } from "./services/discoveryEngineService.js";
 import { buildRecommendationStrategy } from "./services/recommendationObjectionService.js";
 import { createConversationSession, getConversationSession, updateConversationSession, pauseConversationSession, resumeConversationSession, appendConversationEvent, listConversationEvents, runtimeSnapshot, SALES_STAGES } from "./services/conversationRuntimeService.js";
+import { registerCustomerTwinRoutes } from "./services/customerTwin/routes.js";
+import { registerSemanticUnderstandingRoutes } from "./services/semanticUnderstanding/routes.js";
 dotenv.config();
 
 const app = express();
@@ -519,6 +525,14 @@ app.post("/api/fcc/lookup", async (req, res) => {
   }
 });
 
+
+// CONNECTIQ-AI-005A-ROUTES
+app.get("/api/recommendations/health", (req, res) => res.json({ ok: true, service: "connectiq-recommendation-intelligence", version: "AI-005A-v1.0.0", weights: DEFAULT_RECOMMENDATION_CONFIG.weights, audit: auditHealth() }));
+app.get("/api/recommendations/config", (req, res) => res.json({ ok: true, config: DEFAULT_RECOMMENDATION_CONFIG }));
+app.post("/api/recommendations/evaluate", (req, res) => { try { res.json(evaluateRecommendations(req.body || {})); } catch (error) { res.status(400).json({ ok: false, error: error.message }); } });
+app.post("/api/recommendations/test-harness", (req, res) => { try { res.json({ ok: true, scenarios: runTestHarness() }); } catch (error) { res.status(500).json({ ok: false, error: error.message }); } });
+app.get("/api/recommendations/audit", (req, res) => res.json({ ok: true, records: listRecommendationAudit({ limit: req.query.limit }) }));
+
 app.listen(PORT, () => console.log(`ConnectIQ backend running on port ${PORT}`));
 
 // CONNECTIQ-AI-004B-ROUTES
@@ -542,22 +556,41 @@ app.get("/api/conversations/router/diagnostics", (req, res) => {
 
 // CONNECTIQ-AI-004C-ROUTES
 app.get("/api/conversations/advisor/health", (req, res) => {
-  res.json({ ok: true, service: "connectiq-ai-sales-advisor", version: "AI-004C-v1.0" });
+  res.json({ ok: true, service: "connectiq-ai-sales-advisor", version: "Brain-v1.0-RC1" });
 });
 
 app.post("/api/conversations/advisor/turn", async (req, res) => {
   try {
-    const routerResult = await routeConversationTurn(req.body || {});
     const providers = Array.isArray(req.body?.providers) ? req.body.providers : [];
+    const routerResult = await routeConversationTurn({ ...(req.body || {}), context: { ...(req.body?.context || {}), providers } });
     const quote = buildAdvisorQuote({ routerResult, providers, selectedProvider: req.body?.selectedProvider });
-    const advisor = buildAdvisorResponse({ routerResult, providers, quote });
-    res.json({ ...routerResult, advisor, quote });
+    const legacyAdvisor = buildAdvisorResponse({ routerResult, providers, quote });
+    const enterprise = orchestrateEnterpriseResponse({ message: req.body?.message, routerResult, providers, selectedProvider: req.body?.selectedProvider });
+    const advisor = { ...legacyAdvisor, message: enterprise.message, selectedProvider: enterprise.selectedProvider || legacyAdvisor.selectedProvider || null, enterprise };
+    res.json({ ...routerResult, advisor, quote, enterprise });
   } catch (error) {
     res.status(400).json({ ok: false, error: error.message });
   }
 });
 
+
+// CONNECTIQ-ENTERPRISE-V2-UNIVERSITY
+app.get("/api/university/health", (req, res) => res.json(universityHealth()));
+app.get("/api/university/providers", (req, res) => res.json({ ok: true, providers: listProviders({ query: req.query.q || "" }) }));
+app.get("/api/university/articles", (req, res) => res.json({ ok: true, articles: listArticles({ query: req.query.q || "", type: req.query.type || "" }) }));
+app.post("/api/university/answer", (req, res) => { try { res.json({ ok: true, ...answerFromUniversity(req.body || {}) }); } catch (error) { res.status(400).json({ ok: false, error: error.message }); } });
+app.put("/api/university/providers/:providerId", (req, res) => { try { res.json({ ok: true, provider: upsertProvider({ ...(req.body || {}), id: req.params.providerId }) }); } catch (error) { res.status(400).json({ ok: false, error: error.message }); } });
+
 app.get("/api/conversations/advisor/sessions", (req, res) => {
   const limit = Math.max(1, Math.min(Number(req.query.limit || 100), 500));
   res.json(routerDiagnostics({ sessionId: req.query.sessionId || "", limit }));
 });
+
+
+
+registerCustomerTwinRoutes(app, null);
+
+
+
+registerSemanticUnderstandingRoutes(app, null);
+
