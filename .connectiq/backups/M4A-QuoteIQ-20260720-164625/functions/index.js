@@ -1,4 +1,3 @@
-import { listCatalogPlans, generateQuote, compareQuotePlans, saveQuote, getQuote, listQuoteVersions, selectQuotePlan } from "./services/quoteIQ/index.js";
 // CONNECTIQ-AI-005A-IMPORT
 import { evaluateRecommendations, runTestHarness, listRecommendationAudit, auditHealth, DEFAULT_RECOMMENDATION_CONFIG } from "./services/recommendationIntelligence/index.js";
 // CONNECTIQ-AI-004C-IMPORT
@@ -535,16 +534,6 @@ app.get("/api/recommendations/config", (req, res) => res.json({ ok: true, config
 app.post("/api/recommendations/evaluate", (req, res) => { try { res.json(evaluateRecommendations(req.body || {})); } catch (error) { res.status(400).json({ ok: false, error: error.message }); } });
 app.post("/api/recommendations/test-harness", (req, res) => { try { res.json({ ok: true, scenarios: runTestHarness() }); } catch (error) { res.status(500).json({ ok: false, error: error.message }); } });
 app.get("/api/recommendations/audit", (req, res) => res.json({ ok: true, records: listRecommendationAudit({ limit: req.query.limit }) }));
-
-
-// CONNECTIQ-M4A-QUOTEIQ-ROUTES
-app.get("/api/quotes/health", (req,res) => res.json({ ok:true, service:"QuoteIQ", version:"4A-1.0.0", weights:{ businessValue:0.6, customerFit:0.4 } }));
-app.get("/api/providerPlans", (req,res) => res.json({ ok:true, plans:listCatalogPlans({ providerIds:String(req.query.providerIds||"").split(",").filter(Boolean) }) }));
-app.post("/api/quotes/create", (req,res) => { try { const quote=saveQuote(generateQuote(req.body||{})); res.status(201).json(quote); } catch(error){ res.status(400).json({ok:false,error:error.message}); } });
-app.get("/api/quotes/:quoteId", (req,res) => { const quote=getQuote(req.params.quoteId); if(!quote) return res.status(404).json({ok:false,error:"Quote not found."}); res.json(quote); });
-app.get("/api/quotes/:quoteId/versions", (req,res) => res.json({ok:true,quoteId:req.params.quoteId,versions:listQuoteVersions(req.params.quoteId)}));
-app.post("/api/quotes/:quoteId/compare", (req,res) => { const quote=getQuote(req.params.quoteId); if(!quote) return res.status(404).json({ok:false,error:"Quote not found."}); res.json(compareQuotePlans(quote,req.body?.planIds||[])); });
-app.post("/api/quotes/:quoteId/select", (req,res) => { try { res.json(selectQuotePlan(req.params.quoteId,req.body?.planId)); } catch(error){ res.status(error.message.includes("not found")?404:400).json({ok:false,error:error.message}); } });
 
 app.listen(PORT, () => console.log(`ConnectIQ backend running on port ${PORT}`));
 

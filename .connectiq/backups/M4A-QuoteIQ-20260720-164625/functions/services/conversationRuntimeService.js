@@ -2,7 +2,7 @@ import crypto from "node:crypto";
 
 export const SALES_STAGES = Object.freeze([
   "INTRODUCTION", "PERMISSION", "DISCOVERY", "RECOMMENDATION",
-  "OBJECTION", "CLOSING", "CALLBACK", "QUOTE_READY", "ORDER_READY", "COMPLETED"
+  "OBJECTION", "CLOSING", "CALLBACK", "ORDER_READY", "COMPLETED"
 ]);
 
 const sessions = new Map();

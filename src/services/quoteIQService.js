@@ -1,0 +1,9 @@
+import { addDoc, collection, doc, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
+import { db } from "../firebase";
+const API_BASE=(import.meta.env.VITE_FUNCTIONS_BASE_URL || "http://localhost:5001").replace(/\/$/,"");
+async function json(url,options={}){ const response=await fetch(url,{headers:{"Content-Type":"application/json",...(options.headers||{})},...options}); const data=await response.json(); if(!response.ok||data.ok===false) throw new Error(data.error||"QuoteIQ request failed."); return data; }
+export async function createQuote(payload,{persist=true}={}){ const quote=await json(`${API_BASE}/api/quotes/create`,{method:"POST",body:JSON.stringify(payload)}); if(persist) await persistQuote(quote); return quote; }
+export const getQuote=id=>json(`${API_BASE}/api/quotes/${encodeURIComponent(id)}`);
+export const compareQuote=(id,planIds=[])=>json(`${API_BASE}/api/quotes/${encodeURIComponent(id)}/compare`,{method:"POST",body:JSON.stringify({planIds})});
+export async function selectQuote(id,planId,{leadId}={}){ const quote=await json(`${API_BASE}/api/quotes/${encodeURIComponent(id)}/select`,{method:"POST",body:JSON.stringify({planId})}); await persistQuote(quote); if(leadId) await updateDoc(doc(db,"leads",leadId),{pipelineStage:"Quote Ready",quoteId:id,selectedPlanId:planId,updatedAt:serverTimestamp()}); return quote; }
+export async function persistQuote(quote){ await setDoc(doc(db,"quotes",quote.quoteId),{...quote,createdAtServer:serverTimestamp(),updatedAtServer:serverTimestamp()},{merge:true}); await addDoc(collection(db,"quoteVersions"),{quoteId:quote.quoteId,version:quote.version,status:quote.status,snapshot:quote,createdAt:serverTimestamp()}); if(quote.leadId) await updateDoc(doc(db,"leads",quote.leadId),{pipelineStage:"Quote Ready",quoteId:quote.quoteId,quoteStatus:quote.status,quoteUpdatedAt:serverTimestamp(),updatedAt:serverTimestamp()}); }

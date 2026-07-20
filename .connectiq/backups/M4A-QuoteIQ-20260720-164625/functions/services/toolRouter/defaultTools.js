@@ -1,4 +1,3 @@
-import { generateQuote, saveQuote } from "../quoteIQ/index.js";
 import { registerTool } from "./toolRegistry.js";
 
 function result(tool, startedAt, payload = {}) {
@@ -96,24 +95,6 @@ export function registerDefaultTools() {
         data: { score: Math.min(100, score), qualified: score >= 55 },
         messages: [`Lead qualification score: ${Math.min(100, score)}.`],
       });
-    },
-  });
-
-  registerTool({
-    name: "quoteIQ",
-    version: "4A-1.0.0",
-    description: "Generates ranked, personalized, commission-aware broadband quotes.",
-    intents: ["recommendation", "orderReadiness"],
-    priority: 45,
-    async execute(ctx) {
-      const startedAt = Date.now();
-      const availableProviderIds = (ctx.availableProviders || ctx.memory.availableProviders || []).map((p) => p.providerId || p.id || p);
-      try {
-        const quote = saveQuote(generateQuote({ customer: { ...ctx.memory.facts, needs: ctx.memory.householdNeeds, painPoints: ctx.memory.painPoints }, availableProviderIds }));
-        return result("quoteIQ", startedAt, { confidence: 0.9, recommendations: [{ type: "quote", quoteId: quote.quoteId, plan: quote.recommendation }], messages: [`Quote ${quote.quoteNumber} is ready.`], data: { quote, nextStage: "QUOTE_READY" } });
-      } catch (error) {
-        return { success:false, tool:"quoteIQ", confidence:0, durationMs:Date.now()-startedAt, factsUpdated:[], recommendations:[], messages:[], errors:[error.message], data:{} };
-      }
     },
   });
 
