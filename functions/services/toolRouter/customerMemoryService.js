@@ -8,7 +8,15 @@ const PRIORITIES = [
   ["wifiCoverage", /^wi-?fi$|\b(coverage|dead zone|upstairs|signal)\b/i],
 ];
 
+const CONTACT_PATTERNS = [
+  { key: "email", regex: /\b([A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,})\b/i, normalize: (value) => value.toLowerCase() },
+  { key: "phone", regex: /(?:\+?1[ .-]?)?(?:\(?([2-9]\d{2})\)?[ .-]?)?([2-9]\d{2})[ .-]?(\d{4})\b/, normalizeMatch: (match) => match[1] ? `${match[1]}-${match[2]}-${match[3]}` : `${match[2]}-${match[3]}` },
+  { key: "contactPreference", regex: /\b(?:prefer|by|send it by|reach me by)?\s*(text|sms|email|phone call|call)\b/i, normalize: (value) => ({ sms: "text", call: "phone", "phone call": "phone" }[value.toLowerCase()] || value.toLowerCase()) },
+  { key: "bestContactTime", regex: /\b(morning|afternoon|evening)\b/i, normalize: (value) => value.toLowerCase() },
+];
+
 const FACT_PATTERNS = [
+  { key: "email", regex: /\b([A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,})\b/i },
   { key: "monthlyBill", regex: /(?:pay(?:ing)?|bill(?:\s+is)?|costs?)\s*(?:about\s*)?\$?\s*(\d{2,4}(?:\.\d{1,2})?)/i, cast: Number },
   { key: "monthlyBill", regex: /(?:\$\s*)?(\d{2,4}(?:\.\d{1,2})?)\s*(?:a|per)?\s*(?:month|monthly|\/mo)\b/i, cast: Number },
   { key: "currentProvider", regex: new RegExp(`(?:with|using|have|provider(?:\\s+is)?|internet(?:\\s+is)?(?:\\s+through)?)\\s+(${PROVIDERS})\\b`, "i"), normalize: normalizeProvider },
@@ -93,6 +101,32 @@ export function extractFactsFromMessage(message = "", currentMemory = {}) {
       facts[pattern.key] = pattern.normalize ? pattern.normalize(raw) : raw;
       confidence[pattern.key] = 0.92;
     }
+  }
+  for (const pattern of CONTACT_PATTERNS) {
+    const match = text.match(pattern.regex);
+    if (match && facts[pattern.key] === undefined) {
+      const raw = pattern.normalizeMatch ? pattern.normalizeMatch(match) : String(match[1] || "").trim();
+      facts[pattern.key] = pattern.normalize ? pattern.normalize(raw) : raw;
+      confidence[pattern.key] = 0.95;
+    }
+  }
+  const explicitName = text.match(/\b(?:my name is|i am|i'm|this is)\s+([a-z][a-z '-]{1,50})[.!?]*$/i);
+  const advisorAskedName = /\b(who do i have|who am i speaking|your name)\b/i.test(currentMemory.recentTurns?.filter((turn) => turn.role === "advisor").slice(-1)[0]?.message || "");
+  if (!currentMemory.facts?.customerName && (explicitName?.[1] || (advisorAskedName && /^[a-z][a-z '-]{1,50}[.!?]*$/i.test(text)))) {
+    const value = String(explicitName?.[1] || text).replace(/[.!?]+$/, "").trim().replace(/\b\w/g, (character) => character.toUpperCase());
+    facts.customerName = value;
+    facts.preferredName = value.split(/\s+/)[0];
+    confidence.customerName = 0.94;
+  }
+  const phoneMatch = text.match(/\b(?:\+?1[ .-]?)?\(?([2-9]\d{2})\)?[ .-]?(\d{3})[ .-]?(\d{4})\b/);
+  if (phoneMatch) {
+    facts.phone = `${phoneMatch[1]}-${phoneMatch[2]}-${phoneMatch[3]}`;
+    confidence.phone = 0.98;
+  }
+  const nameMatch = text.match(/\b(?:my name is|i am|i'm)\s+([a-z][a-z' -]{1,50})/i);
+  if (nameMatch && !/\b(?:with|paying|looking|trying|working|gaming|streaming)\b/i.test(nameMatch[1])) {
+    facts.customerName = nameMatch[1].trim().replace(/\b\w/g, (c) => c.toUpperCase());
+    confidence.customerName = 0.88;
   }
   // Contextual numeric answer after the system has already learned provider but not bill.
   if (!facts.monthlyBill && currentMemory.facts?.currentProvider && !currentMemory.facts?.monthlyBill && /^\s*\$?\d{2,4}(?:\.\d{1,2})?\s*$/.test(text)) {

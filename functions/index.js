@@ -5,6 +5,7 @@ import { buildAdvisorResponse, buildAdvisorQuote } from "./services/aiAdvisor/in
 import { universityHealth, listProviders, listArticles, upsertProvider, answerFromUniversity } from "./services/university/index.js";
 import { orchestrateEnterpriseResponse } from "./services/enterprise/orchestrator.js";
 import { resolveAdvisorMessage } from "./services/agentRuntime/responseResolver.js";
+import { evaluateSalesIntelligence } from "./services/salesIntelligence/index.js";
 // CONNECTIQ-AI-004B-IMPORT
 import {
   initializeToolRouter,
@@ -557,7 +558,7 @@ app.get("/api/conversations/router/diagnostics", (req, res) => {
 
 // CONNECTIQ-AI-004C-ROUTES
 app.get("/api/conversations/advisor/health", (req, res) => {
-  res.json({ ok: true, service: "connectiq-sales-closer-conversation-engine", version: "RC3.2", mode: "sales_closer" });
+  res.json({ ok: true, service: "connectiq-sales-closer-conversation-engine", version: "RC3.6", mode: "adaptive_sales_closer" });
 });
 
 app.post("/api/conversations/advisor/turn", async (req, res) => {
@@ -566,6 +567,7 @@ app.post("/api/conversations/advisor/turn", async (req, res) => {
     const routerResult = await routeConversationTurn({ ...(req.body || {}), context: { ...(req.body?.context || {}), providers } });
     const quote = buildAdvisorQuote({ routerResult, providers, selectedProvider: req.body?.selectedProvider });
     const legacyAdvisor = buildAdvisorResponse({ routerResult, providers, quote });
+    const salesIntelligence = evaluateSalesIntelligence({ message: req.body?.message, memory: routerResult.memory, quote });
     const enterprise = orchestrateEnterpriseResponse({ message: req.body?.message, routerResult, providers, selectedProvider: req.body?.selectedProvider });
     const advisor = {
       ...legacyAdvisor,
@@ -573,9 +575,9 @@ app.post("/api/conversations/advisor/turn", async (req, res) => {
       selectedProvider: routerResult?.memory?.selectedProvider || enterprise.selectedProvider || legacyAdvisor.selectedProvider || null,
       enterprise,
       agent: routerResult?.agent || null,
-      conversationMode: "sales_closer",
+      conversationMode: "adaptive_sales_closer",
     };
-    res.json({ ...routerResult, advisor, quote, enterprise, conversationMode: "sales_closer" });
+    res.json({ ...routerResult, salesIntelligence, advisor, quote, enterprise, conversationMode: "adaptive_sales_closer" });
   } catch (error) {
     res.status(400).json({ ok: false, error: error.message });
   }

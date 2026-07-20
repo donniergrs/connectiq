@@ -23,6 +23,22 @@ export function extractConversationFacts(message = "", previous = {}) {
   const budgetMatch = text.match(/(?:under|below|less than|no more than|budget(?: is| of)?|spend over)\s*\$?\s*(\d{2,4})/i);
   if (budgetMatch) facts.monthlyBudget = Number(budgetMatch[1]);
 
+  const emailMatch = text.match(/\b([A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,})\b/i);
+  if (emailMatch) facts.email = emailMatch[1].toLowerCase();
+  const phoneMatch = text.match(/(?:\+?1[ .-]?)?(?:\(?([2-9]\d{2})\)?[ .-]?)?([2-9]\d{2})[ .-]?(\d{4})\b/);
+  if (phoneMatch) facts.phone = phoneMatch[1] ? `${phoneMatch[1]}-${phoneMatch[2]}-${phoneMatch[3]}` : `${phoneMatch[2]}-${phoneMatch[3]}`;
+  const contactMatch = text.match(/\b(?:prefer|by|send it by|reach me by)?\s*(text|sms|email|phone call|call)\b/i);
+  if (contactMatch) facts.contactPreference = ({ sms: "text", call: "phone", "phone call": "phone" }[contactMatch[1].toLowerCase()] || contactMatch[1].toLowerCase());
+  const timeMatch = text.match(/\b(morning|afternoon|evening)\b/i);
+  if (timeMatch) facts.bestContactTime = timeMatch[1].toLowerCase();
+  const explicitName = text.match(/\b(?:my name is|i am|i'm|this is)\s+([a-z][a-z '-]{1,50})[.!?]*$/i);
+  const advisorAskedName = /\b(who do i have|who am i speaking|your name)\b/i.test(previous.recentTurns?.filter((turn) => turn.role === "advisor").slice(-1)[0]?.message || "");
+  if (!previous.facts?.customerName && (explicitName?.[1] || (advisorAskedName && /^[a-z][a-z '-]{1,50}[.!?]*$/i.test(text)))) {
+    const value = String(explicitName?.[1] || text).replace(/[.!?]+$/, "").trim().replace(/\b\w/g, (character) => character.toUpperCase());
+    facts.customerName = value;
+    facts.preferredName = value.split(/\s+/)[0];
+  }
+
   const kidsMatch = text.match(/\b(\d+|one|two|three|four|five|six|seven|eight|nine|ten)\s+(?:kids|children)\b/i);
   if (kidsMatch) {
     const numberWords = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10 };

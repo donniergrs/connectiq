@@ -63,6 +63,7 @@ export default function Leads() {
                   <th>Contact</th>
                   <th>Address</th>
                   <th>Recommendation</th>
+                  <th>Score / Intent</th>
                   <th>Priority</th>
                   <th>Status</th>
                 </tr>
@@ -74,6 +75,7 @@ export default function Leads() {
                     <td><div>{lead.phone || "—"}</div><small>{lead.email || "—"}</small></td>
                     <td>{lead.address || "—"}</td>
                     <td>{lead.recommendedProvider || "—"}</td>
+                    <td><strong>{lead.leadScore ?? 0}</strong><small>{lead.buyingIntent || "Low"} intent · {lead.closeProbability ?? 0}% close</small></td>
                     <td>{lead.priority || "—"}</td>
                     <td><span className="sprint9-status">{lead.status || "New Lead"}</span></td>
                   </tr>

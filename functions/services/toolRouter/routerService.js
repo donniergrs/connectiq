@@ -9,6 +9,7 @@ import { updateCustomerMemory } from "./customerMemoryService.js";
 import { orchestrateBrainV2 } from "../brainV2/orchestrator.js";
 import { extractConversationFacts } from "../brainV2/factExtractor.js";
 import { runSalesCloserTurn } from "../salesCloser/index.js";
+import { evaluateSalesIntelligence } from "../salesIntelligence/index.js";
 
 let initialized = false;
 
@@ -42,7 +43,7 @@ function composeResponse(intent, pipeline, memory) {
   };
 }
 
-export async function routeConversationTurn({ sessionId, message, stage = "DISCOVERY", context = {} }) {
+export async function routeConversationTurn({ sessionId, message, stage = "DISCOVERY", context = {}, address = "" }) {
   initializeToolRouter();
   if (!sessionId) throw new Error("sessionId is required.");
   if (!String(message || "").trim()) throw new Error("message is required.");
@@ -52,7 +53,7 @@ export async function routeConversationTurn({ sessionId, message, stage = "DISCO
   const initialMemory = getCustomerMemory(sessionId);
   const extracted = extractConversationFacts(message, initialMemory);
   const memory = updateCustomerMemory(sessionId, {
-    facts: extracted.facts,
+    facts: { ...extracted.facts, ...(address ? { serviceAddress: address } : {}) },
     householdNeeds: extracted.needs,
     painPoints: extracted.painPoints,
     preferences: extracted.preferences,
@@ -99,10 +100,23 @@ export async function routeConversationTurn({ sessionId, message, stage = "DISCO
     stage,
   });
   const finalMemory = updateCustomerMemory(sessionId, {
+    relationship: {
+      ...(enrichedMemory.relationship || {}),
+      persona: agent.adaptiveStrategy?.persona || null,
+      emotion: agent.adaptiveStrategy?.emotion || null,
+      primaryMotivation: agent.adaptiveStrategy?.primaryMotivation || null,
+      readiness: agent.adaptiveStrategy?.readiness || null,
+      strategyObjective: agent.adaptiveStrategy?.objective || null,
+    },
     recentTurns: [
       { role: "customer", message: String(message), at: new Date().toISOString() },
       { role: "advisor", message: agent.message, at: new Date().toISOString() },
     ],
+  });
+  const salesIntelligence = evaluateSalesIntelligence({
+    message,
+    memory: finalMemory,
+    quote: context.quote || null,
   });
   const turn = {
     ok: pipeline.success,
@@ -117,6 +131,7 @@ export async function routeConversationTurn({ sessionId, message, stage = "DISCO
     orchestration,
     brainV2,
     agent,
+    salesIntelligence,
     response: {
       ...response,
       message: agent.message,

@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import { ArrowRight, Bot, CheckCircle2, LoaderCircle, Send, Sparkles, Wifi } from "lucide-react";
 import { sendAdvisorTurn } from "../services/aiAdvisorService";
 import { lookupProviderIntelligence } from "../services/provider-intelligence/index.js";
+import { ensureAdvisorLead, syncAdvisorLead } from "../services/aiLeadLifecycleService";
 
 const newSessionId = () => `web-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 
@@ -41,6 +42,7 @@ export default function AiSalesAdvisor() {
       const result = await lookupProviderIntelligence(address.trim());
       const found = result.providers || [];
       setProviders(found);
+      if (found.length) await ensureAdvisorLead({ sessionId, address: address.trim(), providers: found });
       setMessages((items) => [...items, { role: "customer", text: address.trim() }, { role: "advisor", text: found.length ? `I found ${found.length} provider option${found.length === 1 ? "" : "s"} at your address. Tell me about your current service so I can recommend the best fit.` : "I could not confirm providers at that address yet. Please verify the address and try again." }]);
     } catch (error) {
       setMessages((items) => [...items, { role: "advisor", text: error.message }]);
@@ -56,10 +58,21 @@ export default function AiSalesAdvisor() {
     setBusy(true);
     try {
       const result = await sendAdvisorTurn({ sessionId, stage: quote?.provider ? "RECOMMENDATION" : "DISCOVERY", message: clean, providers, address });
+      const advisorMessage = result.advisor?.message || result.response?.message || "Let’s continue.";
       setMemory(result.memory || {});
       setQuote(result.quote || null);
       setSuggestedReplies(result.advisor?.suggestedReplies || []);
-      setMessages((items) => [...items, { role: "advisor", text: result.advisor?.message || result.response?.message || "Let’s continue." }]);
+      setMessages((items) => [...items, { role: "advisor", text: advisorMessage }]);
+      await syncAdvisorLead({
+        sessionId,
+        address,
+        providers,
+        memory: result.memory || {},
+        intelligence: result.salesIntelligence || {},
+        quote: result.quote || null,
+        customerMessage: clean,
+        advisorMessage,
+      });
     } catch (error) {
       setMessages((items) => [...items, { role: "advisor", text: error.message }]);
     } finally { setBusy(false); }
