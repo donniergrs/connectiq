@@ -168,7 +168,6 @@ export function processConversationIntelligence({ sessionId, message, providers 
   const referencedName = mentioned || nextMemory.lastReferencedProvider || selectedName;
   const referencedProvider = providers.find((p) => normalize(getProviderName(p)) === normalize(referencedName)) || selected;
   const quote = createQuote(selected, nextMemory);
-  const tech = referencedProvider ? providerTechnology(referencedProvider) : null;
   const monthly = referencedProvider ? providerMonthly(referencedProvider) : null;
   const suggestions = [];
   let response;

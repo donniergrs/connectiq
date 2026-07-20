@@ -1,9 +1,9 @@
-const PROVIDERS = ["AT&T", "ATT", "Spectrum", "Xfinity", "Comcast", "Frontier", "Verizon", "Cox", "Lumos", "Windstream", "T-Mobile", "TMobile", "Google Fiber", "EarthLink", "HughesNet", "Viasat"];
+const PROVIDERS = ["AT&T", "ATT", "Spectrum", "Spetrum", "Spectum", "Xfinity", "Comcast", "Frontier", "Verizon", "Cox", "Lumos", "Windstream", "T-Mobile", "TMobile", "Google Fiber", "EarthLink", "HughesNet", "Viasat"];
 const providerRegex = new RegExp(`\\b(${PROVIDERS.join("|")})\\b`, "i");
 
 function normalizeProvider(value = "") {
   const compact = String(value).replace(/[^a-z0-9]/gi, "").toLowerCase();
-  return ({ att: "AT&T", tmobile: "T-Mobile", comcast: "Xfinity" })[compact] || String(value).trim().replace(/\b\w/g, c => c.toUpperCase());
+  return ({ att: "AT&T", tmobile: "T-Mobile", comcast: "Xfinity", spetrum: "Spectrum", spectum: "Spectrum" })[compact] || String(value).trim().replace(/\b\w/g, c => c.toUpperCase());
 }
 
 export function extractConversationFacts(message = "", previous = {}) {
@@ -23,8 +23,11 @@ export function extractConversationFacts(message = "", previous = {}) {
   const budgetMatch = text.match(/(?:under|below|less than|no more than|budget(?: is| of)?|spend over)\s*\$?\s*(\d{2,4})/i);
   if (budgetMatch) facts.monthlyBudget = Number(budgetMatch[1]);
 
-  const kidsMatch = text.match(/\b(\d+)\s+(?:kids|children)\b/i);
-  if (kidsMatch) facts.children = Number(kidsMatch[1]);
+  const kidsMatch = text.match(/\b(\d+|one|two|three|four|five|six|seven|eight|nine|ten)\s+(?:kids|children)\b/i);
+  if (kidsMatch) {
+    const numberWords = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10 };
+    facts.children = Number(kidsMatch[1]) || numberWords[kidsMatch[1].toLowerCase()];
+  }
 
   if (/\b(work from home|remote work|zoom|teams|video calls?)\b/i.test(text)) needs.push("workFromHome");
   if (/\b(stream|streaming|netflix|hulu|youtube tv)\b/i.test(text)) needs.push("streaming");

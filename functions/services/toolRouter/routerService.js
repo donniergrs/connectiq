@@ -6,6 +6,9 @@ import { recordDecision, recordTurn, getDiagnostics, telemetryHealth } from "./t
 import { registerDefaultTools } from "./defaultTools.js";
 import { orchestrateTurn } from "../conversationBrain/orchestrator.js";
 import { updateCustomerMemory } from "./customerMemoryService.js";
+import { orchestrateBrainV2 } from "../brainV2/orchestrator.js";
+import { extractConversationFacts } from "../brainV2/factExtractor.js";
+import { runSalesCloserTurn } from "../salesCloser/index.js";
 
 let initialized = false;
 
@@ -46,7 +49,19 @@ export async function routeConversationTurn({ sessionId, message, stage = "DISCO
 
   const startedAt = Date.now();
   const learned = learnFromMessage(sessionId, message);
-  const memory = getCustomerMemory(sessionId);
+  const initialMemory = getCustomerMemory(sessionId);
+  const extracted = extractConversationFacts(message, initialMemory);
+  const memory = updateCustomerMemory(sessionId, {
+    facts: extracted.facts,
+    householdNeeds: extracted.needs,
+    painPoints: extracted.painPoints,
+    preferences: extracted.preferences,
+    corrections: extracted.isCorrection ? [{
+      previousProvider: extracted.previousProvider,
+      currentProvider: extracted.facts.currentProvider,
+      detectedAt: new Date().toISOString(),
+    }] : [],
+  });
   const intent = analyzeIntent(message, { ...context, stage, memory });
   const toolNames = selectTools(intent);
 
@@ -70,6 +85,25 @@ export async function routeConversationTurn({ sessionId, message, stage = "DISCO
   });
   const pipeline = await executeTools(toolNames, { sessionId, message, stage, context, intent, learned, memory: enrichedMemory, orchestration });
   const response = composeResponse(intent, pipeline, enrichedMemory);
+  const brainV2 = orchestrateBrainV2({
+    message,
+    memory: enrichedMemory,
+    providers,
+    quote: context.quote || null,
+  });
+  const agent = await runSalesCloserTurn({
+    message,
+    memory: enrichedMemory,
+    providers,
+    quote: context.quote || null,
+    stage,
+  });
+  const finalMemory = updateCustomerMemory(sessionId, {
+    recentTurns: [
+      { role: "customer", message: String(message), at: new Date().toISOString() },
+      { role: "advisor", message: agent.message, at: new Date().toISOString() },
+    ],
+  });
   const turn = {
     ok: pipeline.success,
     sessionId,
@@ -79,9 +113,16 @@ export async function routeConversationTurn({ sessionId, message, stage = "DISCO
     intent,
     toolsInvoked: toolNames,
     pipeline,
-    memory: enrichedMemory,
+    memory: finalMemory,
     orchestration,
-    response: { ...response, nextAction: orchestration.nextBestAction.action },
+    brainV2,
+    agent,
+    response: {
+      ...response,
+      message: agent.message,
+      nextAction: orchestration.nextBestAction.action,
+      followUp: null,
+    },
     durationMs: Date.now() - startedAt,
   };
   recordTurn(turn);

@@ -1,6 +1,6 @@
 const memoryBySession = new Map();
 
-const PROVIDERS = "AT&T|ATT|Spectrum|Xfinity|Comcast|Verizon|Frontier|Cox|Windstream|Lumos|T-Mobile|TMobile|Google Fiber|EarthLink|HughesNet|Viasat";
+const PROVIDERS = "AT&T|ATT|Spectrum|Spetrum|Spectum|Spetrum|Spectum|Xfinity|Comcast|Verizon|Frontier|Cox|Windstream|Lumos|T-Mobile|TMobile|Google Fiber|EarthLink|HughesNet|Viasat";
 const PRIORITIES = [
   ["price", /^(?:lowest\s+)?price$|\b(price|cheap|cheaper|save|saving|budget|afford|lower bill)\b/i],
   ["reliability", /^reliability$|\b(reliable|uptime|outage|disconnect|goes out)\b/i],
@@ -34,7 +34,7 @@ const NEED_PATTERNS = [
 function clone(value) { return JSON.parse(JSON.stringify(value)); }
 function normalizeProvider(value) {
   const compact = value.replace(/[^a-z0-9]/gi, "").toLowerCase();
-  const aliases = { att: "AT&T", tmobile: "T-Mobile", comcast: "Xfinity" };
+  const aliases = { att: "AT&T", tmobile: "T-Mobile", comcast: "Xfinity", spetrum: "Spectrum", spectum: "Spectrum" };
   return aliases[compact] || value.trim().replace(/\b\w/g, c => c.toUpperCase());
 }
 function initialProfile(sessionId) {
@@ -52,6 +52,7 @@ function initialProfile(sessionId) {
     handoffRequested: false,
     rejectedProviders: [],
     selectedProvider: null,
+    recentTurns: [],
     updatedAt: new Date().toISOString(),
   };
 }
@@ -74,6 +75,7 @@ export function updateCustomerMemory(sessionId, patch = {}) {
     selectedProvider: patch.selectedProvider ?? current.selectedProvider ?? null,
     threads: patch.threads || current.threads || [],
     decisions: [...(current.decisions || []), ...(patch.decisions || [])].slice(-50),
+    recentTurns: [...(current.recentTurns || []), ...(patch.recentTurns || [])].slice(-16),
     updatedAt: new Date().toISOString(),
   };
   memoryBySession.set(sessionId, next);

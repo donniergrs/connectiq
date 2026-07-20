@@ -65,6 +65,18 @@ export function buildAdvisorResponse({ routerResult = {}, providers = [], quote 
   const providerLabel = providerName(provider);
   const currentMatchesFirst = providers.length > 0 && normalizeProviderName(providerName(providers[0])) === normalizeProviderName(facts.currentProvider);
 
+  // Brain V2 owns conversational decisions when present. Legacy action-based
+  // responses remain as a fallback for older callers and staged migrations.
+  if (routerResult.brainV2?.response?.answer) {
+    return {
+      message: routerResult.brainV2.response.answer,
+      suggestedReplies: routerResult.brainV2.response.followUp
+        ? [routerResult.brainV2.response.followUp]
+        : [],
+      selectedSkill: routerResult.brainV2.selectedSkill,
+    };
+  }
+
   const known = [];
   if (facts.currentProvider) known.push(`you currently use ${facts.currentProvider}`);
   if (facts.monthlyBill) known.push(`you pay about ${money(facts.monthlyBill)} per month`);
