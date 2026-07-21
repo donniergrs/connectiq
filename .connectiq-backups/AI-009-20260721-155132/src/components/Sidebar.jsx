@@ -18,7 +18,6 @@ export default function Sidebar() {
         <NavLink to="/admin/distribution-rules">Distribution Rules</NavLink>
         <NavLink to="/admin/lead-intake">Lead Intake Center</NavLink>
         <NavLink to="/admin/provider-diagnostics">Provider Intelligence</NavLink>
-        <NavLink to="/admin/knowledge-engine">ProviderIQ Knowledge</NavLink>
         <NavLink to="/admin/orders">Order Workspace</NavLink>
         <NavLink to="/admin/commissions">Commission Intelligence</NavLink>
         <NavLink to="/admin/carriers">Carrier Intelligence</NavLink>

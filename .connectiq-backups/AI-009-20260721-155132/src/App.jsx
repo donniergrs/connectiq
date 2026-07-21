@@ -34,7 +34,6 @@ import InternetAdvisor from "./pages/InternetAdvisor";
 import AiSalesAdvisor from "./pages/AiSalesAdvisor";
 import AiConversationMonitor from "./pages/AiConversationMonitor";
 import UniversityConsole from "./pages/UniversityConsole";
-import KnowledgeEngine from "./pages/KnowledgeEngine";
 import "./ai004c.css";
 export default function App() {
   return (
@@ -74,7 +73,6 @@ export default function App() {
           <Route path="provider-diagnostics" element={<ProviderDiagnostics />} />
           <Route path="conversation-monitor" element={<AiConversationMonitor />} />
           <Route path="university" element={<UniversityConsole />} />
-          <Route path="knowledge-engine" element={<KnowledgeEngine />} />
           <Route path="orders" element={<Orders />} />
           <Route path="commissions" element={<Commissions />} />
           <Route path="leads" element={<Leads />} />
