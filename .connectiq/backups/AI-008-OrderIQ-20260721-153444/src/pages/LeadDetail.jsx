@@ -8,7 +8,7 @@ import {
   CircleDollarSign,
   ClipboardList,
   Clock3,
-  PackageCheck,
+  ExternalLink,
   FileText,
   Gauge,
   HeartPulse,
@@ -34,7 +34,6 @@ import SalesDiscoveryPanel from "../components/sales/SalesDiscoveryPanel";
 import RecommendationObjectionPanel from "../components/sales/RecommendationObjectionPanel";
 import QuoteEditor from "../components/quotes/QuoteEditor";
 import RecommendationIntelligencePanel from "../components/advisor/RecommendationIntelligencePanel";
-import OrderIQWorkspace from "../components/orders/OrderIQWorkspace";
 
 function currency(value) {
   return value ? new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(value) : "Verify price";
@@ -88,7 +87,6 @@ export default function LeadDetail() {
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
   const [quoteOpen, setQuoteOpen] = useState(false);
-  const [orderOpen, setOrderOpen] = useState(false);
 
   useEffect(() => {
     const ref = doc(db, "leads", leadId);
@@ -266,7 +264,7 @@ export default function LeadDetail() {
             <a href={customer.email !== "Not captured" ? `mailto:${customer.email}?subject=${encodeURIComponent(`Your ConnectIQ recommendation: ${recommendation.provider}`)}` : undefined}><Mail size={16} /> Email recommendation</a>
             <button type="button" className="lead502-action-quote" onClick={() => setQuoteOpen(true)}><Send size={16} /> Send Quote</button>
             <button type="button" onClick={() => document.getElementById("advisor-workflow")?.scrollIntoView({ behavior: "smooth" })}><FileText size={16} /> Add advisor note</button>
-            <button type="button" className="lead502-action-order" onClick={() => setOrderOpen(true)}><PackageCheck size={16} /> Prepare OrderIQ</button>
+            <button type="button" disabled><ExternalLink size={16} /> Prepare order <small>Coming in 5.0.4</small></button>
           </Panel>
 
           <Panel eyebrow="Record health" title="Ready to act?" icon={ShieldCheck}>
@@ -291,7 +289,6 @@ export default function LeadDetail() {
         </aside>
       </div>
       {quoteOpen && <QuoteEditor lead={lead} workspace={workspace} onClose={() => setQuoteOpen(false)} />}
-      {orderOpen && <OrderIQWorkspace lead={lead} workspace={workspace} onClose={() => setOrderOpen(false)} />}
     </section>
   );
 }
