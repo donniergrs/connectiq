@@ -11,7 +11,6 @@ export default function Sidebar() {
       <nav>
         <NavLink to="/admin" end>Advisor Dashboard</NavLink>
         <NavLink to="/admin/command-center">Command Center</NavLink>
-        <NavLink to="/admin/sales-iq">SalesIQ Agent</NavLink>
         <NavLink to="/admin/my-day">My Day</NavLink>
         <NavLink to="/admin/executive">Executive Command Center</NavLink>
         <NavLink to="/admin/pipeline">Lead Pipeline</NavLink>
