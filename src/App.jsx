@@ -38,6 +38,7 @@ import KnowledgeEngine from "./pages/KnowledgeEngine";
 import CommandCenter from "./pages/CommandCenter";
 import SalesIQ from "./pages/SalesIQ";
 import BrainOrchestrator from "./pages/BrainOrchestrator";
+import CompletionCenter from "./pages/CompletionCenter";
 import "./ai004c.css";
 export default function App() {
   return (
@@ -70,6 +71,7 @@ export default function App() {
           <Route path="command-center" element={<CommandCenter />} />
           <Route path="sales-iq" element={<SalesIQ />} />
           <Route path="brain-orchestrator" element={<BrainOrchestrator />} />
+          <Route path="completion" element={<CompletionCenter />} />
           <Route path="my-day" element={<MyDay />} />
           <Route path="executive" element={<ExecutiveCommandCenter />} />
           <Route path="carriers" element={<CarrierDatabase />} />
