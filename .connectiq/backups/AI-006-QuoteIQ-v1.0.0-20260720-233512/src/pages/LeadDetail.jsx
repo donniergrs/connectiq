@@ -22,7 +22,6 @@ import {
   Users,
   Wifi,
   RefreshCw,
-  Send,
 } from "lucide-react";
 import { auth, db } from "../firebase";
 import { STATUS_FLOW } from "../services/providerIntelligence";
@@ -32,7 +31,6 @@ import { buildSalesCoach } from "../services/aiSalesIntelligence";
 import SalesBrainPanel from "../components/sales/SalesBrainPanel";
 import SalesDiscoveryPanel from "../components/sales/SalesDiscoveryPanel";
 import RecommendationObjectionPanel from "../components/sales/RecommendationObjectionPanel";
-import QuoteEditor from "../components/quotes/QuoteEditor";
 
 function currency(value) {
   return value ? new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(value) : "Verify price";
@@ -85,7 +83,6 @@ export default function LeadDetail() {
   const [notePriority, setNotePriority] = useState("Normal");
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [quoteOpen, setQuoteOpen] = useState(false);
 
   useEffect(() => {
     const ref = doc(db, "leads", leadId);
@@ -259,7 +256,6 @@ export default function LeadDetail() {
           <Panel eyebrow="Advisor actions" title="Move the opportunity forward" icon={Gauge} className="lead502-actions-panel">
             <a className="lead502-action-primary" href={customer.phone !== "Not captured" ? `tel:${customer.phone}` : undefined}><Phone size={16} /> Call customer</a>
             <a href={customer.email !== "Not captured" ? `mailto:${customer.email}?subject=${encodeURIComponent(`Your ConnectIQ recommendation: ${recommendation.provider}`)}` : undefined}><Mail size={16} /> Email recommendation</a>
-            <button type="button" className="lead502-action-quote" onClick={() => setQuoteOpen(true)}><Send size={16} /> Send Quote</button>
             <button type="button" onClick={() => document.getElementById("advisor-workflow")?.scrollIntoView({ behavior: "smooth" })}><FileText size={16} /> Add advisor note</button>
             <button type="button" disabled><ExternalLink size={16} /> Prepare order <small>Coming in 5.0.4</small></button>
           </Panel>
@@ -285,7 +281,6 @@ export default function LeadDetail() {
           </Panel>
         </aside>
       </div>
-      {quoteOpen && <QuoteEditor lead={lead} workspace={workspace} onClose={() => setQuoteOpen(false)} />}
     </section>
   );
 }

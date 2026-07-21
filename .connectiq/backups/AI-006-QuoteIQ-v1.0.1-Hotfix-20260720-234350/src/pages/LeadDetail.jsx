@@ -68,6 +68,7 @@ function Panel({ eyebrow, title, icon: Icon, children, className = "" }) {
     <section className={`lead502-panel ${className}`}>
       <header><div className="lead502-panel-icon"><Icon size={18} /></div><div><span>{eyebrow}</span><h2>{title}</h2></div></header>
       {children}
+      {quoteOpen && <QuoteEditor lead={lead} workspace={workspace} onClose={() => setQuoteOpen(false)} />}
     </section>
   );
 }

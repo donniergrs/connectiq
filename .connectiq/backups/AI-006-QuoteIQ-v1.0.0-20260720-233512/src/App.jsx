@@ -12,7 +12,6 @@ import Home from "./pages/Home";
 import BusinessInternet from "./pages/BusinessInternet";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
-import PublicQuote from "./pages/PublicQuote";
 
 import Dashboard from "./pages/Dashboard";
 import CarrierDatabase from "./pages/CarrierDatabase";
@@ -49,7 +48,6 @@ export default function App() {
           <Route path="/business" element={<BusinessInternet />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/quote/:quoteId" element={<PublicQuote />} />
         </Route>
 
         <Route path="/login" element={<Login />} />
