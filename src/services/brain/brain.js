@@ -1,4 +1,4 @@
-import { lookupProviders } from "../fccService";
+import { lookupProviders } from "../openAiProviderService";
 import { applyProviderResults } from "./conversationEngine";
 import { initialConversationState, CONVERSATION_STATES } from "./conversationState";
 import { createCustomerSession } from "./advisor/customerSession";

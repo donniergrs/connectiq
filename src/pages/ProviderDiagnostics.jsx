@@ -18,7 +18,7 @@ import {
   Wifi,
   XCircle,
 } from "lucide-react";
-import { lookupProviders } from "../services/fccService";
+import { lookupProviders } from "../services/openAiProviderService";
 import {
   ARCHITECTURE_DECISIONS,
   PROVIDER_DEPENDENCIES,

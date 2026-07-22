@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ArrowRight, CalendarDays, CheckCircle2, Loader2, Phone, ShieldCheck, Sparkles } from "lucide-react";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { db } from "../firebase";
-import { lookupProviders } from "../services/fccService";
+import { lookupProviders } from "../services/openAiProviderService";
 import { rankProviderOptions } from "../services/brain/revenueOptimizer";
 
 export default function AddressLookup() {

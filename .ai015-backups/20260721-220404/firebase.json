@@ -1,0 +1,33 @@
+{
+  "hosting": {
+    "public": "dist",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "redirects": [
+      {
+        "source": "/availability",
+        "destination": "/advisor",
+        "type": 302
+      },
+      {
+        "source": "/internet",
+        "destination": "/advisor",
+        "type": 302
+      },
+      {
+        "source": "/contact",
+        "destination": "/advisor",
+        "type": 302
+      }
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}

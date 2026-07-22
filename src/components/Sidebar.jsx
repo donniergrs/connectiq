@@ -27,7 +27,7 @@ export default function Sidebar() {
         <NavLink to="/admin/orders">Order Workspace</NavLink>
         <NavLink to="/admin/commissions">Commission Intelligence</NavLink>
         <NavLink to="/admin/carriers">Carrier Intelligence</NavLink>
-        <NavLink to="/advisor">Public AI Advisor</NavLink>
+        <NavLink to="/availability">Public Lookup</NavLink>
       </nav>
     </aside>
   );

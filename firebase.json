@@ -1,4 +1,17 @@
 {
+  "functions": {
+    "source": "functions",
+    "runtime": "nodejs22",
+    "ignore": [
+      "node_modules",
+      ".git",
+      "firebase-debug.log",
+      "firebase-debug.*.log",
+      ".env.local",
+      ".secret.local",
+      ".env.backup*"
+    ]
+  },
   "hosting": {
     "public": "dist",
     "ignore": [
@@ -7,27 +20,19 @@
       "**/node_modules/**"
     ],
     "redirects": [
-      {
-        "source": "/availability",
-        "destination": "/advisor",
-        "type": 302
-      },
-      {
-        "source": "/internet",
-        "destination": "/advisor",
-        "type": 302
-      },
-      {
-        "source": "/contact",
-        "destination": "/advisor",
-        "type": 302
-      }
+      { "source": "/availability", "destination": "/advisor", "type": 302 },
+      { "source": "/internet", "destination": "/advisor", "type": 302 },
+      { "source": "/contact", "destination": "/advisor", "type": 302 }
     ],
     "rewrites": [
       {
-        "source": "**",
-        "destination": "/index.html"
-      }
+        "source": "/api/**",
+        "function": {
+          "functionId": "api",
+          "region": "us-central1"
+        }
+      },
+      { "source": "**", "destination": "/index.html" }
     ]
   }
 }

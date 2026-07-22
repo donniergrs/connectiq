@@ -1,4 +1,4 @@
-import { lookupProviders } from "../fccService.js";
+import { lookupProviders } from "../openAiProviderService.js";
 import { normalizeProviderList } from "./providerNormalizer.js";
 import { buildVerifiedRecommendation } from "./providerRecommendation.js";
 

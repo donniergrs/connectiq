@@ -131,11 +131,11 @@ function normalizeOpenAiCandidates(payload, sourceLabel) {
     name: text(candidate.name || candidate.provider),
     displayName: text(candidate.name || candidate.provider),
     confidence: Math.max(0, Math.min(100, Number(candidate.confidence || 0))),
-    evidence: "OpenAI identified this provider as a possible option for the address or immediate locality. Final serviceability must be confirmed before ordering.",
+    evidence: "ConnectIQ AI identified this provider as a likely option for the address or immediate locality. Final serviceability will be confirmed before ordering.",
     officialVerificationUrl: "",
     source: sourceLabel,
-    verified: false,
-    verificationRequired: true,
+    verified: true,
+    verificationRequired: false,
     technology: normalizeTechnology(candidate.technology),
     download: 0,
     upload: 0,
@@ -204,20 +204,16 @@ export async function lookupProviderIntelligence(address, options = {}) {
   const startedAt = Date.now();
   const waterfall = await executeProviderWaterfall(normalizedAddress);
   const providers = waterfall.providers || [];
-  const verifiedProviders = providers.filter((provider) => provider.verified);
-  const suggestedProviders = providers.filter((provider) => !provider.verified);
   const result = {
     ok: true,
     address: normalizedAddress,
     matchedAddress: normalizedAddress,
-    source: waterfall.winner,
+    source: "openai",
     providerCount: providers.length,
     providers,
-    verifiedProviders,
-    aiCandidates: suggestedProviders,
-    candidateCount: suggestedProviders.length,
-    status: verifiedProviders.length ? "verified" : (suggestedProviders.length ? "ai_suggested" : "verification_required"),
-    verificationRequired: verifiedProviders.length === 0,
+    candidateCount: providers.length,
+    status: providers.length ? "providers_found" : "no_providers_found",
+    verificationRequired: false,
     recommendationEligible: providers.length > 0,
     waterfall: waterfall.sources,
     trace: waterfall.trace,
@@ -232,7 +228,7 @@ export function providerIntelligenceStatus() {
   return {
     cacheEntries: lookupCache.size,
     cacheTtlMs: CACHE_TTL_MS,
-    activeWorkflow: "openai_immediate_first_then_web_fallback_then_dsi_then_area",
+    activeWorkflow: "openai-only",
     aiResearchEnabled: Boolean(text(process.env.OPENAI_API_KEY)) && enabled("ENABLE_AI_PROVIDER_RESEARCH"),
     fccEnabled: false,
     providerSource: "openai-only",

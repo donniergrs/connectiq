@@ -75,7 +75,7 @@ export default function ProductionLaunchCenter() {
   return <section className="ai014-page">
     <header className="ai014-hero">
       <div><span><Rocket size={16}/> AI-014 Production Launch</span><h1>Turn the completed platform into the first ConnectIQ commission.</h1><p>Validate the production environment, prove the complete customer journey, export a DSI-ready package, and expose failures before they cost a sale.</p></div>
-      <a href="/advisor" target="_blank" rel="noreferrer">Run customer test <ExternalLink size={16}/></a>
+      <a href="/availability" target="_blank" rel="noreferrer">Run customer test <ExternalLink size={16}/></a>
     </header>
 
     <div className={`ai014-banner ${engine.launchReady ? "ready" : "blocked"}`}>
