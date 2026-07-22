@@ -14,7 +14,6 @@ export default function Sidebar() {
         <NavLink to="/admin/sales-iq">SalesIQ Agent</NavLink>
         <NavLink to="/admin/brain-orchestrator">Brain Orchestrator</NavLink>
         <NavLink to="/admin/completion">Completion Center</NavLink>
-        <NavLink to="/admin/production-launch">Production Launch</NavLink>
         <NavLink to="/admin/my-day">My Day</NavLink>
         <NavLink to="/admin/executive">Executive Command Center</NavLink>
         <NavLink to="/admin/pipeline">Lead Pipeline</NavLink>
@@ -27,7 +26,7 @@ export default function Sidebar() {
         <NavLink to="/admin/orders">Order Workspace</NavLink>
         <NavLink to="/admin/commissions">Commission Intelligence</NavLink>
         <NavLink to="/admin/carriers">Carrier Intelligence</NavLink>
-        <NavLink to="/advisor">Public AI Advisor</NavLink>
+        <NavLink to="/availability">Public Lookup</NavLink>
       </nav>
     </aside>
   );

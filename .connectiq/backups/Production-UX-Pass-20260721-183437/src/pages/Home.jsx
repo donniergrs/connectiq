@@ -28,11 +28,11 @@ export default function Home() {
           </p>
 
           <div className="hero-actions">
-            <Link to="/advisor" className="primary-button">
+            <Link to="/availability" className="primary-button">
               Check Availability <ArrowRight size={18} />
             </Link>
 
-            <Link to="/advisor" className="ghost-button">
+            <Link to="/contact" className="ghost-button">
               Talk to an Advisor
             </Link>
           </div>
@@ -90,7 +90,7 @@ export default function Home() {
       <section className="launch-cta">
         <h2>Ready to find better internet?</h2>
         <p>Check your address and let ConnectIQ help you choose with confidence.</p>
-        <Link to="/advisor" className="primary-button">
+        <Link to="/availability" className="primary-button">
           Start Now <ArrowRight size={18} />
         </Link>
       </section>

@@ -11,6 +11,7 @@ import AppLayout from "./layouts/AppLayout";
 import Home from "./pages/Home";
 import BusinessInternet from "./pages/BusinessInternet";
 import About from "./pages/About";
+import Contact from "./pages/Contact";
 import PublicQuote from "./pages/PublicQuote";
 
 import Dashboard from "./pages/Dashboard";
@@ -28,6 +29,7 @@ import Orders from "./pages/Orders";
 import Commissions from "./pages/Commissions";
 import Login from "./pages/Login";
 
+import InternetAdvisor from "./pages/InternetAdvisor";
 // CONNECTIQ-AI-004C-IMPORTS
 import AiSalesAdvisor from "./pages/AiSalesAdvisor";
 import AiConversationMonitor from "./pages/AiConversationMonitor";
@@ -37,7 +39,6 @@ import CommandCenter from "./pages/CommandCenter";
 import SalesIQ from "./pages/SalesIQ";
 import BrainOrchestrator from "./pages/BrainOrchestrator";
 import CompletionCenter from "./pages/CompletionCenter";
-import ProductionLaunchCenter from "./pages/ProductionLaunchCenter";
 import "./ai004c.css";
 export default function App() {
   return (
@@ -47,12 +48,12 @@ export default function App() {
       <Routes>
         <Route element={<PublicLayout />}>
           <Route path="/" element={<Home />} />
-          <Route path="/availability" element={<Navigate to="/advisor" replace />} />
+          <Route path="/availability" element={<InternetAdvisor embedded />} />
           <Route path="/advisor" element={<AiSalesAdvisor />} />
-          <Route path="/internet" element={<Navigate to="/advisor" replace />} />
+          <Route path="/internet" element={<Navigate to="/availability" replace />} />
           <Route path="/business" element={<BusinessInternet />} />
           <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Navigate to="/advisor" replace />} />
+          <Route path="/contact" element={<Contact />} />
           <Route path="/quote/:quoteId" element={<PublicQuote />} />
         </Route>
 
@@ -71,7 +72,6 @@ export default function App() {
           <Route path="sales-iq" element={<SalesIQ />} />
           <Route path="brain-orchestrator" element={<BrainOrchestrator />} />
           <Route path="completion" element={<CompletionCenter />} />
-          <Route path="production-launch" element={<ProductionLaunchCenter />} />
           <Route path="my-day" element={<MyDay />} />
           <Route path="executive" element={<ExecutiveCommandCenter />} />
           <Route path="carriers" element={<CarrierDatabase />} />

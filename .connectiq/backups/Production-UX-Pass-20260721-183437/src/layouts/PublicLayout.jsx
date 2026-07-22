@@ -7,10 +7,10 @@ export default function PublicLayout() {
         <Link to="/" className="brand">ConnectIQ</Link>
 
         <nav>
-          <Link to="/advisor">Check Availability</Link>
+          <Link to="/availability">Check Availability</Link>
           <Link to="/business">Business</Link>
           <Link to="/about">About</Link>
-          <Link to="/advisor">AI Advisor</Link>
+          <Link to="/contact">Contact</Link>
           <Link to="/login" className="advisor-link">Advisor Login</Link>
         </nav>
       </header>
